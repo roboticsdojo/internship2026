@@ -13,7 +13,7 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='kitana',
+    maintainer='Amy Kibara',
     maintainer_email='amy.kibara@gmail.com',
     description='TODO: Package description',
     license='Apache-2.0',
@@ -24,6 +24,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            #min_py_pub and min_py_sub are the names of the executables that will be created when the package is built. The format is 'executable_name = package_name.module_name:function_name'
             'min_py_pub = pub_sub_pack_py.my_publisher:main',
             'min_py_sub = pub_sub_pack_py.my_subscriber:main',
         ],

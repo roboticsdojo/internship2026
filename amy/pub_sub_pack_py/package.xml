@@ -4,7 +4,7 @@
   <name>pub_sub_pack_py</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="amy.kibara@gmail.com">kitana</maintainer>
+  <maintainer email="amy.kibara@gmail.com">Amy Kibara</maintainer>
   <license>Apache-2.0</license>
   
   <buildtool_depend>ament_cmake_python</buildtool_depend>

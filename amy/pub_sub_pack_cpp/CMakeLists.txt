@@ -25,8 +25,7 @@ install(
   DIRECTORY include/
   DESTINATION include
 )
-
-#install cpp executables
+#install cpp executables and moves the finished programs into a folder where the ros2 run command can find them.
 install(
   TARGETS
   min_cpp_pub

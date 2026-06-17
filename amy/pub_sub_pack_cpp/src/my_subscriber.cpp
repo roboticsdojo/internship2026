@@ -1,31 +1,31 @@
 /* 
- * @file cppminsub.cpp
- * @author Kitana
- * @brief Demonstrates cpp subscribing
+ * @author Amy Kibara
+ * @file my_subscriber.cpp
+ * @brief This ros2 node subscribes to a topic and prints out the messages it receives
  * @version 0.1
- * @date 2026.03.13
+ * @date 2026.06.17
  * ------
  * Subscription topics:
  *  String message
- *  /my_topic2 - std_msgs/String
+ *  /greetings_cpp - std_msgs/String
  * -----
  * Publishing topics:
- *  None-its just a subscriber
+ *  None
 */
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 
-using std::placeholders::_1; //placeholder for callback fxn
+using std::placeholders::_1; //placeholder representing the first argument passed to the function (the message)
 
 class Mincppsub : public rclcpp::Node
 {
-    public://stuff within node() is name of node
+    public:
         Mincppsub(): Node("min_cpp_sub")
         {
         //create var to store the sub, give it message type, topic name, queue size, fxn that's bound to it and will be executed every time a message is published on topic
             subscriber_1 = 
-            create_subscription<std_msgs::msg::String>("/my_topic2", 10, std::bind(&Mincppsub::topicCallback, this, _1));
+            create_subscription<std_msgs::msg::String>("/greetings_cpp", 10, std::bind(&Mincppsub::topicCallback, this, _1));
         }
         //callback fxn
         void topicCallback(const std_msgs::msg::String & msg) const
