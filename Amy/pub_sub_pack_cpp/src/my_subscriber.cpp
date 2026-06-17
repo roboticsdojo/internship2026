@@ -1,3 +1,4 @@
+//Copyright 2026 Amy Kibara
 /* 
  * @author Amy Kibara
  * @file my_subscriber.cpp
@@ -11,6 +12,7 @@
  * -----
  * Publishing topics:
  *  None
+ *
 */
 
 #include "rclcpp/rclcpp.hpp"
@@ -21,7 +23,8 @@ using std::placeholders::_1; //placeholder representing the first argument passe
 class Mincppsub : public rclcpp::Node
 {
     public:
-        Mincppsub(): Node("min_cpp_sub")
+        Mincppsub():
+         Node("min_cpp_sub")
         {
         //create var to store the sub, give it message type, topic name, queue size, fxn that's bound to it and will be executed every time a message is published on topic
             subscriber_1 = 
