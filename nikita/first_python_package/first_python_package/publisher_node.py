@@ -10,16 +10,16 @@ class FirstPublisherNode(Node): #the class FirstPublisherNode inherits from Node
         timer_period= 0.5 #the timer callback function will be called every 0.5 seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i=0
-
- # the timer callback function is called every 0.5 seconds, and it creates a new String message, sets its data field to a string that includes the current value of the counter i, publishes the message on the topic first_topic, logs the published message to the console, and increments the counter i by 1.
+        
+        # the timer callback function is called every 0.5 seconds, and it creates a new String message, sets its data field to a string that includes the current value of the counter i, publishes the message on the topic first_topic, logs the published message to the console, and increments the counter i by 1.
     def timer_callback(self):
         msg= String()
         msg.data = 'Hello World: %d' % self.i
         self.publisher_.publish(msg)
         self.get_logger().info('Publishing: "%s"' %msg.data)
         self.i +=1
-        
-# the main function initializes the ROS 2 client library, creates an instance of the FirstPublisherNode class, and starts spinning the node to process incoming messages and execute the timer callback function. When the node is shut down, it destroys the node and shuts down the ROS 2 client library.
+
+        # the main function initializes the ROS 2 client library, creates an instance of the FirstPublisherNode class, and starts spinning the node to process incoming messages and execute the timer callback function. When the node is shut down, it destroys the node and shuts down the ROS 2 client library.
     def main(args=None):
         rclpy.init(args=args)
         first_publisher_node= FirstPublisherNode()
