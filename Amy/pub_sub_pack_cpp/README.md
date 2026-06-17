@@ -61,4 +61,4 @@ colcon test-result --all
 
 ## License
 
-Distributed under the Apache 2.0 License. See the `LICENSE` file in this repository for the full terms and conditions.
+Distributed under the Apache 2.0 License. See the [LICENSE](LICENSE) file in this repository for the full terms and conditions.
