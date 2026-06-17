@@ -6,7 +6,7 @@ from std_msgs.msg import String  #imports the built-in std_msgs/msg/String messa
 class FirstPublisherNode(Node): #the class FirstPublisherNode inherits from Node 
     def __init__(self):
         super().__init__('first_publisher_node') #constructor
-        self.publisher_ = self.create_publisher(String, 'first_topic', 10) #messages will be published as Sstirng messages on the topic first_topic with a message queue of size 10
+        self.publisher_ = self.create_publisher(String, 'first_topic', 10) #messages will be published as String messages on the topic first_topic with a message queue of size 10
         timer_period= 0.5 #the timer callback function will be called every 0.5 seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i=0
