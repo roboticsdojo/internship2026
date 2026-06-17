@@ -15,11 +15,11 @@ A minimal ROS 2 C++ package implementing a basic talker (publisher) and listener
 
 ### Building the Package
 
-1. In a new terminal, navigate to your ROS 2 workspace (usually ros2_ws) and clone/add the package from the Github repository:
+1. In a new terminal, navigate to your ROS 2 workspace (usually ros2_ws).
    ```
    cd ~/ros2_ws/src
-   git clone https://github.com/roboticsdojo/internship2026.git
    ```
+2. Clone/add the package from the Github repository
    
 3. After cloning, go back to the root of the workspace (~/ros2_ws) to install the dependencies::
    ```
