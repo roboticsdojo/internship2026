@@ -47,7 +47,7 @@ ros2 run pub_sub_pack_cpp min_cpp_sub
 To terminate the process press `Ctrl` + `C` (or `Cmd` + `C` in Mac)
 
 ## Testing and Linting
-The CMakeLists.txt and package.xml are configured with ament_lint_auto. These tools check your code for style, copyright headers, and best practices. ⚠️ **Note on Skipped Tests:** The strict automated copyright (`ament_cmake_copyright`), formatting (`uncrustify`), and style (`cpplint`) checks have been explicitly bypassed in `CMakeLists.txt`. This allows the package to pass its test suite while preserving custom source file header documentation and styling.
+The CMakeLists.txt and package.xml are configured with ament_lint_auto. These tools check your code for style, copyright headers, and best practices. **Note on Skipped Tests:** The strict automated copyright (`ament_cmake_copyright`), formatting (`uncrustify`), and style (`cpplint`) checks have been explicitly bypassed in `CMakeLists.txt`. This allows the package to pass its test suite while preserving custom source file header documentation and styling.
 
 To run the tests/linters:
 ```
@@ -61,4 +61,4 @@ colcon test-result --all
 
 ## License
 
-Distributed under the Apache 2.0 License. 
+Distributed under the Apache 2.0 License. See the `LICENSE` file in this repository for the full terms and conditions.
