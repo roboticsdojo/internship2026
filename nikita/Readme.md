@@ -201,15 +201,3 @@ The main function initializes the ROS 2 system, creates an instance of the First
 It will continue to run until the node is shut down, at which point it will clean up and exit.
 
 
-TESTING THE NODES
-------------------------------------------------
-First I built the workspace since I didn't do it when setting it up. This will enable ros2 commands to execute the packages and nodes
-In the `ros2_ws` directory run the code below in the terminal
-```bash 
-colcon build
-```
-
-Start the python publisher node
-```bash 
-
-```
