@@ -367,12 +367,13 @@ int main(int argc, char * argv[])
 
 
 -Terminal 1
-ros2 run my_py_node subscriber_node
+ros2 run my_py_node subscriber
 # OR
 ros2 run my_cpp_node subscriber_node
 
 
 -Terminal 2
-ros2 run my_py_node publisher_node
+ros2 run my_py_node publisher
+
 # OR
 ros2 run my_cpp_node publisher_node
