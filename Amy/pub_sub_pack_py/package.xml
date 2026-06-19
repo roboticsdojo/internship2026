@@ -3,7 +3,7 @@
 <package format="3">
   <name>pub_sub_pack_py</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>This is a ROS2 python package containing publisher and subscriber nodes on the topic /greetings_py.</description>
   <maintainer email="amy.kibara@gmail.com">Amy Kibara</maintainer>
   <license>Apache-2.0</license>
   
