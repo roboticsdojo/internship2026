@@ -1,4 +1,4 @@
-#imports rclpy s.o its node can be used
+#imports rclpy so its node can be used
 import rclpy
 from rclpy.node import Node
 #importd the build in message type that the node uses to structue the data that it passes on the topic
@@ -8,7 +8,7 @@ from std_msgs.msg import String
 class MinimalPublisher(Node):
 
     def __init__(self):
-        super()__init__('minimal_publisher')
+        super().__init__('minimal_publisher')
         #declares that the node publishes messages of type std_msgs/msg/String (imported from the std_msgs.msg module), over a topic named topic, and that the “queue size” is 10.
         self.publisher_ = self.create_publisher(String, 'topic', 10)
         #used to create a callback that executes every 0.5 seconds
