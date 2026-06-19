@@ -200,4 +200,42 @@ int main(int argc, char * argv[])
 The main function initializes the ROS 2 system, creates an instance of the FirstSubscriber node, and starts spinning to process incoming messages. 
 It will continue to run until the node is shut down, at which point it will clean up and exit.
 
+RUNNING THE PUBLISHER AND SUBSCRIBER NODES
+-----------------------------------------------
+Navigate to your wokspace folder
+In this case the folder is `ros2_ws`
+```bash
+cd path/to/ros2_ws
+```
+
+Source the core ros2 environment. If it has already been permanently echoed into your terminal, this step can be skipped
+
+```bash
+source /opt/ros/jazzy/setup.bash
+```
+
+If you want to echo it permanently into your terminal so that you don't have to do it every time, use the command
+```bash
+echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc
+```
+
+Next, source the local bash file
+```bash
+source install/setup.bash
+```
+
+Next run the python publisher node
+```bash
+ros2 run first_python_package talker
+```
+
+Then, run the c++ subscriber node
+
+```bash
+ros2 run first_cpp_package listener
+```
+
+The order in which they are run does not matter. The listener can be run first before the talker. It will still work.
+
+Now, observe the published messages from the publisher, and the messages received by the subscriber node.
 
