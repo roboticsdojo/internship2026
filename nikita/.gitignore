@@ -1,4 +1,4 @@
 /ros2_ws/build*
 /ros2_ws/install*
-/ros2_ws/logs*
+/ros2_ws/log*
 /ros2_ws/src/first_python_package/first_python_package/__pycache__/*
