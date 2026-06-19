@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'nodepkg'
+package_name = 'py_pubsub'
 
 setup(
     name=package_name,
@@ -15,15 +15,17 @@ setup(
     zip_safe=True,
     maintainer='adminfred',
     maintainer_email='wanjerifredrick@gmail.com',
-    description='TODO: Package description',
-    license='TODO: License declaration',
+    description='A python subscription and publication example',
+    license='Apache-2.0',
     extras_require={
         'test': [
             'pytest',
         ],
     },
     entry_points={
-        'console_scripts': ['node=nodepkg.node:main'
+        'console_scripts': [
+                'talker = py_pubsub.publisher_member_function:main',
+                'listener = py_pubsub.subscriber_member_function:main',
         ],
-    },
+},
 )
