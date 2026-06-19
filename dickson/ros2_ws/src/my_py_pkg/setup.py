@@ -1,7 +1,3 @@
-from setuptools import find_packages, setup
-
-package_name = 'my_py_pkg'
-
 setup(
     name=package_name,
     version='0.0.0',
@@ -15,8 +11,8 @@ setup(
     zip_safe=True,
     maintainer='dickson-kabiru',
     maintainer_email='dickson-kabiru@todo.todo',
-    description='TODO: Package description',
-    license='TODO: License declaration',
+    description='A ROS 2 Python package implementing a simple publisher and subscriber using rclpy',
+    license='Apache-2.0',
     extras_require={
         'test': [
             'pytest',
