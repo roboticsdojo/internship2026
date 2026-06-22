@@ -1,0 +1,337 @@
+[0.000000] (-) TimerEvent: {}
+[0.001316] (cpp_pubsub) JobQueued: {'identifier': 'cpp_pubsub', 'dependencies': OrderedDict()}
+[0.002149] (cpp_pubsub) JobStarted: {'identifier': 'cpp_pubsub'}
+[0.035395] (cpp_pubsub) JobProgress: {'identifier': 'cpp_pubsub', 'progress': 'cmake'}
+[0.041362] (cpp_pubsub) Command: {'cmd': ['/usr/bin/cmake', '/home/adminfred/ros2_ws/src/cpp_pubsub', '-DCMAKE_INSTALL_PREFIX=/home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub'], 'cwd': '/home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub', 'env': OrderedDict({'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'adminfred', 'GZ_CONFIG_PATH': '/opt/ros/jazzy/opt/sdformat_vendor/share/gz', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/jazzy/opt/sdformat_vendor/lib:/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/x86_64-linux-gnu:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_tools_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/adminfred', 'OLDPWD': '/home/adminfred/ros2_ws/src/cpp_pubsub/src', 'ROS_PYTHON_VERSION': '3', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'WSL_DISTRO_NAME': 'Ubuntu-24.04', 'WAYLAND_DISPLAY': 'wayland-0', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'adminfred', 'NAME': 'DESKTOP-6V2ISKP', 'WSL_INTEROP': '/run/WSL/662_interop', 'PULSE_SERVER': 'unix:/mnt/wslg/PulseServer', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm-256color', 'PATH': '/opt/ros/jazzy/opt/gz_tools_vendor/bin:/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files (x86)/Common Files/Intel/Shared Libraries/redist/intel64/compiler:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/MATLAB/R2024b/runtime/win64:/mnt/c/Program Files/MATLAB/R2024b/bin:/mnt/c/Program Files/Git/cmd:/mnt/c/Users/Admin/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/Admin/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/Admin/AppData/Local/PowerToys/DSCModules/:/mnt/c/Users/Admin/AppData/Local/GitHubDesktop/bin:/snap/bin', 'XDG_RUNTIME_DIR': '/run/user/1000', 'DISPLAY': ':0', 'LANG': 'en_US.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'AMENT_PREFIX_PATH': '/opt/ros/jazzy', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'PWD': '/home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'WSL2_GUI_APPS_ENABLED': '1', 'HOSTTYPE': 'x86_64', 'CMAKE_PREFIX_PATH': '/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/opt/ros/jazzy', 'WSLENV': ''}), 'shell': False}
+[0.099141] (-) TimerEvent: {}
+[0.199797] (-) TimerEvent: {}
+[0.300327] (-) TimerEvent: {}
+[0.400885] (-) TimerEvent: {}
+[0.501496] (-) TimerEvent: {}
+[0.602331] (-) TimerEvent: {}
+[0.612210] (cpp_pubsub) StdoutLine: {'line': b'-- The C compiler identification is GNU 13.3.0\n'}
+[0.702616] (-) TimerEvent: {}
+[0.803201] (-) TimerEvent: {}
+[0.903709] (-) TimerEvent: {}
+[1.004261] (-) TimerEvent: {}
+[1.104866] (-) TimerEvent: {}
+[1.205681] (-) TimerEvent: {}
+[1.306400] (-) TimerEvent: {}
+[1.407058] (-) TimerEvent: {}
+[1.461282] (cpp_pubsub) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 13.3.0\n'}
+[1.507295] (-) TimerEvent: {}
+[1.608154] (-) TimerEvent: {}
+[1.708915] (-) TimerEvent: {}
+[1.809699] (-) TimerEvent: {}
+[1.910266] (-) TimerEvent: {}
+[2.010982] (-) TimerEvent: {}
+[2.062635] (cpp_pubsub) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[2.111114] (-) TimerEvent: {}
+[2.211580] (-) TimerEvent: {}
+[2.312329] (-) TimerEvent: {}
+[2.412893] (-) TimerEvent: {}
+[2.445258] (cpp_pubsub) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[2.462381] (cpp_pubsub) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc - skipped\n'}
+[2.463882] (cpp_pubsub) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[2.465675] (cpp_pubsub) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[2.513127] (-) TimerEvent: {}
+[2.580683] (cpp_pubsub) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[2.613270] (-) TimerEvent: {}
+[2.713841] (-) TimerEvent: {}
+[2.814373] (-) TimerEvent: {}
+[2.915153] (-) TimerEvent: {}
+[2.952788] (cpp_pubsub) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[2.969924] (cpp_pubsub) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ - skipped\n'}
+[2.971047] (cpp_pubsub) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[2.972345] (cpp_pubsub) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[3.015251] (-) TimerEvent: {}
+[3.026609] (cpp_pubsub) StdoutLine: {'line': b'-- Found ament_cmake: 2.5.6 (/opt/ros/jazzy/share/ament_cmake/cmake)\n'}
+[3.115373] (-) TimerEvent: {}
+[3.215835] (-) TimerEvent: {}
+[3.316446] (-) TimerEvent: {}
+[3.320052] (cpp_pubsub) StdoutLine: {'line': b'-- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter \n'}
+[3.416564] (-) TimerEvent: {}
+[3.517243] (-) TimerEvent: {}
+[3.614050] (cpp_pubsub) StdoutLine: {'line': b'-- Found rclcpp: 28.1.18 (/opt/ros/jazzy/share/rclcpp/cmake)\n'}
+[3.617482] (-) TimerEvent: {}
+[3.718016] (-) TimerEvent: {}
+[3.818775] (-) TimerEvent: {}
+[3.919289] (-) TimerEvent: {}
+[3.968569] (cpp_pubsub) StdoutLine: {'line': b'-- Found rosidl_generator_c: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)\n'}
+[4.019471] (-) TimerEvent: {}
+[4.097769] (cpp_pubsub) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)\n'}
+[4.119630] (-) TimerEvent: {}
+[4.184011] (cpp_pubsub) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[4.219807] (-) TimerEvent: {}
+[4.240575] (cpp_pubsub) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[4.319969] (-) TimerEvent: {}
+[4.420654] (-) TimerEvent: {}
+[4.481431] (cpp_pubsub) StdoutLine: {'line': b'-- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)\n'}
+[4.497162] (cpp_pubsub) StdoutLine: {'line': b'-- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)\n'}
+[4.520817] (-) TimerEvent: {}
+[4.621359] (-) TimerEvent: {}
+[4.720446] (cpp_pubsub) StdoutLine: {'line': b'-- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.13")  \n'}
+[4.721579] (-) TimerEvent: {}
+[4.822089] (-) TimerEvent: {}
+[4.922653] (-) TimerEvent: {}
+[4.945505] (cpp_pubsub) StdoutLine: {'line': b'-- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") \n'}
+[5.022895] (-) TimerEvent: {}
+[5.085767] (cpp_pubsub) StdoutLine: {'line': b"-- Using RMW implementation 'rmw_fastrtps_cpp' as default\n"}
+[5.123040] (-) TimerEvent: {}
+[5.223499] (-) TimerEvent: {}
+[5.323987] (-) TimerEvent: {}
+[5.424567] (-) TimerEvent: {}
+[5.432953] (cpp_pubsub) StdoutLine: {'line': b'-- Found std_msgs: 5.3.7 (/opt/ros/jazzy/share/std_msgs/cmake)\n'}
+[5.481229] (cpp_pubsub) StdoutLine: {'line': b'-- Found ament_lint_auto: 0.17.5 (/opt/ros/jazzy/share/ament_lint_auto/cmake)\n'}
+[5.524720] (-) TimerEvent: {}
+[5.625286] (-) TimerEvent: {}
+[5.711728] (cpp_pubsub) StdoutLine: {'line': b"-- Added test 'cppcheck' to perform static code analysis on C / C++ code\n"}
+[5.712468] (cpp_pubsub) StdoutLine: {'line': b'-- Configured cppcheck include dirs: \n'}
+[5.712965] (cpp_pubsub) StdoutLine: {'line': b'-- Configured cppcheck exclude dirs and/or files: \n'}
+[5.716544] (cpp_pubsub) StdoutLine: {'line': b"-- Added test 'flake8' to check Python code syntax and style conventions\n"}
+[5.716920] (cpp_pubsub) StdoutLine: {'line': b"-- Configured 'flake8' exclude dirs and/or files: \n"}
+[5.721026] (cpp_pubsub) StdoutLine: {'line': b"-- Added test 'lint_cmake' to check CMake code style\n"}
+[5.724679] (cpp_pubsub) StdoutLine: {'line': b"-- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257\n"}
+[5.725449] (-) TimerEvent: {}
+[5.737096] (cpp_pubsub) StdoutLine: {'line': b"-- Added test 'uncrustify' to check C / C++ code style\n"}
+[5.737498] (cpp_pubsub) StdoutLine: {'line': b'-- Configured uncrustify additional arguments: \n'}
+[5.741374] (cpp_pubsub) StdoutLine: {'line': b"-- Added test 'xmllint' to check XML markup files\n"}
+[5.748086] (cpp_pubsub) StdoutLine: {'line': b'-- Configuring done (5.6s)\n'}
+[5.790454] (cpp_pubsub) StdoutLine: {'line': b'-- Generating done (0.0s)\n'}
+[5.804143] (cpp_pubsub) StdoutLine: {'line': b'-- Build files have been written to: /home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub\n'}
+[5.823049] (cpp_pubsub) CommandEnded: {'returncode': 0}
+[5.824734] (cpp_pubsub) JobProgress: {'identifier': 'cpp_pubsub', 'progress': 'build'}
+[5.826616] (-) TimerEvent: {}
+[5.827348] (cpp_pubsub) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub', '--', '-j8', '-l8'], 'cwd': '/home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub', 'env': OrderedDict({'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'adminfred', 'GZ_CONFIG_PATH': '/opt/ros/jazzy/opt/sdformat_vendor/share/gz', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/jazzy/opt/sdformat_vendor/lib:/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/x86_64-linux-gnu:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_tools_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/adminfred', 'OLDPWD': '/home/adminfred/ros2_ws/src/cpp_pubsub/src', 'ROS_PYTHON_VERSION': '3', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'WSL_DISTRO_NAME': 'Ubuntu-24.04', 'WAYLAND_DISPLAY': 'wayland-0', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'adminfred', 'NAME': 'DESKTOP-6V2ISKP', 'WSL_INTEROP': '/run/WSL/662_interop', 'PULSE_SERVER': 'unix:/mnt/wslg/PulseServer', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm-256color', 'PATH': '/opt/ros/jazzy/opt/gz_tools_vendor/bin:/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files (x86)/Common Files/Intel/Shared Libraries/redist/intel64/compiler:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/MATLAB/R2024b/runtime/win64:/mnt/c/Program Files/MATLAB/R2024b/bin:/mnt/c/Program Files/Git/cmd:/mnt/c/Users/Admin/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/Admin/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/Admin/AppData/Local/PowerToys/DSCModules/:/mnt/c/Users/Admin/AppData/Local/GitHubDesktop/bin:/snap/bin', 'XDG_RUNTIME_DIR': '/run/user/1000', 'DISPLAY': ':0', 'LANG': 'en_US.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'AMENT_PREFIX_PATH': '/opt/ros/jazzy', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'PWD': '/home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'WSL2_GUI_APPS_ENABLED': '1', 'HOSTTYPE': 'x86_64', 'CMAKE_PREFIX_PATH': '/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/opt/ros/jazzy', 'WSLENV': ''}), 'shell': False}
+[5.925079] (cpp_pubsub) StdoutLine: {'line': b'[ 25%] \x1b[32mBuilding CXX object CMakeFiles/listener.dir/src/subscriber_lambda_function.cpp.o\x1b[0m\n'}
+[5.925912] (cpp_pubsub) StdoutLine: {'line': b'[ 50%] \x1b[32mBuilding CXX object CMakeFiles/talker.dir/src/publisher_lambda_function.cpp.o\x1b[0m\n'}
+[5.926743] (-) TimerEvent: {}
+[6.027304] (-) TimerEvent: {}
+[6.127895] (-) TimerEvent: {}
+[6.228481] (-) TimerEvent: {}
+[6.329150] (-) TimerEvent: {}
+[6.429973] (-) TimerEvent: {}
+[6.530560] (-) TimerEvent: {}
+[6.631177] (-) TimerEvent: {}
+[6.731753] (-) TimerEvent: {}
+[6.832252] (-) TimerEvent: {}
+[6.932946] (-) TimerEvent: {}
+[7.033595] (-) TimerEvent: {}
+[7.134275] (-) TimerEvent: {}
+[7.234750] (-) TimerEvent: {}
+[7.335289] (-) TimerEvent: {}
+[7.435948] (-) TimerEvent: {}
+[7.536599] (-) TimerEvent: {}
+[7.637334] (-) TimerEvent: {}
+[7.737921] (-) TimerEvent: {}
+[7.838650] (-) TimerEvent: {}
+[7.939204] (-) TimerEvent: {}
+[8.039778] (-) TimerEvent: {}
+[8.140352] (-) TimerEvent: {}
+[8.241053] (-) TimerEvent: {}
+[8.341661] (-) TimerEvent: {}
+[8.442135] (-) TimerEvent: {}
+[8.542741] (-) TimerEvent: {}
+[8.643370] (-) TimerEvent: {}
+[8.744110] (-) TimerEvent: {}
+[8.844873] (-) TimerEvent: {}
+[8.945523] (-) TimerEvent: {}
+[9.046287] (-) TimerEvent: {}
+[9.147003] (-) TimerEvent: {}
+[9.247734] (-) TimerEvent: {}
+[9.348653] (-) TimerEvent: {}
+[9.449295] (-) TimerEvent: {}
+[9.549872] (-) TimerEvent: {}
+[9.650616] (-) TimerEvent: {}
+[9.751190] (-) TimerEvent: {}
+[9.851648] (-) TimerEvent: {}
+[9.952320] (-) TimerEvent: {}
+[10.053009] (-) TimerEvent: {}
+[10.153578] (-) TimerEvent: {}
+[10.254181] (-) TimerEvent: {}
+[10.354747] (-) TimerEvent: {}
+[10.455295] (-) TimerEvent: {}
+[10.555861] (-) TimerEvent: {}
+[10.656419] (-) TimerEvent: {}
+[10.757019] (-) TimerEvent: {}
+[10.857708] (-) TimerEvent: {}
+[10.958181] (-) TimerEvent: {}
+[11.058790] (-) TimerEvent: {}
+[11.159318] (-) TimerEvent: {}
+[11.259813] (-) TimerEvent: {}
+[11.360288] (-) TimerEvent: {}
+[11.461068] (-) TimerEvent: {}
+[11.561732] (-) TimerEvent: {}
+[11.662264] (-) TimerEvent: {}
+[11.762846] (-) TimerEvent: {}
+[11.863362] (-) TimerEvent: {}
+[11.963864] (-) TimerEvent: {}
+[12.064387] (-) TimerEvent: {}
+[12.164899] (-) TimerEvent: {}
+[12.265432] (-) TimerEvent: {}
+[12.365974] (-) TimerEvent: {}
+[12.466600] (-) TimerEvent: {}
+[12.567195] (-) TimerEvent: {}
+[12.667797] (-) TimerEvent: {}
+[12.768296] (-) TimerEvent: {}
+[12.868797] (-) TimerEvent: {}
+[12.969337] (-) TimerEvent: {}
+[13.069882] (-) TimerEvent: {}
+[13.170628] (-) TimerEvent: {}
+[13.271310] (-) TimerEvent: {}
+[13.371923] (-) TimerEvent: {}
+[13.472373] (-) TimerEvent: {}
+[13.572906] (-) TimerEvent: {}
+[13.673409] (-) TimerEvent: {}
+[13.774054] (-) TimerEvent: {}
+[13.874623] (-) TimerEvent: {}
+[13.975172] (-) TimerEvent: {}
+[14.075703] (-) TimerEvent: {}
+[14.176133] (-) TimerEvent: {}
+[14.276674] (-) TimerEvent: {}
+[14.377292] (-) TimerEvent: {}
+[14.477748] (-) TimerEvent: {}
+[14.578197] (-) TimerEvent: {}
+[14.678912] (-) TimerEvent: {}
+[14.779543] (-) TimerEvent: {}
+[14.880297] (-) TimerEvent: {}
+[14.981127] (-) TimerEvent: {}
+[15.081720] (-) TimerEvent: {}
+[15.182297] (-) TimerEvent: {}
+[15.282988] (-) TimerEvent: {}
+[15.383599] (-) TimerEvent: {}
+[15.484303] (-) TimerEvent: {}
+[15.584894] (-) TimerEvent: {}
+[15.685349] (-) TimerEvent: {}
+[15.785878] (-) TimerEvent: {}
+[15.886416] (-) TimerEvent: {}
+[15.986936] (-) TimerEvent: {}
+[16.087463] (-) TimerEvent: {}
+[16.187892] (-) TimerEvent: {}
+[16.288401] (-) TimerEvent: {}
+[16.388943] (-) TimerEvent: {}
+[16.489521] (-) TimerEvent: {}
+[16.590268] (-) TimerEvent: {}
+[16.691024] (-) TimerEvent: {}
+[16.791592] (-) TimerEvent: {}
+[16.892103] (-) TimerEvent: {}
+[16.910912] (cpp_pubsub) StdoutLine: {'line': b'[ 75%] \x1b[32m\x1b[1mLinking CXX executable talker\x1b[0m\n'}
+[16.992280] (-) TimerEvent: {}
+[17.092861] (-) TimerEvent: {}
+[17.193402] (-) TimerEvent: {}
+[17.293946] (-) TimerEvent: {}
+[17.394691] (-) TimerEvent: {}
+[17.495412] (-) TimerEvent: {}
+[17.596022] (-) TimerEvent: {}
+[17.696661] (-) TimerEvent: {}
+[17.797404] (-) TimerEvent: {}
+[17.898044] (-) TimerEvent: {}
+[17.998733] (-) TimerEvent: {}
+[18.099202] (-) TimerEvent: {}
+[18.199790] (-) TimerEvent: {}
+[18.300391] (-) TimerEvent: {}
+[18.400925] (-) TimerEvent: {}
+[18.501551] (-) TimerEvent: {}
+[18.602264] (-) TimerEvent: {}
+[18.670447] (cpp_pubsub) StdoutLine: {'line': b'[ 75%] Built target talker\n'}
+[18.702358] (-) TimerEvent: {}
+[18.802947] (-) TimerEvent: {}
+[18.903490] (-) TimerEvent: {}
+[19.004148] (-) TimerEvent: {}
+[19.104762] (-) TimerEvent: {}
+[19.205426] (-) TimerEvent: {}
+[19.306039] (-) TimerEvent: {}
+[19.406600] (-) TimerEvent: {}
+[19.507220] (-) TimerEvent: {}
+[19.607832] (-) TimerEvent: {}
+[19.773046] (-) TimerEvent: {}
+[19.873587] (-) TimerEvent: {}
+[19.974123] (-) TimerEvent: {}
+[20.074884] (-) TimerEvent: {}
+[20.175653] (-) TimerEvent: {}
+[20.276337] (-) TimerEvent: {}
+[20.376843] (-) TimerEvent: {}
+[20.477400] (-) TimerEvent: {}
+[20.578042] (-) TimerEvent: {}
+[20.678640] (-) TimerEvent: {}
+[20.779185] (-) TimerEvent: {}
+[20.879880] (-) TimerEvent: {}
+[20.980360] (-) TimerEvent: {}
+[21.080893] (-) TimerEvent: {}
+[21.181672] (-) TimerEvent: {}
+[21.282248] (-) TimerEvent: {}
+[21.382867] (-) TimerEvent: {}
+[21.483364] (-) TimerEvent: {}
+[21.583862] (-) TimerEvent: {}
+[21.684349] (-) TimerEvent: {}
+[21.784987] (-) TimerEvent: {}
+[21.885641] (-) TimerEvent: {}
+[21.986214] (-) TimerEvent: {}
+[22.086787] (-) TimerEvent: {}
+[22.187305] (-) TimerEvent: {}
+[22.287870] (-) TimerEvent: {}
+[22.388465] (-) TimerEvent: {}
+[22.489136] (-) TimerEvent: {}
+[22.589636] (-) TimerEvent: {}
+[22.690117] (-) TimerEvent: {}
+[22.790747] (-) TimerEvent: {}
+[22.891336] (-) TimerEvent: {}
+[22.991996] (-) TimerEvent: {}
+[23.092581] (-) TimerEvent: {}
+[23.193183] (-) TimerEvent: {}
+[23.293812] (-) TimerEvent: {}
+[23.394611] (-) TimerEvent: {}
+[23.495278] (-) TimerEvent: {}
+[23.596137] (-) TimerEvent: {}
+[23.696996] (-) TimerEvent: {}
+[23.797962] (-) TimerEvent: {}
+[23.898464] (-) TimerEvent: {}
+[23.999288] (-) TimerEvent: {}
+[24.099959] (-) TimerEvent: {}
+[24.200635] (-) TimerEvent: {}
+[24.301227] (-) TimerEvent: {}
+[24.401924] (-) TimerEvent: {}
+[24.502559] (-) TimerEvent: {}
+[24.603014] (-) TimerEvent: {}
+[24.642044] (cpp_pubsub) StdoutLine: {'line': b'[100%] \x1b[32m\x1b[1mLinking CXX executable listener\x1b[0m\n'}
+[24.703162] (-) TimerEvent: {}
+[24.803738] (-) TimerEvent: {}
+[24.904362] (-) TimerEvent: {}
+[25.004826] (-) TimerEvent: {}
+[25.105455] (-) TimerEvent: {}
+[25.206274] (-) TimerEvent: {}
+[25.306953] (-) TimerEvent: {}
+[25.383914] (cpp_pubsub) StdoutLine: {'line': b'[100%] Built target listener\n'}
+[25.407080] (-) TimerEvent: {}
+[25.472064] (cpp_pubsub) CommandEnded: {'returncode': 0}
+[25.474400] (cpp_pubsub) JobProgress: {'identifier': 'cpp_pubsub', 'progress': 'install'}
+[25.496185] (cpp_pubsub) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub'], 'cwd': '/home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub', 'env': OrderedDict({'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'adminfred', 'GZ_CONFIG_PATH': '/opt/ros/jazzy/opt/sdformat_vendor/share/gz', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/jazzy/opt/sdformat_vendor/lib:/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/x86_64-linux-gnu:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_tools_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/adminfred', 'OLDPWD': '/home/adminfred/ros2_ws/src/cpp_pubsub/src', 'ROS_PYTHON_VERSION': '3', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'WSL_DISTRO_NAME': 'Ubuntu-24.04', 'WAYLAND_DISPLAY': 'wayland-0', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'adminfred', 'NAME': 'DESKTOP-6V2ISKP', 'WSL_INTEROP': '/run/WSL/662_interop', 'PULSE_SERVER': 'unix:/mnt/wslg/PulseServer', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm-256color', 'PATH': '/opt/ros/jazzy/opt/gz_tools_vendor/bin:/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files (x86)/Common Files/Intel/Shared Libraries/redist/intel64/compiler:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/MATLAB/R2024b/runtime/win64:/mnt/c/Program Files/MATLAB/R2024b/bin:/mnt/c/Program Files/Git/cmd:/mnt/c/Users/Admin/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/Admin/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/Admin/AppData/Local/PowerToys/DSCModules/:/mnt/c/Users/Admin/AppData/Local/GitHubDesktop/bin:/snap/bin', 'XDG_RUNTIME_DIR': '/run/user/1000', 'DISPLAY': ':0', 'LANG': 'en_US.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'AMENT_PREFIX_PATH': '/opt/ros/jazzy', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'PWD': '/home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'WSL2_GUI_APPS_ENABLED': '1', 'HOSTTYPE': 'x86_64', 'CMAKE_PREFIX_PATH': '/opt/ros/jazzy/opt/sdformat_vendor:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_tools_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/opt/ros/jazzy', 'WSLENV': ''}), 'shell': False}
+[25.507280] (-) TimerEvent: {}
+[25.519516] (cpp_pubsub) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[25.521675] (cpp_pubsub) StdoutLine: {'line': b'-- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/lib/cpp_pubsub/talker\n'}
+[25.526614] (cpp_pubsub) StdoutLine: {'line': b'-- Set non-toolchain portion of runtime path of "/home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/lib/cpp_pubsub/talker" to ""\n'}
+[25.527460] (cpp_pubsub) StdoutLine: {'line': b'-- Up-to-date: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/lib/cpp_pubsub/talker\n'}
+[25.528213] (cpp_pubsub) StdoutLine: {'line': b'-- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/lib/cpp_pubsub/listener\n'}
+[25.538085] (cpp_pubsub) StdoutLine: {'line': b'-- Set non-toolchain portion of runtime path of "/home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/lib/cpp_pubsub/listener" to ""\n'}
+[25.542716] (cpp_pubsub) StdoutLine: {'line': b'-- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/ament_index/resource_index/package_run_dependencies/cpp_pubsub\n'}
+[25.544372] (cpp_pubsub) StdoutLine: {'line': b'-- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/ament_index/resource_index/parent_prefix_path/cpp_pubsub\n'}
+[25.547007] (cpp_pubsub) StdoutLine: {'line': b'-- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/cpp_pubsub/environment/ament_prefix_path.sh\n'}
+[25.547796] (cpp_pubsub) StdoutLine: {'line': b'-- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/cpp_pubsub/environment/ament_prefix_path.dsv\n'}
+[25.548562] (cpp_pubsub) StdoutLine: {'line': b'-- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/cpp_pubsub/environment/path.sh\n'}
+[25.549208] (cpp_pubsub) StdoutLine: {'line': b'-- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/cpp_pubsub/environment/path.dsv\n'}
+[25.550323] (cpp_pubsub) StdoutLine: {'line': b'-- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/cpp_pubsub/local_setup.bash\n'}
+[25.551029] (cpp_pubsub) StdoutLine: {'line': b'-- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/cpp_pubsub/local_setup.sh\n'}
+[25.551736] (cpp_pubsub) StdoutLine: {'line': b'-- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/cpp_pubsub/local_setup.zsh\n'}
+[25.552170] (cpp_pubsub) StdoutLine: {'line': b'-- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/cpp_pubsub/local_setup.dsv\n'}
+[25.552524] (cpp_pubsub) StdoutLine: {'line': b'-- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/cpp_pubsub/package.dsv\n'}
+[25.553198] (cpp_pubsub) StdoutLine: {'line': b'-- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/ament_index/resource_index/packages/cpp_pubsub\n'}
+[25.554591] (cpp_pubsub) StdoutLine: {'line': b'-- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/cpp_pubsub/cmake/cpp_pubsubConfig.cmake\n'}
+[25.555211] (cpp_pubsub) StdoutLine: {'line': b'-- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/cpp_pubsub/cmake/cpp_pubsubConfig-version.cmake\n'}
+[25.555759] (cpp_pubsub) StdoutLine: {'line': b'-- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/cpp_pubsub/package.xml\n'}
+[25.560389] (cpp_pubsub) CommandEnded: {'returncode': 0}
+[25.607412] (-) TimerEvent: {}
+[25.708063] (-) TimerEvent: {}
+[25.808640] (-) TimerEvent: {}
+[25.909167] (-) TimerEvent: {}
+[25.985725] (cpp_pubsub) JobEnded: {'identifier': 'cpp_pubsub', 'rc': 0}
+[25.989910] (-) EventReactorShutdown: {}

@@ -1,0 +1,72 @@
+[0.042s] Invoking command in '/home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake /home/adminfred/ros2_ws/src/cpp_pubsub -DCMAKE_INSTALL_PREFIX=/home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub
+[0.610s] -- The C compiler identification is GNU 13.3.0
+[1.459s] -- The CXX compiler identification is GNU 13.3.0
+[2.061s] -- Detecting C compiler ABI info
+[2.443s] -- Detecting C compiler ABI info - done
+[2.461s] -- Check for working C compiler: /usr/bin/cc - skipped
+[2.462s] -- Detecting C compile features
+[2.464s] -- Detecting C compile features - done
+[2.579s] -- Detecting CXX compiler ABI info
+[2.951s] -- Detecting CXX compiler ABI info - done
+[2.968s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[2.969s] -- Detecting CXX compile features
+[2.970s] -- Detecting CXX compile features - done
+[3.025s] -- Found ament_cmake: 2.5.6 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[3.318s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[3.612s] -- Found rclcpp: 28.1.18 (/opt/ros/jazzy/share/rclcpp/cmake)
+[3.967s] -- Found rosidl_generator_c: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[4.096s] -- Found rosidl_generator_cpp: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[4.182s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[4.239s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[4.481s] -- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+[4.496s] -- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+[4.719s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.13")  
+[4.944s] -- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") 
+[5.084s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[5.431s] -- Found std_msgs: 5.3.7 (/opt/ros/jazzy/share/std_msgs/cmake)
+[5.479s] -- Found ament_lint_auto: 0.17.5 (/opt/ros/jazzy/share/ament_lint_auto/cmake)
+[5.710s] -- Added test 'cppcheck' to perform static code analysis on C / C++ code
+[5.711s] -- Configured cppcheck include dirs: 
+[5.711s] -- Configured cppcheck exclude dirs and/or files: 
+[5.715s] -- Added test 'flake8' to check Python code syntax and style conventions
+[5.715s] -- Configured 'flake8' exclude dirs and/or files: 
+[5.719s] -- Added test 'lint_cmake' to check CMake code style
+[5.723s] -- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257
+[5.735s] -- Added test 'uncrustify' to check C / C++ code style
+[5.735s] -- Configured uncrustify additional arguments: 
+[5.739s] -- Added test 'xmllint' to check XML markup files
+[5.746s] -- Configuring done (5.6s)
+[5.789s] -- Generating done (0.0s)
+[5.802s] -- Build files have been written to: /home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub
+[5.821s] Invoked command in '/home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake /home/adminfred/ros2_ws/src/cpp_pubsub -DCMAKE_INSTALL_PREFIX=/home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub
+[5.826s] Invoking command in '/home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --build /home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub -- -j8 -l8
+[5.923s] [ 25%] [32mBuilding CXX object CMakeFiles/listener.dir/src/subscriber_lambda_function.cpp.o[0m
+[5.924s] [ 50%] [32mBuilding CXX object CMakeFiles/talker.dir/src/publisher_lambda_function.cpp.o[0m
+[16.909s] [ 75%] [32m[1mLinking CXX executable talker[0m
+[18.669s] [ 75%] Built target talker
+[24.641s] [100%] [32m[1mLinking CXX executable listener[0m
+[25.382s] [100%] Built target listener
+[25.470s] Invoked command in '/home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --build /home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub -- -j8 -l8
+[25.495s] Invoking command in '/home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --install /home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub
+[25.518s] -- Install configuration: ""
+[25.520s] -- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/lib/cpp_pubsub/talker
+[25.525s] -- Set non-toolchain portion of runtime path of "/home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/lib/cpp_pubsub/talker" to ""
+[25.526s] -- Up-to-date: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/lib/cpp_pubsub/talker
+[25.526s] -- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/lib/cpp_pubsub/listener
+[25.536s] -- Set non-toolchain portion of runtime path of "/home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/lib/cpp_pubsub/listener" to ""
+[25.541s] -- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/ament_index/resource_index/package_run_dependencies/cpp_pubsub
+[25.542s] -- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/ament_index/resource_index/parent_prefix_path/cpp_pubsub
+[25.545s] -- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/cpp_pubsub/environment/ament_prefix_path.sh
+[25.546s] -- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/cpp_pubsub/environment/ament_prefix_path.dsv
+[25.547s] -- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/cpp_pubsub/environment/path.sh
+[25.548s] -- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/cpp_pubsub/environment/path.dsv
+[25.549s] -- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/cpp_pubsub/local_setup.bash
+[25.549s] -- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/cpp_pubsub/local_setup.sh
+[25.550s] -- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/cpp_pubsub/local_setup.zsh
+[25.550s] -- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/cpp_pubsub/local_setup.dsv
+[25.551s] -- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/cpp_pubsub/package.dsv
+[25.551s] -- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/ament_index/resource_index/packages/cpp_pubsub
+[25.553s] -- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/cpp_pubsub/cmake/cpp_pubsubConfig.cmake
+[25.553s] -- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/cpp_pubsub/cmake/cpp_pubsubConfig-version.cmake
+[25.554s] -- Installing: /home/adminfred/ros2_ws/src/cpp_pubsub/install/cpp_pubsub/share/cpp_pubsub/package.xml
+[25.560s] Invoked command in '/home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy /usr/bin/cmake --install /home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub

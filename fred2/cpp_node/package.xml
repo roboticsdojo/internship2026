@@ -3,7 +3,7 @@
 <package format="3">
   <name>cpp_pubsub</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>TODO: cpp_publisher_and_subscriber</description>
   <maintainer email="wanjerifredrick@gmail.com">adminfred</maintainer>
   <license>Apache-2.0</license>
 
