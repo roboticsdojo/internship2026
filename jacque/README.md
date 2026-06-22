@@ -2,7 +2,7 @@
 
 This project contains:
 - A ROS 2 Python node (`my_py_node`)
-- A ROS 2 C++ package (`rplidar_ros`)
+- A ROS 2 C++ package (`my_cpp_node`)
 - Workspace built using `colcon`
 
 ---
