@@ -1,0 +1,11 @@
+/home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub/CMakeFiles/uninstall.dir
+/home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub/CMakeFiles/cpp_pubsub_uninstall.dir
+/home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub/CMakeFiles/talker.dir
+/home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub/CMakeFiles/listener.dir
+/home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub/CMakeFiles/test.dir
+/home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub/CMakeFiles/edit_cache.dir
+/home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub/CMakeFiles/rebuild_cache.dir
+/home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub/CMakeFiles/list_install_components.dir
+/home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub/CMakeFiles/install.dir
+/home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub/CMakeFiles/install/local.dir
+/home/adminfred/ros2_ws/src/cpp_pubsub/build/cpp_pubsub/CMakeFiles/install/strip.dir
