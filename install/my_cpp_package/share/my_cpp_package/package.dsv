@@ -1,0 +1,6 @@
+source;share/my_cpp_package/hook/cmake_prefix_path.dsv
+source;share/my_cpp_package/hook/cmake_prefix_path.sh
+source;share/my_cpp_package/local_setup.bash
+source;share/my_cpp_package/local_setup.dsv
+source;share/my_cpp_package/local_setup.sh
+source;share/my_cpp_package/local_setup.zsh

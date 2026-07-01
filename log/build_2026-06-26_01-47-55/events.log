@@ -1,0 +1,209 @@
+[0.000000] (-) TimerEvent: {}
+[0.001174] (my_cpp_package) JobQueued: {'identifier': 'my_cpp_package', 'dependencies': OrderedDict()}
+[0.001791] (my_cpp_package) JobStarted: {'identifier': 'my_cpp_package'}
+[0.030386] (my_cpp_package) JobProgress: {'identifier': 'my_cpp_package', 'progress': 'cmake'}
+[0.035331] (my_cpp_package) Command: {'cmd': ['/usr/bin/cmake', '/home/uchiha/ros2_ws/src/internship2026/emmanuelmumo', '-DCMAKE_INSTALL_PREFIX=/home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package'], 'cwd': '/home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package', 'env': OrderedDict({'PYTHON_BASIC_REPL': '1', 'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'uchiha', 'GIT_ASKPASS': '/home/uchiha/.vscode-server/bin/6928394f91b684055b873eecb8bc281365131f1c/extensions/git/dist/askpass.sh', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/x86_64-linux-gnu:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/uchiha', 'TERM_PROGRAM_VERSION': '1.124.2', 'VSCODE_IPC_HOOK_CLI': '/run/user/1000/vscode-ipc-71b5e158-f856-44df-9a64-dbca88b723b6.sock', 'ROS_PYTHON_VERSION': '3', 'VSCODE_GIT_ASKPASS_MAIN': '/home/uchiha/.vscode-server/bin/6928394f91b684055b873eecb8bc281365131f1c/extensions/git/dist/askpass-main.js', 'VSCODE_GIT_ASKPASS_NODE': '/home/uchiha/.vscode-server/bin/6928394f91b684055b873eecb8bc281365131f1c/node', 'PYDEVD_DISABLE_FILE_VALIDATION': '1', 'BUNDLED_DEBUGPY_PATH': '/home/uchiha/.vscode-server/extensions/ms-python.debugpy-2026.6.0-linux-x64/bundled/libs/debugpy', 'VSCODE_PYTHON_AUTOACTIVATE_GUARD': '1', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'WSL_DISTRO_NAME': 'Ubuntu-24.04', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/uchiha/ros2_ws/install', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'uchiha', 'NAME': 'Noctis', 'WSL_INTEROP': '/run/WSL/445_interop', 'PULSE_SERVER': 'unix:/mnt/wslg/PulseServer', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm-256color', 'PATH': '/home/uchiha/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/home/uchiha/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/home/uchiha/.vscode-server/bin/6928394f91b684055b873eecb8bc281365131f1c/bin/remote-cli:/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/:/mnt/c/Windows/System32/OpenSSH/:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/nodejs/:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/GitHub CLI/:/mnt/c/Program Files/usbipd-win/:/mnt/c/Users/uchiha/AppData/Local/Programs/Python/Python311/Scripts/:/mnt/c/Users/uchiha/AppData/Local/Programs/Python/Python311/:/mnt/c/Users/uchiha/.local/bin:/mnt/c/Users/uchiha/AppData/Local/Programs/Python/Python314/Scripts/:/mnt/c/Users/uchiha/AppData/Local/Programs/Python/Python314/:/mnt/c/Users/uchiha/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/uchiha/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/uchiha/AppData/Roaming/npm:/snap/bin:/home/uchiha/.vscode-server/extensions/ms-python.debugpy-2026.6.0-linux-x64/bundled/scripts/noConfigScripts', 'XDG_RUNTIME_DIR': '/run/user/1000/', 'DISPLAY': ':0', 'VSCODE_DEBUGPY_ADAPTER_ENDPOINTS': '/home/uchiha/.vscode-server/extensions/ms-python.debugpy-2026.6.0-linux-x64/.noConfigDebugAdapterEndpoints/endpoint-11e25fd6ab0859fb.txt', 'LANG': 'en_US.UTF-8', 'PYTHONSTARTUP': '/home/uchiha/.vscode-server/data/User/workspaceStorage/a6c7a3854401d7e8b6610479087e6f92/ms-python.python/pythonrc.py', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-69aa63e247.sock', 'TERM_PROGRAM': 'vscode', 'AMENT_PREFIX_PATH': '/home/uchiha/ros2_ws/install/sllidar_ros2:/home/uchiha/ros2_ws/install/my_robot_package:/home/uchiha/ros2_ws/install/my_cpp_package:/opt/ros/jazzy', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'PWD': '/home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package', 'COPILOT_DEBUG_NONCE': '56480a710e775303f6810ad99946c656', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/uchiha/ros2_ws/install/my_robot_package/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'WSL2_GUI_APPS_ENABLED': '1', 'HOSTTYPE': 'x86_64', 'CMAKE_PREFIX_PATH': '/home/uchiha/ros2_ws/install/sllidar_ros2:/home/uchiha/ros2_ws/install/my_cpp_package:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/home/uchiha/ros2_ws/install/my_robot_package:/opt/ros/jazzy', 'WSLENV': 'VSCODE_WSL_EXT_LOCATION/up'}), 'shell': False}
+[0.099594] (-) TimerEvent: {}
+[0.199956] (-) TimerEvent: {}
+[0.300357] (-) TimerEvent: {}
+[0.320688] (my_cpp_package) StdoutLine: {'line': b'-- The C compiler identification is GNU 13.3.0\n'}
+[0.400535] (-) TimerEvent: {}
+[0.500962] (-) TimerEvent: {}
+[0.601332] (-) TimerEvent: {}
+[0.701827] (-) TimerEvent: {}
+[0.802214] (-) TimerEvent: {}
+[0.902582] (-) TimerEvent: {}
+[0.915042] (my_cpp_package) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 13.3.0\n'}
+[1.002704] (-) TimerEvent: {}
+[1.103011] (-) TimerEvent: {}
+[1.203419] (-) TimerEvent: {}
+[1.303779] (-) TimerEvent: {}
+[1.313221] (my_cpp_package) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[1.403944] (-) TimerEvent: {}
+[1.504338] (-) TimerEvent: {}
+[1.584180] (my_cpp_package) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[1.594561] (my_cpp_package) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc - skipped\n'}
+[1.595415] (my_cpp_package) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[1.596294] (my_cpp_package) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[1.604451] (-) TimerEvent: {}
+[1.672778] (my_cpp_package) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[1.704610] (-) TimerEvent: {}
+[1.805022] (-) TimerEvent: {}
+[1.905503] (-) TimerEvent: {}
+[1.934956] (my_cpp_package) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[1.946685] (my_cpp_package) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ - skipped\n'}
+[1.947143] (my_cpp_package) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[1.947672] (my_cpp_package) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[1.962844] (my_cpp_package) StdoutLine: {'line': b'-- Found ament_cmake: 2.5.6 (/opt/ros/jazzy/share/ament_cmake/cmake)\n'}
+[2.005605] (-) TimerEvent: {}
+[2.105963] (-) TimerEvent: {}
+[2.175563] (my_cpp_package) StdoutLine: {'line': b'-- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter \n'}
+[2.206074] (-) TimerEvent: {}
+[2.306400] (-) TimerEvent: {}
+[2.368189] (my_cpp_package) StdoutLine: {'line': b'-- Found rclcpp: 28.1.18 (/opt/ros/jazzy/share/rclcpp/cmake)\n'}
+[2.406529] (-) TimerEvent: {}
+[2.507015] (-) TimerEvent: {}
+[2.548972] (my_cpp_package) StdoutLine: {'line': b'-- Found rosidl_generator_c: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)\n'}
+[2.574307] (my_cpp_package) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)\n'}
+[2.607100] (-) TimerEvent: {}
+[2.608066] (my_cpp_package) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[2.646118] (my_cpp_package) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[2.707208] (-) TimerEvent: {}
+[2.798121] (my_cpp_package) StdoutLine: {'line': b'-- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)\n'}
+[2.805033] (my_cpp_package) StdoutLine: {'line': b'-- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)\n'}
+[2.807293] (-) TimerEvent: {}
+[2.907611] (-) TimerEvent: {}
+[2.945480] (my_cpp_package) StdoutLine: {'line': b'-- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.13")  \n'}
+[3.007733] (-) TimerEvent: {}
+[3.082320] (my_cpp_package) StdoutLine: {'line': b'-- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") \n'}
+[3.107853] (-) TimerEvent: {}
+[3.162757] (my_cpp_package) StdoutLine: {'line': b"-- Using RMW implementation 'rmw_fastrtps_cpp' as default\n"}
+[3.207997] (-) TimerEvent: {}
+[3.308382] (-) TimerEvent: {}
+[3.361745] (my_cpp_package) StdoutLine: {'line': b'-- Found std_msgs: 5.3.7 (/opt/ros/jazzy/share/std_msgs/cmake)\n'}
+[3.389464] (my_cpp_package) StdoutLine: {'line': b'-- Found ament_lint_auto: 0.17.5 (/opt/ros/jazzy/share/ament_lint_auto/cmake)\n'}
+[3.408517] (-) TimerEvent: {}
+[3.508974] (-) TimerEvent: {}
+[3.554226] (my_cpp_package) StdoutLine: {'line': b"-- Added test 'cppcheck' to perform static code analysis on C / C++ code\n"}
+[3.554497] (my_cpp_package) StdoutLine: {'line': b'-- Configured cppcheck include dirs: \n'}
+[3.554589] (my_cpp_package) StdoutLine: {'line': b'-- Configured cppcheck exclude dirs and/or files: \n'}
+[3.556969] (my_cpp_package) StdoutLine: {'line': b"-- Added test 'lint_cmake' to check CMake code style\n"}
+[3.559770] (my_cpp_package) StdoutLine: {'line': b"-- Added test 'uncrustify' to check C / C++ code style\n"}
+[3.559986] (my_cpp_package) StdoutLine: {'line': b'-- Configured uncrustify additional arguments: \n'}
+[3.562148] (my_cpp_package) StdoutLine: {'line': b"-- Added test 'xmllint' to check XML markup files\n"}
+[3.566309] (my_cpp_package) StdoutLine: {'line': b'-- Configuring done (3.5s)\n'}
+[3.585944] (my_cpp_package) StdoutLine: {'line': b'-- Generating done (0.0s)\n'}
+[3.593200] (my_cpp_package) StdoutLine: {'line': b'-- Build files have been written to: /home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package\n'}
+[3.603047] (my_cpp_package) CommandEnded: {'returncode': 0}
+[3.603898] (my_cpp_package) JobProgress: {'identifier': 'my_cpp_package', 'progress': 'build'}
+[3.605029] (my_cpp_package) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package', '--', '-j8', '-l8'], 'cwd': '/home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package', 'env': OrderedDict({'PYTHON_BASIC_REPL': '1', 'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'uchiha', 'GIT_ASKPASS': '/home/uchiha/.vscode-server/bin/6928394f91b684055b873eecb8bc281365131f1c/extensions/git/dist/askpass.sh', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/x86_64-linux-gnu:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/uchiha', 'TERM_PROGRAM_VERSION': '1.124.2', 'VSCODE_IPC_HOOK_CLI': '/run/user/1000/vscode-ipc-71b5e158-f856-44df-9a64-dbca88b723b6.sock', 'ROS_PYTHON_VERSION': '3', 'VSCODE_GIT_ASKPASS_MAIN': '/home/uchiha/.vscode-server/bin/6928394f91b684055b873eecb8bc281365131f1c/extensions/git/dist/askpass-main.js', 'VSCODE_GIT_ASKPASS_NODE': '/home/uchiha/.vscode-server/bin/6928394f91b684055b873eecb8bc281365131f1c/node', 'PYDEVD_DISABLE_FILE_VALIDATION': '1', 'BUNDLED_DEBUGPY_PATH': '/home/uchiha/.vscode-server/extensions/ms-python.debugpy-2026.6.0-linux-x64/bundled/libs/debugpy', 'VSCODE_PYTHON_AUTOACTIVATE_GUARD': '1', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'WSL_DISTRO_NAME': 'Ubuntu-24.04', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/uchiha/ros2_ws/install', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'uchiha', 'NAME': 'Noctis', 'WSL_INTEROP': '/run/WSL/445_interop', 'PULSE_SERVER': 'unix:/mnt/wslg/PulseServer', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm-256color', 'PATH': '/home/uchiha/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/home/uchiha/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/home/uchiha/.vscode-server/bin/6928394f91b684055b873eecb8bc281365131f1c/bin/remote-cli:/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/:/mnt/c/Windows/System32/OpenSSH/:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/nodejs/:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/GitHub CLI/:/mnt/c/Program Files/usbipd-win/:/mnt/c/Users/uchiha/AppData/Local/Programs/Python/Python311/Scripts/:/mnt/c/Users/uchiha/AppData/Local/Programs/Python/Python311/:/mnt/c/Users/uchiha/.local/bin:/mnt/c/Users/uchiha/AppData/Local/Programs/Python/Python314/Scripts/:/mnt/c/Users/uchiha/AppData/Local/Programs/Python/Python314/:/mnt/c/Users/uchiha/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/uchiha/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/uchiha/AppData/Roaming/npm:/snap/bin:/home/uchiha/.vscode-server/extensions/ms-python.debugpy-2026.6.0-linux-x64/bundled/scripts/noConfigScripts', 'XDG_RUNTIME_DIR': '/run/user/1000/', 'DISPLAY': ':0', 'VSCODE_DEBUGPY_ADAPTER_ENDPOINTS': '/home/uchiha/.vscode-server/extensions/ms-python.debugpy-2026.6.0-linux-x64/.noConfigDebugAdapterEndpoints/endpoint-11e25fd6ab0859fb.txt', 'LANG': 'en_US.UTF-8', 'PYTHONSTARTUP': '/home/uchiha/.vscode-server/data/User/workspaceStorage/a6c7a3854401d7e8b6610479087e6f92/ms-python.python/pythonrc.py', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-69aa63e247.sock', 'TERM_PROGRAM': 'vscode', 'AMENT_PREFIX_PATH': '/home/uchiha/ros2_ws/install/sllidar_ros2:/home/uchiha/ros2_ws/install/my_robot_package:/home/uchiha/ros2_ws/install/my_cpp_package:/opt/ros/jazzy', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'PWD': '/home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package', 'COPILOT_DEBUG_NONCE': '56480a710e775303f6810ad99946c656', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/uchiha/ros2_ws/install/my_robot_package/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'WSL2_GUI_APPS_ENABLED': '1', 'HOSTTYPE': 'x86_64', 'CMAKE_PREFIX_PATH': '/home/uchiha/ros2_ws/install/sllidar_ros2:/home/uchiha/ros2_ws/install/my_cpp_package:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/home/uchiha/ros2_ws/install/my_robot_package:/opt/ros/jazzy', 'WSLENV': 'VSCODE_WSL_EXT_LOCATION/up'}), 'shell': False}
+[3.609105] (-) TimerEvent: {}
+[3.672406] (my_cpp_package) StdoutLine: {'line': b'[ 50%] \x1b[32mBuilding CXX object CMakeFiles/my_first_node.dir/src/my_first_node.cpp.o\x1b[0m\n'}
+[3.709220] (-) TimerEvent: {}
+[3.809586] (-) TimerEvent: {}
+[3.909964] (-) TimerEvent: {}
+[4.010315] (-) TimerEvent: {}
+[4.110789] (-) TimerEvent: {}
+[4.211257] (-) TimerEvent: {}
+[4.311610] (-) TimerEvent: {}
+[4.411970] (-) TimerEvent: {}
+[4.512321] (-) TimerEvent: {}
+[4.612741] (-) TimerEvent: {}
+[4.713134] (-) TimerEvent: {}
+[4.813504] (-) TimerEvent: {}
+[4.913800] (-) TimerEvent: {}
+[5.014151] (-) TimerEvent: {}
+[5.114504] (-) TimerEvent: {}
+[5.214857] (-) TimerEvent: {}
+[5.315206] (-) TimerEvent: {}
+[5.415553] (-) TimerEvent: {}
+[5.515949] (-) TimerEvent: {}
+[5.616426] (-) TimerEvent: {}
+[5.716821] (-) TimerEvent: {}
+[5.817254] (-) TimerEvent: {}
+[5.917690] (-) TimerEvent: {}
+[6.018115] (-) TimerEvent: {}
+[6.118550] (-) TimerEvent: {}
+[6.218971] (-) TimerEvent: {}
+[6.319522] (-) TimerEvent: {}
+[6.419972] (-) TimerEvent: {}
+[6.520681] (-) TimerEvent: {}
+[6.621239] (-) TimerEvent: {}
+[6.721672] (-) TimerEvent: {}
+[6.822104] (-) TimerEvent: {}
+[6.922530] (-) TimerEvent: {}
+[7.022937] (-) TimerEvent: {}
+[7.123360] (-) TimerEvent: {}
+[7.223838] (-) TimerEvent: {}
+[7.324307] (-) TimerEvent: {}
+[7.424797] (-) TimerEvent: {}
+[7.525286] (-) TimerEvent: {}
+[7.625718] (-) TimerEvent: {}
+[7.726137] (-) TimerEvent: {}
+[7.826509] (-) TimerEvent: {}
+[7.926912] (-) TimerEvent: {}
+[8.027345] (-) TimerEvent: {}
+[8.127775] (-) TimerEvent: {}
+[8.228141] (-) TimerEvent: {}
+[8.328469] (-) TimerEvent: {}
+[8.428872] (-) TimerEvent: {}
+[8.529238] (-) TimerEvent: {}
+[8.629708] (-) TimerEvent: {}
+[8.730051] (-) TimerEvent: {}
+[8.830384] (-) TimerEvent: {}
+[8.930709] (-) TimerEvent: {}
+[9.031065] (-) TimerEvent: {}
+[9.131370] (-) TimerEvent: {}
+[9.231696] (-) TimerEvent: {}
+[9.332004] (-) TimerEvent: {}
+[9.432294] (-) TimerEvent: {}
+[9.532749] (-) TimerEvent: {}
+[9.633117] (-) TimerEvent: {}
+[9.733480] (-) TimerEvent: {}
+[9.833865] (-) TimerEvent: {}
+[9.934241] (-) TimerEvent: {}
+[10.034611] (-) TimerEvent: {}
+[10.134963] (-) TimerEvent: {}
+[10.235364] (-) TimerEvent: {}
+[10.335718] (-) TimerEvent: {}
+[10.436108] (-) TimerEvent: {}
+[10.536533] (-) TimerEvent: {}
+[10.636873] (-) TimerEvent: {}
+[10.737219] (-) TimerEvent: {}
+[10.837562] (-) TimerEvent: {}
+[10.937909] (-) TimerEvent: {}
+[11.038258] (-) TimerEvent: {}
+[11.138639] (-) TimerEvent: {}
+[11.239008] (-) TimerEvent: {}
+[11.339409] (-) TimerEvent: {}
+[11.439768] (-) TimerEvent: {}
+[11.540130] (-) TimerEvent: {}
+[11.640537] (-) TimerEvent: {}
+[11.740885] (-) TimerEvent: {}
+[11.841226] (-) TimerEvent: {}
+[11.941571] (-) TimerEvent: {}
+[12.041908] (-) TimerEvent: {}
+[12.142210] (-) TimerEvent: {}
+[12.242511] (-) TimerEvent: {}
+[12.342895] (-) TimerEvent: {}
+[12.443212] (-) TimerEvent: {}
+[12.543506] (-) TimerEvent: {}
+[12.643833] (-) TimerEvent: {}
+[12.744129] (-) TimerEvent: {}
+[12.844458] (-) TimerEvent: {}
+[12.944908] (-) TimerEvent: {}
+[13.045237] (-) TimerEvent: {}
+[13.145617] (-) TimerEvent: {}
+[13.246004] (-) TimerEvent: {}
+[13.269684] (my_cpp_package) StdoutLine: {'line': b'[100%] \x1b[32m\x1b[1mLinking CXX executable my_first_node\x1b[0m\n'}
+[13.346154] (-) TimerEvent: {}
+[13.446564] (-) TimerEvent: {}
+[13.547057] (-) TimerEvent: {}
+[13.647436] (-) TimerEvent: {}
+[13.747793] (-) TimerEvent: {}
+[13.764819] (my_cpp_package) StdoutLine: {'line': b'[100%] Built target my_first_node\n'}
+[13.781115] (my_cpp_package) CommandEnded: {'returncode': 0}
+[13.782513] (my_cpp_package) JobProgress: {'identifier': 'my_cpp_package', 'progress': 'install'}
+[13.794588] (my_cpp_package) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package'], 'cwd': '/home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package', 'env': OrderedDict({'PYTHON_BASIC_REPL': '1', 'LESSOPEN': '| /usr/bin/lesspipe %s', 'USER': 'uchiha', 'GIT_ASKPASS': '/home/uchiha/.vscode-server/bin/6928394f91b684055b873eecb8bc281365131f1c/extensions/git/dist/askpass.sh', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/jazzy/opt/rviz_ogre_vendor/lib:/opt/ros/jazzy/lib/x86_64-linux-gnu:/opt/ros/jazzy/opt/gz_math_vendor/lib:/opt/ros/jazzy/opt/gz_utils_vendor/lib:/opt/ros/jazzy/opt/gz_cmake_vendor/lib:/opt/ros/jazzy/lib', 'HOME': '/home/uchiha', 'TERM_PROGRAM_VERSION': '1.124.2', 'VSCODE_IPC_HOOK_CLI': '/run/user/1000/vscode-ipc-71b5e158-f856-44df-9a64-dbca88b723b6.sock', 'ROS_PYTHON_VERSION': '3', 'VSCODE_GIT_ASKPASS_MAIN': '/home/uchiha/.vscode-server/bin/6928394f91b684055b873eecb8bc281365131f1c/extensions/git/dist/askpass-main.js', 'VSCODE_GIT_ASKPASS_NODE': '/home/uchiha/.vscode-server/bin/6928394f91b684055b873eecb8bc281365131f1c/node', 'PYDEVD_DISABLE_FILE_VALIDATION': '1', 'BUNDLED_DEBUGPY_PATH': '/home/uchiha/.vscode-server/extensions/ms-python.debugpy-2026.6.0-linux-x64/bundled/libs/debugpy', 'VSCODE_PYTHON_AUTOACTIVATE_GUARD': '1', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'WSL_DISTRO_NAME': 'Ubuntu-24.04', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/uchiha/ros2_ws/install', 'ROS_DISTRO': 'jazzy', 'LOGNAME': 'uchiha', 'NAME': 'Noctis', 'WSL_INTEROP': '/run/WSL/445_interop', 'PULSE_SERVER': 'unix:/mnt/wslg/PulseServer', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm-256color', 'PATH': '/home/uchiha/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/home/uchiha/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/home/uchiha/.vscode-server/bin/6928394f91b684055b873eecb8bc281365131f1c/bin/remote-cli:/opt/ros/jazzy/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/:/mnt/c/Windows/System32/OpenSSH/:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/nodejs/:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/GitHub CLI/:/mnt/c/Program Files/usbipd-win/:/mnt/c/Users/uchiha/AppData/Local/Programs/Python/Python311/Scripts/:/mnt/c/Users/uchiha/AppData/Local/Programs/Python/Python311/:/mnt/c/Users/uchiha/.local/bin:/mnt/c/Users/uchiha/AppData/Local/Programs/Python/Python314/Scripts/:/mnt/c/Users/uchiha/AppData/Local/Programs/Python/Python314/:/mnt/c/Users/uchiha/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/uchiha/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/uchiha/AppData/Roaming/npm:/snap/bin:/home/uchiha/.vscode-server/extensions/ms-python.debugpy-2026.6.0-linux-x64/bundled/scripts/noConfigScripts', 'XDG_RUNTIME_DIR': '/run/user/1000/', 'DISPLAY': ':0', 'VSCODE_DEBUGPY_ADAPTER_ENDPOINTS': '/home/uchiha/.vscode-server/extensions/ms-python.debugpy-2026.6.0-linux-x64/.noConfigDebugAdapterEndpoints/endpoint-11e25fd6ab0859fb.txt', 'LANG': 'en_US.UTF-8', 'PYTHONSTARTUP': '/home/uchiha/.vscode-server/data/User/workspaceStorage/a6c7a3854401d7e8b6610479087e6f92/ms-python.python/pythonrc.py', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.crdownload=00;90:*.dpkg-dist=00;90:*.dpkg-new=00;90:*.dpkg-old=00;90:*.dpkg-tmp=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:*.swp=00;90:*.tmp=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-69aa63e247.sock', 'TERM_PROGRAM': 'vscode', 'AMENT_PREFIX_PATH': '/home/uchiha/ros2_ws/install/sllidar_ros2:/home/uchiha/ros2_ws/install/my_robot_package:/home/uchiha/ros2_ws/install/my_cpp_package:/opt/ros/jazzy', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'PWD': '/home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package', 'COPILOT_DEBUG_NONCE': '56480a710e775303f6810ad99946c656', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/uchiha/ros2_ws/install/my_robot_package/lib/python3.12/site-packages:/opt/ros/jazzy/lib/python3.12/site-packages', 'COLCON': '1', 'WSL2_GUI_APPS_ENABLED': '1', 'HOSTTYPE': 'x86_64', 'CMAKE_PREFIX_PATH': '/home/uchiha/ros2_ws/install/sllidar_ros2:/home/uchiha/ros2_ws/install/my_cpp_package:/opt/ros/jazzy/opt/gz_math_vendor:/opt/ros/jazzy/opt/gz_utils_vendor:/opt/ros/jazzy/opt/gz_cmake_vendor:/home/uchiha/ros2_ws/install/my_robot_package:/opt/ros/jazzy', 'WSLENV': 'VSCODE_WSL_EXT_LOCATION/up'}), 'shell': False}
+[13.805776] (my_cpp_package) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[13.807273] (my_cpp_package) StdoutLine: {'line': b'-- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/lib/my_cpp_package/my_first_node\n'}
+[13.814130] (my_cpp_package) StdoutLine: {'line': b'-- Set non-toolchain portion of runtime path of "/home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/lib/my_cpp_package/my_first_node" to ""\n'}
+[13.815911] (my_cpp_package) StdoutLine: {'line': b'-- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/ament_index/resource_index/package_run_dependencies/my_cpp_package\n'}
+[13.816666] (my_cpp_package) StdoutLine: {'line': b'-- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/ament_index/resource_index/parent_prefix_path/my_cpp_package\n'}
+[13.817902] (my_cpp_package) StdoutLine: {'line': b'-- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/environment/ament_prefix_path.sh\n'}
+[13.818353] (my_cpp_package) StdoutLine: {'line': b'-- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/environment/ament_prefix_path.dsv\n'}
+[13.818782] (my_cpp_package) StdoutLine: {'line': b'-- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/environment/path.sh\n'}
+[13.819178] (my_cpp_package) StdoutLine: {'line': b'-- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/environment/path.dsv\n'}
+[13.819597] (my_cpp_package) StdoutLine: {'line': b'-- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/local_setup.bash\n'}
+[13.820150] (my_cpp_package) StdoutLine: {'line': b'-- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/local_setup.sh\n'}
+[13.820259] (my_cpp_package) StdoutLine: {'line': b'-- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/local_setup.zsh\n'}
+[13.820505] (my_cpp_package) StdoutLine: {'line': b'-- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/local_setup.dsv\n'}
+[13.820780] (my_cpp_package) StdoutLine: {'line': b'-- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/package.dsv\n'}
+[13.821229] (my_cpp_package) StdoutLine: {'line': b'-- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/ament_index/resource_index/packages/my_cpp_package\n'}
+[13.821888] (my_cpp_package) StdoutLine: {'line': b'-- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/cmake/my_cpp_packageConfig.cmake\n'}
+[13.822250] (my_cpp_package) StdoutLine: {'line': b'-- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/cmake/my_cpp_packageConfig-version.cmake\n'}
+[13.822655] (my_cpp_package) StdoutLine: {'line': b'-- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/package.xml\n'}
+[13.825202] (my_cpp_package) CommandEnded: {'returncode': 0}
+[13.848054] (-) TimerEvent: {}
+[13.852774] (my_cpp_package) JobEnded: {'identifier': 'my_cpp_package', 'rc': 0}
+[13.855510] (-) EventReactorShutdown: {}

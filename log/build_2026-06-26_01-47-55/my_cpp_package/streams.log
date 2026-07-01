@@ -1,0 +1,63 @@
+[0.040s] Invoking command in '/home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/uchiha/ros2_ws/install/my_robot_package:/opt/ros/jazzy /usr/bin/cmake /home/uchiha/ros2_ws/src/internship2026/emmanuelmumo -DCMAKE_INSTALL_PREFIX=/home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package
+[0.319s] -- The C compiler identification is GNU 13.3.0
+[0.913s] -- The CXX compiler identification is GNU 13.3.0
+[1.312s] -- Detecting C compiler ABI info
+[1.583s] -- Detecting C compiler ABI info - done
+[1.593s] -- Check for working C compiler: /usr/bin/cc - skipped
+[1.594s] -- Detecting C compile features
+[1.595s] -- Detecting C compile features - done
+[1.671s] -- Detecting CXX compiler ABI info
+[1.933s] -- Detecting CXX compiler ABI info - done
+[1.945s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[1.946s] -- Detecting CXX compile features
+[1.946s] -- Detecting CXX compile features - done
+[1.961s] -- Found ament_cmake: 2.5.6 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[2.174s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[2.367s] -- Found rclcpp: 28.1.18 (/opt/ros/jazzy/share/rclcpp/cmake)
+[2.547s] -- Found rosidl_generator_c: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[2.573s] -- Found rosidl_generator_cpp: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[2.606s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[2.644s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[2.796s] -- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+[2.803s] -- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+[2.944s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.13")  
+[3.081s] -- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") 
+[3.161s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[3.360s] -- Found std_msgs: 5.3.7 (/opt/ros/jazzy/share/std_msgs/cmake)
+[3.388s] -- Found ament_lint_auto: 0.17.5 (/opt/ros/jazzy/share/ament_lint_auto/cmake)
+[3.553s] -- Added test 'cppcheck' to perform static code analysis on C / C++ code
+[3.553s] -- Configured cppcheck include dirs: 
+[3.553s] -- Configured cppcheck exclude dirs and/or files: 
+[3.555s] -- Added test 'lint_cmake' to check CMake code style
+[3.558s] -- Added test 'uncrustify' to check C / C++ code style
+[3.558s] -- Configured uncrustify additional arguments: 
+[3.561s] -- Added test 'xmllint' to check XML markup files
+[3.565s] -- Configuring done (3.5s)
+[3.584s] -- Generating done (0.0s)
+[3.592s] -- Build files have been written to: /home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package
+[3.602s] Invoked command in '/home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/uchiha/ros2_ws/install/my_robot_package:/opt/ros/jazzy /usr/bin/cmake /home/uchiha/ros2_ws/src/internship2026/emmanuelmumo -DCMAKE_INSTALL_PREFIX=/home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package
+[3.604s] Invoking command in '/home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/uchiha/ros2_ws/install/my_robot_package:/opt/ros/jazzy /usr/bin/cmake --build /home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package -- -j8 -l8
+[3.671s] [ 50%] [32mBuilding CXX object CMakeFiles/my_first_node.dir/src/my_first_node.cpp.o[0m
+[13.268s] [100%] [32m[1mLinking CXX executable my_first_node[0m
+[13.763s] [100%] Built target my_first_node
+[13.780s] Invoked command in '/home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/uchiha/ros2_ws/install/my_robot_package:/opt/ros/jazzy /usr/bin/cmake --build /home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package -- -j8 -l8
+[13.793s] Invoking command in '/home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/uchiha/ros2_ws/install/my_robot_package:/opt/ros/jazzy /usr/bin/cmake --install /home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package
+[13.804s] -- Install configuration: ""
+[13.806s] -- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/lib/my_cpp_package/my_first_node
+[13.812s] -- Set non-toolchain portion of runtime path of "/home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/lib/my_cpp_package/my_first_node" to ""
+[13.814s] -- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/ament_index/resource_index/package_run_dependencies/my_cpp_package
+[13.815s] -- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/ament_index/resource_index/parent_prefix_path/my_cpp_package
+[13.816s] -- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/environment/ament_prefix_path.sh
+[13.817s] -- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/environment/ament_prefix_path.dsv
+[13.817s] -- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/environment/path.sh
+[13.818s] -- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/environment/path.dsv
+[13.818s] -- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/local_setup.bash
+[13.818s] -- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/local_setup.sh
+[13.819s] -- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/local_setup.zsh
+[13.819s] -- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/local_setup.dsv
+[13.819s] -- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/package.dsv
+[13.820s] -- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/ament_index/resource_index/packages/my_cpp_package
+[13.820s] -- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/cmake/my_cpp_packageConfig.cmake
+[13.821s] -- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/cmake/my_cpp_packageConfig-version.cmake
+[13.821s] -- Installing: /home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/package.xml
+[13.824s] Invoked command in '/home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/uchiha/ros2_ws/install/my_robot_package:/opt/ros/jazzy /usr/bin/cmake --install /home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package

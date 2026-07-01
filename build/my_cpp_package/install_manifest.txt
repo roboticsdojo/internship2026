@@ -1,0 +1,16 @@
+/home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/lib/my_cpp_package/my_first_node
+/home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/ament_index/resource_index/package_run_dependencies/my_cpp_package
+/home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/ament_index/resource_index/parent_prefix_path/my_cpp_package
+/home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/environment/ament_prefix_path.sh
+/home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/environment/ament_prefix_path.dsv
+/home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/environment/path.sh
+/home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/environment/path.dsv
+/home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/local_setup.bash
+/home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/local_setup.sh
+/home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/local_setup.zsh
+/home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/local_setup.dsv
+/home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/package.dsv
+/home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/ament_index/resource_index/packages/my_cpp_package
+/home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/cmake/my_cpp_packageConfig.cmake
+/home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/cmake/my_cpp_packageConfig-version.cmake
+/home/uchiha/ros2_ws/src/internship2026/install/my_cpp_package/share/my_cpp_package/package.xml

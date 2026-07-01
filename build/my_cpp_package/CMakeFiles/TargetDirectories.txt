@@ -1,0 +1,10 @@
+/home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package/CMakeFiles/uninstall.dir
+/home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package/CMakeFiles/my_cpp_package_uninstall.dir
+/home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package/CMakeFiles/my_first_node.dir
+/home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package/CMakeFiles/test.dir
+/home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package/CMakeFiles/edit_cache.dir
+/home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package/CMakeFiles/rebuild_cache.dir
+/home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package/CMakeFiles/list_install_components.dir
+/home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package/CMakeFiles/install.dir
+/home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package/CMakeFiles/install/local.dir
+/home/uchiha/ros2_ws/src/internship2026/build/my_cpp_package/CMakeFiles/install/strip.dir
