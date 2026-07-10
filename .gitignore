@@ -1,0 +1,13 @@
+# ROS2 — colcon build artifacts (applies to all robot workspaces)
+**/build/
+**/install/
+**/log/
+
+# Code editors
+**/.vscode/
+**/.idea/
+
+# Python
+**/__pycache__/
+**/*.pyc
+**/*.pyo
