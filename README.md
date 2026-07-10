@@ -78,13 +78,11 @@ source install/setup.bash
 
 ## Team contacts
 
-Role
-
-Name
-
-Responsibility
-
-
+| Role | Name | Responsibility |
+|---|---|---|
+| Programme lead | — | Architecture decisions, PR approvals |
+| Robot 1 lead | — | `robot_1_ws` ownership |
+| Robot 2 lead | — | `robot_2_ws` ownership |
 
 
 ----------
