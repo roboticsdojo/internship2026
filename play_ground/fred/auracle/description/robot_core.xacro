@@ -1,0 +1,483 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" >
+
+    <xacro:include filename="inertial_macros.xacro"/>
+
+
+    <xacro:property name="chassis_length" value="0.3"/>
+    <xacro:property name="chassis_width" value="0.2"/>
+    <xacro:property name="chassis_height" value="0.05"/>
+    <xacro:property name="chassis_mass" value="5.0"/>
+    
+    <xacro:property name="rocker_length" value="0.13"/>
+    <xacro:property name="rocker_width" value="0.02"/>
+    <xacro:property name="rocker_height" value="0.2"/>
+    <xacro:property name="tilted_link" value="0.1"/>
+    <xacro:property name="rocker_mass" value="0.5"/>
+    <xacro:property name="wheel_radius" value="0.033"/>
+    <xacro:property name="wheel_thickness" value="0.026"/>
+    <xacro:property name="wheel_mass" value="0.05"/>
+    <xacro:property name="wheel_offset_x" value="0.226"/>
+    <xacro:property name="wheel_offset_y" value="0.1485"/>
+    <xacro:property name="wheel_offset_z" value="0.01"/>
+
+    <material name="white">
+        <color rgba="1 1 1 1" />
+    </material>
+
+    <material name="orange">
+        <color rgba="1 0.3 0.1 1"/>
+    </material>
+
+    <material name="blue">
+        <color rgba="0.2 0.2 1 1"/>
+    </material>
+
+    <material name="black">
+        <color rgba="0 0 0 1"/>
+    </material>
+
+    <material name="red">
+        <color rgba="1 0 0 1"/>
+    </material>
+
+    <!-- BASE LINK -->
+
+    <link name="base_link">
+
+    </link>
+
+    <!-- CHASSIS LINK -->
+
+    <joint name="chassis_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="chassis"/>
+        <origin xyz="0 0 0"/>
+    </joint>
+
+    <link name="chassis">
+        <visual>
+            <origin xyz="${chassis_length/2} 0 0"/>
+            <geometry>
+                <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
+            </geometry>
+            <material name="orange"/>
+        </visual>
+        <collision>
+            <origin xyz="${chassis_length/2} 0 ${chassis_height/2}"/>
+            <geometry>
+                <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_box mass="${chassis_mass}" x="${chassis_length}" y="${chassis_width}" z="${chassis_height}">
+            <origin xyz="${chassis_length/2} 0 ${chassis_height/2}" rpy="0 0 0"/>
+        </xacro:inertial_box>
+    </link>
+
+    <gazebo reference="chassis">
+        <material>Gazebo/Orange</material>
+    </gazebo>
+
+ <!-- LEFT WHEEL ROCKER LINK -->
+    <joint name="left_wheel_rocker_joint" type="continuous">
+        <parent link="base_link"/>
+        <child link="left_rocker"/>
+        <origin xyz="${chassis_length/2} ${chassis_width/2+rocker_width/2} 0" rpy="0 0 ${pi/2}" />
+        
+    </joint>
+
+    <link name="left_rocker">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 ${-pi/2}"/>
+            <geometry>
+                <box size="${rocker_length} ${rocker_width} 0.025"/>
+            </geometry>
+            <material name="blue"/>
+        </visual>
+        <collision>
+            <origin xyz="${rocker_length/2} 0 ${rocker_height/2}"/>
+            <geometry>
+                <box size="${rocker_length} ${rocker_width} ${rocker_height}"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_box mass="${rocker_mass}" x="${rocker_length}" y="${rocker_width}" z="${rocker_height}">
+            <origin xyz="${rocker_length/2} 0 ${rocker_height/2}" rpy="0 0 0"/>
+        </xacro:inertial_box>
+    </link>
+
+    <!-- TILTED LINK -->
+    <joint name="tilted_joint" type="fixed">
+        <parent link="left_rocker"/>
+        <child link="tilted_link"/>
+        <origin xyz="0 ${rocker_length/2} 0" rpy="${pi/4} 0 0" />
+        
+    </joint>
+
+    <link name="tilted_link">
+        <visual>
+            <origin xyz="0 0 -${tilted_link/2}" rpy="0 ${pi/2} 0"/>
+            <geometry>
+                <box size="${tilted_link} ${rocker_width} 0.025"/>
+            </geometry>
+            <material name="black"/>
+        </visual>
+        <collision>
+            <origin xyz="${rocker_length/2} 0 ${rocker_height/2}"/>
+            <geometry>
+                <box size="${rocker_length} ${rocker_width} ${rocker_height}"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_box mass="${rocker_mass}" x="${rocker_length}" y="${rocker_width}" z="${rocker_height}">
+            <origin xyz="${rocker_length/2} 0 ${rocker_height/2}" rpy="0 0 0"/>
+        </xacro:inertial_box>
+    </link>
+
+    <!-- TILTED LINK2 -->
+    <joint name="tilted_two_joint" type="fixed">
+        <parent link="left_rocker"/>
+        <child link="tilted_two_link"/>
+        <origin xyz="0 ${-rocker_length/2} 0" rpy="${-pi/4} 0 0" />
+        
+    </joint>
+
+    <link name="tilted_two_link">
+        <visual>
+            <origin xyz="0 0 -${tilted_link/2}" rpy="0 ${pi/2} 0"/>
+            <geometry>
+                <box size="${tilted_link} ${rocker_width} 0.025"/>
+            </geometry>
+            <material name="black"/>
+        </visual>
+        <collision>
+            <origin xyz="${rocker_length/2} 0 ${rocker_height/2}"/>
+            <geometry>
+                <box size="${rocker_length} ${rocker_width} ${rocker_height}"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_box mass="${rocker_mass}" x="${rocker_length}" y="${rocker_width}" z="${rocker_height}">
+            <origin xyz="${rocker_length/2} 0 ${rocker_height/2}" rpy="0 0 0"/>
+        </xacro:inertial_box>
+    </link>
+
+
+    <!-- LEFT WHEEL 1 -->
+
+    <joint name="left_wheel_one_joint" type="continuous">
+        <parent link="tilted_two_link"/>
+        <child link="left_wheel_one"/>
+        <origin xyz="0 0 ${-tilted_link}" rpy="0 ${pi/2} 0" />
+        <axis xyz="0 0 1"/>
+    </joint>
+
+    <link name="left_wheel_one">
+        <visual>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
+            </geometry>
+            <material name="blue"/>
+        </visual>
+        <collision>
+            <geometry>
+                <sphere radius="${wheel_radius}"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_cylinder mass="${wheel_mass}" length="${wheel_thickness}" radius="${wheel_radius}">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:inertial_cylinder>
+    </link>
+
+    <gazebo reference="left_wheel">
+        <material>Gazebo/Blue</material>
+    </gazebo>
+
+    <!-- TILTED LINK6 -->
+    <joint name="tilted_three_joint" type="fixed">
+        <parent link="left_rocker"/>
+        <child link="tilted_three_link"/>
+        <origin xyz="0 ${-rocker_length/2} 0" rpy="${pi/4} 0 0" />
+        
+    </joint>
+
+    <link name="tilted_three_link">
+        <visual>
+            <origin xyz="0 0 -${tilted_link/2}" rpy="0 ${pi/2} 0"/>
+            <geometry>
+                <box size="${tilted_link} ${rocker_width} 0.025"/>
+            </geometry>
+            <material name="black"/>
+        </visual>
+        <collision>
+            <origin xyz="${rocker_length/2} 0 ${rocker_height/2}"/>
+            <geometry>
+                <box size="${rocker_length} ${rocker_width} ${rocker_height}"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_box mass="${rocker_mass}" x="${rocker_length}" y="${rocker_width}" z="${rocker_height}">
+            <origin xyz="${rocker_length/2} 0 ${rocker_height/2}" rpy="0 0 0"/>
+        </xacro:inertial_box>
+    </link>
+
+
+    <!-- LEFT WHEEL 3 -->
+
+    <joint name="left_wheel_three_joint" type="continuous">
+        <parent link="tilted_three_link"/>
+        <child link="left_wheel_three"/>
+        <origin xyz="0 0 ${-tilted_link}" rpy="0 ${pi/2} 0" />
+        <axis xyz="0 0 1"/>
+    </joint>
+
+    <link name="left_wheel_three">
+        <visual>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
+            </geometry>
+            <material name="blue"/>
+        </visual>
+        <collision>
+            <geometry>
+                <sphere radius="${wheel_radius}"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_cylinder mass="${wheel_mass}" length="${wheel_thickness}" radius="${wheel_radius}">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:inertial_cylinder>
+    </link>
+
+    <gazebo reference="left_wheel">
+        <material>Gazebo/Blue</material>
+    </gazebo>
+
+     <!-- LEFT WHEEL 2 -->
+
+    <joint name="left_wheel_two_joint" type="continuous">
+        <parent link="tilted_link"/>
+        <child link="left_wheel_two"/>
+        <origin xyz="0 0 ${-tilted_link}" rpy="0 ${pi/2} 0" />
+        <axis xyz="0 0 1"/>
+    </joint>
+
+    <link name="left_wheel_two">
+        <visual>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
+            </geometry>
+            <material name="blue"/>
+        </visual>
+        <collision>
+            <geometry>
+                <sphere radius="${wheel_radius}"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_cylinder mass="${wheel_mass}" length="${wheel_thickness}" radius="${wheel_radius}">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:inertial_cylinder>
+    </link>
+
+    <gazebo reference="left_wheel">
+        <material>Gazebo/Blue</material>
+    </gazebo>
+
+    <!-- RIGHT WHEEL ROCKER LINK -->
+    <joint name="right_wheel_rocker_joint" type="continuous">
+        <parent link="base_link"/>
+        <child link="right_rocker"/>
+        <origin xyz="${chassis_length/2} ${-chassis_width/2-rocker_width/2} 0" rpy="0 0 ${pi/2}" />
+        
+    </joint>
+
+    <link name="right_rocker">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 ${-pi/2}"/>
+            <geometry>
+                <box size="${rocker_length} ${rocker_width} 0.025"/>
+            </geometry>
+            <material name="blue"/>
+        </visual>
+        <collision>
+            <origin xyz="${rocker_length/2} 0 ${rocker_height/2}"/>
+            <geometry>
+                <box size="${rocker_length} ${rocker_width} ${rocker_height}"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_box mass="${rocker_mass}" x="${rocker_length}" y="${rocker_width}" z="${rocker_height}">
+            <origin xyz="${rocker_length/2} 0 ${rocker_height/2}" rpy="0 0 0"/>
+        </xacro:inertial_box>
+    </link>
+
+    <!-- TILTED LINK 1-->
+    <joint name="tilted_joint_two" type="fixed">
+        <parent link="right_rocker"/>
+        <child link="tilted_link_two"/>
+        <origin xyz="0 ${rocker_length/2} 0" rpy="${pi/4} 0 0" />
+        
+    </joint>
+
+    <link name="tilted_link_two">
+        <visual>
+            <origin xyz="0 0 -${tilted_link/2}" rpy="0 ${pi/2} 0"/>
+            <geometry>
+                <box size="${tilted_link} ${rocker_width} 0.025"/>
+            </geometry>
+            <material name="black"/>
+        </visual>
+        <collision>
+            <origin xyz="${rocker_length/2} 0 ${rocker_height/2}"/>
+            <geometry>
+                <box size="${rocker_length} ${rocker_width} ${rocker_height}"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_box mass="${rocker_mass}" x="${rocker_length}" y="${rocker_width}" z="${rocker_height}">
+            <origin xyz="${rocker_length/2} 0 ${rocker_height/2}" rpy="0 0 0"/>
+        </xacro:inertial_box>
+    </link>
+
+    <!-- TILTED LINK2 -->
+    <joint name="tilted_two_joint_two" type="fixed">
+        <parent link="right_rocker"/>
+        <child link="tilted_two_link_two"/>
+        <origin xyz="0 ${-rocker_length/2} 0" rpy="${-pi/4} 0 0" />
+        
+    </joint>
+
+    <link name="tilted_two_link_two">
+        <visual>
+            <origin xyz="0 0 -${tilted_link/2}" rpy="0 ${pi/2} 0"/>
+            <geometry>
+                <box size="${tilted_link} ${rocker_width} 0.025"/>
+            </geometry>
+            <material name="black"/>
+        </visual>
+        <collision>
+            <origin xyz="${rocker_length/2} 0 ${rocker_height/2}"/>
+            <geometry>
+                <box size="${rocker_length} ${rocker_width} ${rocker_height}"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_box mass="${rocker_mass}" x="${rocker_length}" y="${rocker_width}" z="${rocker_height}">
+            <origin xyz="${rocker_length/2} 0 ${rocker_height/2}" rpy="0 0 0"/>
+        </xacro:inertial_box>
+    </link>
+
+
+    <!-- RIGHT WHEEL 1 -->
+
+    <joint name="right_wheel_one_joint" type="continuous">
+        <parent link="tilted_two_link_two"/>
+        <child link="right_wheel_one"/>
+        <origin xyz="0 0 ${-tilted_link}" rpy="0 ${pi/2} 0" />
+        <axis xyz="0 0 1"/>
+    </joint>
+
+    <link name="right_wheel_one">
+        <visual>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
+            </geometry>
+            <material name="blue"/>
+        </visual>
+        <collision>
+            <geometry>
+                <sphere radius="${wheel_radius}"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_cylinder mass="${wheel_mass}" length="${wheel_thickness}" radius="${wheel_radius}">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:inertial_cylinder>
+    </link>
+
+    <gazebo reference="right_wheel">
+        <material>Gazebo/Blue</material>
+    </gazebo>
+
+    <!-- TILTED LINK3 -->
+     <joint name="tilted_two_joint_three" type="fixed">
+        <parent link="right_rocker"/>
+        <child link="tilted_two_link_three"/>
+        <origin xyz="0 ${-rocker_length/2} 0" rpy="${pi/4} 0 0" />
+        
+    </joint>
+    <link name="tilted_two_link_three">
+        <visual>
+            <origin xyz="0 0 -${tilted_link/2}" rpy="0 ${pi/2} 0"/>
+            <geometry>
+                <box size="${tilted_link} ${rocker_width} 0.025"/>
+            </geometry>
+            <material name="black"/>
+        </visual>
+        <collision>
+            <origin xyz="${rocker_length/2} 0 ${rocker_height/2}"/>
+            <geometry>
+                <box size="${rocker_length} ${rocker_width} ${rocker_height}"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_box mass="${rocker_mass}" x="${rocker_length}" y="${rocker_width}" z="${rocker_height}">
+            <origin xyz="${rocker_length/2} 0 ${rocker_height/2}" rpy="0 0 0"/>
+        </xacro:inertial_box>
+    </link>
+
+
+    <!-- RIGHT WHEEL 3 -->
+
+    <joint name="right_wheel_three_joint" type="continuous">
+        <parent link="tilted_two_link_three"/>
+        <child link="right_wheel_three"/>
+        <origin xyz="0 0 ${-tilted_link}" rpy="0 ${pi/2} 0" />
+        <axis xyz="0 0 1"/>
+    </joint>
+
+    <link name="right_wheel_three">
+        <visual>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
+            </geometry>
+            <material name="blue"/>
+        </visual>
+        <collision>
+            <geometry>
+                <sphere radius="${wheel_radius}"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_cylinder mass="${wheel_mass}" length="${wheel_thickness}" radius="${wheel_radius}">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:inertial_cylinder>
+    </link>
+
+    <gazebo reference="right_wheel">
+        <material>Gazebo/Blue</material>
+    </gazebo>
+
+
+     <!-- RIGHT WHEEL 2 -->
+
+    <joint name="right_wheel_two_joint" type="continuous">
+        <parent link="tilted_link_two"/>
+        <child link="right_wheel_two"/>
+        <origin xyz="0 0 ${-tilted_link}" rpy="0 ${pi/2} 0" />
+        <axis xyz="0 0 1"/>
+    </joint>
+
+    <link name="right_wheel_two">
+        <visual>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_thickness}"/>
+            </geometry>
+            <material name="blue"/>
+        </visual>
+        <collision>
+            <geometry>
+                <sphere radius="${wheel_radius}"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_cylinder mass="${wheel_mass}" length="${wheel_thickness}" radius="${wheel_radius}">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:inertial_cylinder>
+    </link>
+
+    <gazebo reference="right_wheel">
+        <material>Gazebo/Blue</material>
+    </gazebo>
+
+  
+
+</robot>
