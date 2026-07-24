@@ -1,21 +1,89 @@
-# Joan's Robot Design
 
-Welcome to the design repository for Joan's Robot! This file helps explain the design and features of the robot.
+# Robotics Dojo Internship 2026
 
-## About the Robot
-The physical chassis was authored in Autodesk Fusion 360 with a heavy focus on stability and modularity. 
+Robotics Dojo — 2026 monorepo. This repository contains everything produced during the internship programme: robot software, CAD designs, and experimental work.
 
-## Key Specifications & Features
-- **Footprint:** 30cm by 30cm (Total width including wheels).
-- **Chassis Plate:** 20cm width to allow for free wheel rotation within the scope.
-- **Material Thickness:** 5mm structural base and walls.
-- **Electronics Compartment:** A centralized 120mm by 180mm room designed to protect the Raspberry Pi and LiPo batteries.
-- **Flexible Drivetrain:** We implemented a grid of sixteen M4 mounting holes on the outer wings. This allows the motor brackets to be moved forward or backward to adjust the robot's center of gravity.
-- **LiDAR Pedestal:** A raised 70mm circular platform ensuring the laser sensor has a clear 360 degree field of view.
+----------
 
-## Design Files
-- `Joan's_robot.step`: The main 3D CAD model file.
-- **Screenshots:** Several reference images are included to showcase different angles and specific features of the design.
+## Repository structure
 
-## How to View
-You can use standard CAD software (like Fusion 360, SolidWorks, or FreeCAD) to open and inspect the `.step` file.
+```
+internship2026/
+├── playground/              # Throwaway experiments and personal sandboxes
+├── robot_designs/           # CAD files and mechanical design assets
+│   ├── robot_1/
+│   └── robot_2/
+└── robot_software/          # All ROS2 code — read the README inside before touching anything
+    ├── robot_1_ws/          # Full ROS2 workspace for robot 1
+    └── robot_2_ws/          # Full ROS2 workspace for robot 2
+
+```
+
+----------
+
+## What goes where
+
+### `playground/`
+
+A low-stakes space for trying things out — tutorials, test scripts, algorithm prototypes, or anything that is not production code. Work here does not need to be clean. Work from the personal subfolder with your name if you want a persistent sandbox.
+
+Nothing in `playground/` should ever be imported or depended on by `robot_software/`.
+
+### `robot_designs/`
+
+All mechanical and electrical design files. Organise by robot, then by subsystem (e.g. `robot_1/chassis/`, `robot_1/sensor_mounts/`). Keep source files (`.FCStd`, `.f3d`) alongside exports (`.stl`, `.step`) so others can modify the source, not just print the export.
+
+If a design file is too large for Git (over ~50 MB), store it in the shared Google Drive folder and leave a link in a `README.md` inside the relevant subfolder.
+
+### `robot_software/`
+
+All live robot code lives here. Each robot has its own self-contained ROS2 workspace. Read `robot_software/README.md` before creating any packages — it defines the naming conventions and practices that keep both workspaces consistent and reviewable.
+
+----------
+
+## Ground rules
+
+**Branch, never commit to main.** All work happens on a feature branch. `main` must always contain a working, runnable state of both robots. Nothing merges to `main` without a pull request reviewed by at least one other team member.
+
+**Commit messages describe what changed and why.** `fix slam drift on loop closure` is a good message. `updates` is not. Use the imperative mood: `add`, `fix`, `remove`, `refactor`.
+
+**The `.gitignore` at the root covers the whole repo.** Do not create additional `.gitignore` files inside workspaces unless you have a specific reason — check the root file first to see if your pattern is already covered.
+
+**Do not commit generated files.** `build/`, `install/`, and `log/` are local colcon artefacts. `.pyc` and `__pycache__` are Python runtime artefacts. None of these belong in the repository.
+
+----------
+
+## Quick start
+
+```bash
+# Clone the repo
+git clone <repo-url> internship2026
+cd internship2026
+
+# Build robot 1
+cd robot_software/robot_1_ws
+rosdep install --from-paths src --ignore-src -r -y
+colcon build
+source install/setup.bash
+
+# Build robot 2
+cd ../robot_2_ws
+rosdep install --from-paths src --ignore-src -r -y
+colcon build
+source install/setup.bash
+
+```
+
+----------
+
+## Team contacts
+
+| Role | Name | Responsibility |
+|---|---|---|
+| Programme lead | — | Architecture decisions, PR approvals |
+| Robot 1 lead | — | `robot_1_ws` ownership |
+| Robot 2 lead | — | `robot_2_ws` ownership |
+
+
+----------
+
