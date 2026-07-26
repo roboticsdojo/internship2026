@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  
+  <gazebo>
+    <plugin name="gz::sim::systems::DiffDrive" filename="gz-sim-diff-drive-system">
+
+      <!-- WHEEL INFORMATION -->
+      <left_joint>front_left_wheel_joint</left_joint>
+      <right_joint>front_right_wheel_joint</right_joint>
+      <wheel_separation>0.35</wheel_separation>
+      <wheel_radius>0.0425</wheel_radius>
+
+      <left_joint>back_left_wheel_joint</left_joint>
+      <right_joint>back_right_wheel_joint</right_joint>
+      <wheel_separation>0.35</wheel_separation>
+      <wheel_radius>0.0425</wheel_radius>
+
+      <!-- INPUT — Explicitly mapped to robot_2 namespace to avoid collisions -->
+      <topic>/robot_2/cmd_vel</topic>
+
+      <!-- OUTPUT — Mapped in compliance with ROS2 naming standards -->
+      <frame_id>robot_2/odom</frame_id>
+      <child_frame_id>robot_2/base_link</child_frame_id>
+      <odom_topic>/robot_2/odom_demo</odom_topic>            
+      <tf_topic>/robot_2/tf_demo</tf_topic>
+
+    </plugin>
+
+    <!-- GROUND TRUTH ODOMETRY PUBLISHER -->
+    <plugin filename="gz-sim-odometry-publisher-system" name="gz::sim::systems::OdometryPublisher">
+      <odom_frame>robot_2/odom</odom_frame>
+      <robot_base_frame>robot_2/base_link</robot_base_frame>
+      <odom_publish_frequency>50</odom_publish_frequency>
+      <odom_topic>/robot_2/odom</odom_topic>
+      <tf_topic>/robot_2/tf</tf_topic>
+    </plugin>
+
+    <plugin name="gz::sim::systems::JointStatePublisher" filename="gz-sim-joint-state-publisher-system">
+      <topic>/robot_2/joint_states</topic>
+      <joint_names>front_left_wheel_joint</joint_names>
+      <joint_names>front_right_wheel_joint</joint_names>
+      <joint_names>back_left_wheel_joint</joint_names>
+      <joint_names>back_right_wheel_joint</joint_names>
+    </plugin>
+  </gazebo>
+
+</robot>

@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+  <model name="gamefield">
+    <static>true</static>
+    <link name="walls_link">
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://gamefield/meshes/gamefield_fixed.obj</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <mesh>
+            <uri>model://gamefield/meshes/gamefield_fixed.stl</uri>
+          </mesh>
+        </geometry>
+      </collision>
+    </link>
+  </model>
+</sdf>
