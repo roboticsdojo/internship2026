@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org" name="robot_boogie">
+
+  <!-- Reusable Macro for Left and Right Suspension Sides -->
+  <xacro:macro name="rocker_bogie_suspension" params="side side_sign">
+
+    <!-- Rocker Pivot O3 attached to the side face of the chassis box -->
+    <joint name="${side}_rocker_joint" type="revolute">
+      <parent link="chassis"/>
+      <child link="${side}_rocker_arm"/>
+      <!-- Moves the arm outside the 0.3m wide chassis box (0.15m half-width + 0.02m clearance) -->
+      <origin xyz="0.15 ${side_sign * 0.17} 0.075" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit lower="-0.6" upper="0.6" effort="20.0" velocity="1.0"/>
+    </joint>
+
+    <link name="${side}_rocker_arm">
+      <visual>
+        <origin xyz="-0.065 0 0" rpy="0 0 0"/>
+        <geometry><box size="0.13137 0.02 0.03"/></geometry>
+        <material name="blue"/>
+      </visual>
+    </link>
+
+    <!-- Bogie Pivot O2 -->
+    <joint name="${side}_bogie_pivot_joint" type="revolute">
+      <parent link="${side}_rocker_arm"/>
+      <child link="${side}_bogie_arm"/>
+      <origin xyz="-0.13137 0 0" rpy="0 0 0"/>
+      <axis xyz="0 1 0"/>
+      <limit lower="-0.8" upper="0.8" effort="15.0" velocity="1.0"/>
+    </joint>
+
+    <link name="${side}_bogie_arm">
+      <visual>
+        <origin xyz="-0.065 0 -0.05" rpy="0 0.2 0"/>
+        <geometry><box size="0.130 0.02 0.03"/></geometry>
+        <material name="black"/>
+      </visual>
+    </link>
+
+  </xacro:macro>
+</robot>
