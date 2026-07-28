@@ -14,7 +14,7 @@
     <xacro:property name="rocker_height" value="0.2"/>
      <xacro:property name="rocker_mass" value="0.2"/>
 
-    <xacro:property name="tilted_link" value="0.1"/>
+    <xacro:property name="tilted_length" value="0.1"/>
     <xacro:property name="tilted_mass" value="0.5"/>
     <xacro:property name="wheel_radius" value="0.033"/>
     <xacro:property name="wheel_thickness" value="0.026"/>
@@ -81,7 +81,7 @@
     </gazebo>
 
  <!-- DIFFERENTIAL LINK -->
-    <joint name="differential_link" type="continuous">
+    <joint name="differential_link_joint" type="continuous">
         <parent link="chassis"/>
         <child link="differential_link"/>
         <origin xyz="${chassis_length/2} 0 ${chassis_height+0.04}" rpy="0 0 0" />
@@ -102,12 +102,12 @@
                 <box size="${chassis_width+2*rocker_width} ${rocker_width} 0.025"/>
             </geometry>
         </collision>
-        <xacro:inertial_box mass="${tilted_mass}" x="${tilted_link}" y="${rocker_width}" z="${rocker_height}">
+        <xacro:inertial_box mass="${tilted_mass}" x="${tilted_length}" y="${rocker_width}" z="${rocker_height}">
             <origin xyz="${rocker_length/2} 0 ${rocker_height/2}" rpy="0 0 0"/>
         </xacro:inertial_box>
     </link>
 
-    !-- LEFT WHEEL ROCKER LINK -->
+    <!-- LEFT WHEEL ROCKER LINK -->
     <joint name="left_wheel_rocker_joint" type="fixed">
         <parent link="differential_link"/>
         <child link="left_rocker"/>
@@ -129,7 +129,7 @@
                 <box size="${rocker_length} ${rocker_width} 0.025"/>
             </geometry>
         </collision>
-        <xacro:inertial_box mass="${tilted_mass}" x="${tilted_link}" y="${rocker_width}" z="${rocker_height}">
+        <xacro:inertial_box mass="${tilted_mass}" x="${tilted_length}" y="${rocker_width}" z="${rocker_height}">
             <origin xyz="${rocker_length/2} 0 ${rocker_height/2}" rpy="0 0 0"/>
         </xacro:inertial_box>
     </link>
@@ -144,19 +144,19 @@
 
     <link name="tilted_link">
         <visual>
-            <origin xyz="0 0 -${tilted_link/2}" rpy="0 ${pi/2} 0"/>
+            <origin xyz="0 0 -${tilted_length/2}" rpy="0 ${pi/2} 0"/>
             <geometry>
-                <box size="${tilted_link} ${rocker_width} 0.025"/>
+                <box size="${tilted_length} ${rocker_width} 0.025"/>
             </geometry>
             <material name="black"/>
         </visual>
         <collision>
-           <origin xyz="0 0 -${tilted_link/2}" rpy="0 ${pi/2} 0"/>
+           <origin xyz="0 0 -${tilted_length/2}" rpy="0 ${pi/2} 0"/>
             <geometry>
-                <box size="${tilted_link} ${rocker_width} 0.025"/>
+                <box size="${tilted_length} ${rocker_width} 0.025"/>
             </geometry>
         </collision>
-        <xacro:inertial_box mass="${tilted_mass}" x="${tilted_link}" y="${rocker_width}" z="${rocker_height}">
+        <xacro:inertial_box mass="${tilted_mass}" x="${tilted_length}" y="${rocker_width}" z="${rocker_height}">
             <origin xyz="${rocker_length/2} 0 ${rocker_height/2}" rpy="0 0 0"/>
         </xacro:inertial_box>
     </link>
@@ -171,19 +171,19 @@
 
     <link name="tilted_two_link">
         <visual>
-            <origin xyz="0 0 -${tilted_link/2}" rpy="0 ${pi/2} 0"/>
+            <origin xyz="0 0 -${tilted_length/2}" rpy="0 ${pi/2} 0"/>
             <geometry>
-                <box size="${tilted_link} ${rocker_width} 0.025"/>
+                <box size="${tilted_length} ${rocker_width} 0.025"/>
             </geometry>
             <material name="black"/>
         </visual>
         <collision>
-           <origin xyz="0 0 -${tilted_link/2}" rpy="0 ${pi/2} 0"/>
+           <origin xyz="0 0 -${tilted_length/2}" rpy="0 ${pi/2} 0"/>
             <geometry>
-                <box size="${tilted_link} ${rocker_width} 0.025"/>
+                <box size="${tilted_length} ${rocker_width} 0.025"/>
             </geometry>
         </collision>
-        <xacro:inertial_box mass="${tilted_mass}" x="${tilted_link}" y="${rocker_width}" z="${rocker_height}">
+        <xacro:inertial_box mass="${tilted_mass}" x="${tilted_length}" y="${rocker_width}" z="${rocker_height}">
             <origin xyz="${rocker_length/2} 0 ${rocker_height/2}" rpy="0 0 0"/>
         </xacro:inertial_box>
     </link>
@@ -194,7 +194,7 @@
     <joint name="left_wheel_one_joint" type="continuous">
         <parent link="tilted_two_link"/>
         <child link="left_wheel_one"/>
-        <origin xyz="0 0 ${-tilted_link}" rpy="0 ${pi/2} 0" />
+        <origin xyz="0 0 -${tilted_length}" rpy="0 ${pi/2} 0" />
         <axis xyz="0 0 1"/>
     </joint>
 
@@ -229,20 +229,20 @@
 
     <link name="tilted_three_link">
         <visual>
-            <origin xyz="0 0 -${tilted_link/2}" rpy="0 ${pi/2} 0"/>
+            <origin xyz="0 0 -${tilted_length/2}" rpy="0 ${pi/2} 0"/>
             <geometry>
-                <box size="${tilted_link} ${rocker_width} 0.025"/>
+                <box size="${tilted_length} ${rocker_width} 0.025"/>
             </geometry>
             <material name="black"/>
         </visual>
         <collision>
-            <origin xyz="0 0 -${tilted_link/2}" rpy="0 ${pi/2} 0"/>
+            <origin xyz="0 0 -${tilted_length/2}" rpy="0 ${pi/2} 0"/>
             <geometry>
-                <box size="${tilted_link} ${rocker_width} 0.025"/>
+                <box size="${tilted_length} ${rocker_width} 0.025"/>
             </geometry>
         </collision>
-        <xacro:inertial_box mass="${tilted_mass}" x="${tilted_link}" y="${rocker_width}" z="${rocker_height}">
-            <origin xyz="${tilted_link/2} 0 ${rocker_height/2}" rpy="0 0 0"/>
+        <xacro:inertial_box mass="${tilted_mass}" x="${tilted_length}" y="${rocker_width}" z="${rocker_height}">
+            <origin xyz="${tilted_length/2} 0 ${rocker_height/2}" rpy="0 0 0"/>
         </xacro:inertial_box>
     </link>
 
@@ -252,7 +252,7 @@
     <joint name="left_wheel_three_joint" type="continuous">
         <parent link="tilted_three_link"/>
         <child link="left_wheel_three"/>
-        <origin xyz="0 0 ${-tilted_link}" rpy="0 ${pi/2} 0" />
+        <origin xyz="0 0 ${-tilted_length}" rpy="0 ${pi/2} 0" />
         <axis xyz="0 0 1"/>
     </joint>
 
@@ -282,7 +282,7 @@
     <joint name="left_wheel_two_joint" type="continuous">
         <parent link="tilted_link"/>
         <child link="left_wheel_two"/>
-        <origin xyz="0 0 ${-tilted_link}" rpy="0 ${pi/2} 0" />
+        <origin xyz="0 0 -${tilted_length}" rpy="0 ${pi/2} 0" />
         <axis xyz="0 0 1"/>
     </joint>
 
@@ -344,16 +344,16 @@
 
     <link name="tilted_link_two">
         <visual>
-            <origin xyz="0 0 -${tilted_link/2}" rpy="0 ${pi/2} 0"/>
+            <origin xyz="0 0 -${tilted_length/2}" rpy="0 ${pi/2} 0"/>
             <geometry>
-                <box size="${tilted_link} ${rocker_width} 0.025"/>
+                <box size="${tilted_length} ${rocker_width} 0.025"/>
             </geometry>
             <material name="black"/>
         </visual>
         <collision>
-           <origin xyz="0 0 -${tilted_link/2}" rpy="0 ${pi/2} 0"/>
+           <origin xyz="0 0 -${tilted_length/2}" rpy="0 ${pi/2} 0"/>
             <geometry>
-                <box size="${tilted_link} ${rocker_width} 0.025"/>
+                <box size="${tilted_length} ${rocker_width} 0.025"/>
             </geometry>
         </collision>
         <xacro:inertial_box mass="${rocker_mass}" x="${rocker_length}" y="${rocker_width}" z="${rocker_height}">
@@ -371,16 +371,16 @@
 
     <link name="tilted_two_link_two">
         <visual>
-            <origin xyz="0 0 -${tilted_link/2}" rpy="0 ${pi/2} 0"/>
+            <origin xyz="0 0 -${tilted_length/2}" rpy="0 ${pi/2} 0"/>
             <geometry>
-                <box size="${tilted_link} ${rocker_width} 0.025"/>
+                <box size="${tilted_length} ${rocker_width} 0.025"/>
             </geometry>
             <material name="black"/>
         </visual>
         <collision>
-           <origin xyz="0 0 -${tilted_link/2}" rpy="0 ${pi/2} 0"/>
+           <origin xyz="0 0 -${tilted_length/2}" rpy="0 ${pi/2} 0"/>
             <geometry>
-                <box size="${tilted_link} ${rocker_width} 0.025"/>
+                <box size="${tilted_length} ${rocker_width} 0.025"/>
             </geometry>
         </collision>
         <xacro:inertial_box mass="${rocker_mass}" x="${rocker_length}" y="${rocker_width}" z="${rocker_height}">
@@ -394,7 +394,7 @@
     <joint name="right_wheel_one_joint" type="continuous">
         <parent link="tilted_two_link_two"/>
         <child link="right_wheel_one"/>
-        <origin xyz="0 0 ${-tilted_link}" rpy="0 ${pi/2} 0" />
+        <origin xyz="0 0 ${-tilted_length}" rpy="0 ${pi/2} 0" />
         <axis xyz="0 0 1"/>
     </joint>
 
@@ -428,16 +428,16 @@
     </joint>
     <link name="tilted_two_link_three">
         <visual>
-            <origin xyz="0 0 -${tilted_link/2}" rpy="0 ${pi/2} 0"/>
+            <origin xyz="0 0 -${tilted_length/2}" rpy="0 ${pi/2} 0"/>
             <geometry>
-                <box size="${tilted_link} ${rocker_width} 0.025"/>
+                <box size="${tilted_length} ${rocker_width} 0.025"/>
             </geometry>
             <material name="black"/>
         </visual>
         <collision>
-             <origin xyz="0 0 -${tilted_link/2}" rpy="0 ${pi/2} 0"/>
+             <origin xyz="0 0 -${tilted_length/2}" rpy="0 ${pi/2} 0"/>
             <geometry>
-                <box size="${tilted_link} ${rocker_width} 0.025"/>
+                <box size="${tilted_length} ${rocker_width} 0.025"/>
             </geometry>
         </collision>
         <xacro:inertial_box mass="${rocker_mass}" x="${rocker_length}" y="${rocker_width}" z="${rocker_height}">
@@ -451,7 +451,7 @@
     <joint name="right_wheel_three_joint" type="continuous">
         <parent link="tilted_two_link_three"/>
         <child link="right_wheel_three"/>
-        <origin xyz="0 0 ${-tilted_link}" rpy="0 ${pi/2} 0" />
+        <origin xyz="0 0 ${-tilted_length}" rpy="0 ${pi/2} 0" />
         <axis xyz="0 0 1"/>
     </joint>
 
@@ -482,7 +482,7 @@
     <joint name="right_wheel_two_joint" type="continuous">
         <parent link="tilted_link_two"/>
         <child link="right_wheel_two"/>
-        <origin xyz="0 0 ${-tilted_link}" rpy="0 ${pi/2} 0" />
+        <origin xyz="0 0 ${-tilted_length}" rpy="0 ${pi/2} 0" />
         <axis xyz="0 0 1"/>
     </joint>
 
