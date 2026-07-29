@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>robot_2_description</name>
+  <version>1.0.0</version>
+  <description>URDF models, meshes, and simulation world assets for robot 2</description>
+  <maintainer email="dickson-kabiru@DICKSON-PC.local">Dickson Kabiru</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <exec_depend>urdf</exec_depend>
+  <exec_depend>xacro</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
