@@ -1,0 +1,58 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+  - Class: rviz_common/Views
+    Name: Views
+
+Visualization Manager:
+  Class: ""
+  Displays:
+
+    - Class: rviz_default_plugins/Grid
+      Enabled: true
+      Name: Grid
+      Cell Size: 1
+      Plane Cell Count: 20
+
+    - Class: rviz_default_plugins/RobotModel
+      Enabled: true
+      Name: Robot
+      Description Topic:
+        Value: /robot_2/robot_description
+
+    - Class: rviz_default_plugins/LaserScan
+      Enabled: true
+      Name: Laser
+      Topic:
+        Value: /robot_2/scan
+      Size (m): 0.03
+
+    - Class: rviz_default_plugins/Map
+      Enabled: true
+      Name: Map
+      Topic:
+        Value: /map
+
+    - Class: rviz_default_plugins/TF
+      Enabled: true
+      Name: TF
+
+    - Class: rviz_default_plugins/Odometry
+      Enabled: true
+      Name: Odometry
+      Topic:
+        Value: /robot_2/odom
+
+  Global Options:
+    Fixed Frame: map
+
+  Name: root
+
+Tools:
+  - Class: rviz_default_plugins/Interact
+  - Class: rviz_default_plugins/MoveCamera
+  - Class: rviz_default_plugins/Select
+
+Views:
+  Current:
+    Class: rviz_default_plugins/Orbit
