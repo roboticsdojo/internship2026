@@ -34,13 +34,12 @@
 
   <!-- Gazebo ros2_control plugin -->
   <gazebo>
-    <plugin
-      filename="gz_ros2_control-system"
-      name="gz_ros2_control::GazeboSimSystem">
-
+    <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
       <parameters>$(find robot_2_bringup)/config/my_controllers.yaml</parameters>
-
+      <!-- FIX: Explicitly namespace the internal controller manager plugin instance -->
+      <ros>
+        <namespace>/robot_2</namespace>
+      </ros>
     </plugin>
   </gazebo>
-
 </robot>

@@ -32,8 +32,8 @@
     <joint name="base_footprint_joint" type="fixed">
         <parent link="base_footprint"/>
         <child link="base_link"/>
-        <!-- Offset matches your wheel radius exactly so base_footprint rests flat on the floor -->
-        <origin xyz="0 0 -0.0425" rpy="0 0 0"/>
+        <!-- FIX: Offset changed to positive so base_link is elevated properly above floor grid -->
+        <origin xyz="0 0 0.0425" rpy="0 0 0"/>
     </joint>
 
     <!-- CHASSIS -->
@@ -50,7 +50,7 @@
             <geometry>
                 <box size="0.3 0.25 0.18"/>
             </geometry>
-            <material name="white"/>
+            <material name="purple"/>
         </visual>
 
         <collision>

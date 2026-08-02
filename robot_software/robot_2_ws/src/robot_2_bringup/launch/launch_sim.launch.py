@@ -45,7 +45,7 @@ def generate_launch_description():
     default_world_path = os.path.join(
         get_package_share_directory("robot_2_description"),
         "worlds",
-        "competition.sdf",
+        "gamefield.world",
     )
 
     world_arg = DeclareLaunchArgument(
@@ -137,12 +137,13 @@ def generate_launch_description():
         output="screen",
     )
 
-    # REMAPPING CHANNELS EXPLICITLY TO MEET REVIEWER SPECIFICATIONS
+    # FIX: Clean remapping strings to ensure controller manager transforms land in namespaced slots
     diff_drive_spawner = Node(
         package="controller_manager",
         executable="spawner",
         arguments=[
             "diff_cont",
+            "-c", "/robot_2/controller_manager", 
             "--controller-ros-args",
             "-r /diff_cont/cmd_vel:=/robot_2/cmd_vel "
             "-r /diff_cont/odom:=/robot_2/odom "
@@ -156,6 +157,7 @@ def generate_launch_description():
         executable="spawner",
         arguments=[
             "joint_broad",
+            "-c", "/robot_2/controller_manager", 
             "--controller-ros-args",
             "-r /joint_states:=/robot_2/joint_states"
         ],
@@ -177,7 +179,6 @@ def generate_launch_description():
         ),
     )
 
-    # FIX: Group everything into a single list passed into LaunchDescription
     return LaunchDescription(
         [
             DeclareLaunchArgument(

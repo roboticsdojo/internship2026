@@ -8,18 +8,15 @@ controller_manager:
     joint_broad:
       type: joint_state_broadcaster/JointStateBroadcaster
 
-
 diff_cont:
   ros__parameters:
 
     publish_rate: 50.0
 
-    base_frame_id: base_link
+    base_frame_id: robot_2/base_footprint
+    odom_frame_id: robot_2/odom
 
     left_wheel_names: ['front_left_wheel_joint', 'back_left_wheel_joint']
     right_wheel_names: ['front_right_wheel_joint', 'back_right_wheel_joint']
     wheel_separation: 0.3
     wheel_radius: 0.0425
-
-# joint_broad:
-#   ros__parameters:

@@ -12,7 +12,7 @@ slam_toolbox:
     # Frames
     odom_frame: robot_2/odom
     map_frame: map
-    base_frame: base_footprint
+    base_frame: robot_2/base_footprint
     scan_topic: /robot_2/scan
 
     # General
