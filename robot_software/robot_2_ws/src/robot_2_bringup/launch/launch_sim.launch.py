@@ -20,7 +20,7 @@ def generate_launch_description():
     # Robot State Publisher
     # -----------------------------
 
-    package_name='robot_2_bringup'
+    package_name = 'robot_2_bringup'
 
     use_ros2_control = LaunchConfiguration('use_ros2_control')
 
@@ -55,24 +55,16 @@ def generate_launch_description():
     )
 
     # -----------------------------
-    # Gazebo resource path
+    # Gazebo resource paths
     # -----------------------------
     gz_resources = AppendEnvironmentVariable(
         "GZ_SIM_RESOURCE_PATH",
-        os.path.join(
-            get_package_share_directory("robot_2_description"),
-            "worlds",
-            "models",
-        ),
-    )
-
-    # 1. Define the path to your parameters file (Place this above the gazebo definition)
-    gazebo_params_file = os.path.join(
-        get_package_share_directory(package_name), 'config', 'gazebo_params.yaml'
+        os.path.join(get_package_share_directory("robot_2_description")) + ":" +
+        os.path.join(get_package_share_directory("robot_2_description"), "worlds", "models")
     )
 
     # -----------------------------
-    # Gazebo
+    # Gazebo Simulation Engine
     # -----------------------------
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -87,34 +79,31 @@ def generate_launch_description():
         launch_arguments={
             "gz_args": ["-r -v4 ", world],
             "on_exit_shutdown": "true",
-            "extra_gazebo_args": [f"--ros-args --params-file {gazebo_params_file}"]
         }.items(),
     )
 
     # -----------------------------
-    # Spawn Robot
+    # Spawn Robot Node
     # -----------------------------
     spawn_robot = Node(
         package="ros_gz_sim",
         executable="create",
         namespace="robot_2",
-       arguments=['-topic', 'robot_description',
-                                   '-name', 'my_robot',
-                                   '-x', '-1.03',    # Move 1 meter on X axis away from center walls
-                                   '-y', '2.63',    # Move 1 meter on Y axis away from center walls
-                                   '-z', '0.10'],
+        arguments=['-topic', '/robot_2/robot_description',
+                   '-name', 'robot_2',
+                   '-z', '0.4'],
         output="screen",
     )
 
     joint_state_publisher = Node(
-    package="joint_state_publisher",
-    executable="joint_state_publisher",
-    namespace="robot_2",
-    parameters=[
-        {"use_sim_time": True},
-    ],
-    output="screen",
-)
+        package="joint_state_publisher",
+        executable="joint_state_publisher",
+        namespace="robot_2",
+        parameters=[
+            {"use_sim_time": True},
+        ],
+        output="screen",
+    )
 
     # -----------------------------
     # ROS <-> Gazebo Bridge
@@ -137,7 +126,9 @@ def generate_launch_description():
         output="screen",
     )
 
-    # FIX: Clean remapping strings to ensure controller manager transforms land in namespaced slots
+        # -----------------------------
+    # Hardware Controller Spawners
+    # -----------------------------
     diff_drive_spawner = Node(
         package="controller_manager",
         executable="spawner",
@@ -145,12 +136,14 @@ def generate_launch_description():
             "diff_cont",
             "-c", "/robot_2/controller_manager", 
             "--controller-ros-args",
-            "-r /diff_cont/cmd_vel:=/robot_2/cmd_vel "
+            # FIX: Explicitly map the controller's target velocity input straight to your preferred topic address
+            "-r /robot_2/diff_cont/cmd_vel:=/robot_2/cmd_vel "
             "-r /diff_cont/odom:=/robot_2/odom "
             "-r /tf:=/robot_2/tf "
             "-r /tf_static:=/robot_2/tf_static"
         ],
     )
+
 
     joint_broad_spawner = Node(
         package="controller_manager",
@@ -163,9 +156,8 @@ def generate_launch_description():
         ],
     )
 
-
     # -----------------------------
-    # SLAM Toolbox
+    # SLAM Toolbox Instance
     # -----------------------------
     slam = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(

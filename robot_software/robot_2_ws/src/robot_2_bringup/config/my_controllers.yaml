@@ -1,6 +1,7 @@
-controller_manager:
+/robot_2/controller_manager:
   ros__parameters:
     update_rate: 30
+    use_sim_time: true
 
     diff_cont:
       type: diff_drive_controller/DiffDriveController
@@ -8,10 +9,13 @@ controller_manager:
     joint_broad:
       type: joint_state_broadcaster/JointStateBroadcaster
 
-diff_cont:
+/robot_2/diff_cont:
   ros__parameters:
-
+    use_sim_time: true
     publish_rate: 50.0
+
+    # Force the controller to accept non-stamped Twist messages from teleop
+    use_stamped_vel: false
 
     base_frame_id: robot_2/base_footprint
     odom_frame_id: robot_2/odom
@@ -20,3 +24,7 @@ diff_cont:
     right_wheel_names: ['front_right_wheel_joint', 'back_right_wheel_joint']
     wheel_separation: 0.3
     wheel_radius: 0.0425
+
+/robot_2/joint_broad:
+  ros__parameters:
+    use_sim_time: true
