@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raspberry Pi Camera Stream</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #222;
+            color: white;
+            margin-top: 50px;
+        }
+        .video-container {
+            border: 4px solid #444;
+            display: inline-block;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pi Camera V2 Live Feed</h1>
+    <div class="video-container">
+        <!-- The src attribute points to our Flask video feed route -->
+        <img src="{{ url_for('video_feed') }}" alt="Live Video Feed">
+    </div>
+</body>
+</html>
