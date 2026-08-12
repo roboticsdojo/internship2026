@@ -35,7 +35,7 @@
     </light>
 
     <include>
-      <uri>model://gamefield</uri>
+      <uri>model://gamefield_arena</uri>
     </include>
 
   </world>
