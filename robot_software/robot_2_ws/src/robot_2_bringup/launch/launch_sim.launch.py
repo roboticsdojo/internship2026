@@ -65,7 +65,7 @@ def generate_launch_description():
     spawn_x_arg = DeclareLaunchArgument("spawn_x", default_value="-2.44")
     spawn_y_arg = DeclareLaunchArgument("spawn_y", default_value="-1.18")
     spawn_z_arg = DeclareLaunchArgument("spawn_z", default_value="0.05")
-    spawn_yaw_arg = DeclareLaunchArgument("spawn_yaw", default_value="0.0")
+    spawn_yaw_arg = DeclareLaunchArgument("spawn_yaw", default_value="1.67")
 
     # -----------------------------
     # Gazebo resource paths
