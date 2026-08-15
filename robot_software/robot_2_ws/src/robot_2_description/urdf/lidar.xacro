@@ -44,7 +44,7 @@
         </range>
       </lidar>
       <topic>/robot_2/scan</topic>
-      <gz_frame_id>robot_2/laser_frame</gz_frame_id>
+      <gz_frame_id>laser_frame</gz_frame_id>
     </sensor>
   </gazebo>
 

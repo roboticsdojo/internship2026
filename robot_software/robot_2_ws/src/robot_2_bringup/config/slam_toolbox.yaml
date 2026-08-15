@@ -10,9 +10,12 @@ slam_toolbox:
     ceres_loss_function: None
 
     # Frames
-    odom_frame: robot_2/odom
+    # NOTE: tf frame_ids are global (not affected by node namespaces), and
+    # must match what robot_state_publisher / diff_cont actually publish —
+    # no robot_2/ prefix.
+    odom_frame: odom
     map_frame: map
-    base_frame: robot_2/base_footprint
+    base_frame: base_footprint
     scan_topic: /robot_2/scan
 
     # General
