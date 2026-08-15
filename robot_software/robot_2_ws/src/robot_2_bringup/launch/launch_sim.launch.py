@@ -62,10 +62,10 @@ def generate_launch_description():
     spawn_z = LaunchConfiguration("spawn_z")
     spawn_yaw = LaunchConfiguration("spawn_yaw")
 
-    spawn_x_arg = DeclareLaunchArgument("spawn_x", default_value="-2.44")
-    spawn_y_arg = DeclareLaunchArgument("spawn_y", default_value="-1.18")
+    spawn_x_arg = DeclareLaunchArgument("spawn_x", default_value="-1.18")
+    spawn_y_arg = DeclareLaunchArgument("spawn_y", default_value="2.44")
     spawn_z_arg = DeclareLaunchArgument("spawn_z", default_value="0.05")
-    spawn_yaw_arg = DeclareLaunchArgument("spawn_yaw", default_value="1.67")
+    spawn_yaw_arg = DeclareLaunchArgument("spawn_yaw", default_value="0.0992")
 
     # -----------------------------
     # Gazebo resource paths
@@ -216,3 +216,12 @@ def generate_launch_description():
             slam,
         ]
     )
+
+    #-------LAUNCH COMMANDS--------
+    # ros2 launch robot_2_bringup launch_sim.launch.py
+    
+    #-----TELEOP COMMAND------
+    #ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -p stamped:=true -r /cmd_vel:=/robot_2/cmd_vel
+
+    #-----MAP SAVING COMMAND------
+    #ros2 run nav2_map_server map_saver_cli -f ~/my_map --ros-args -p save_map_timeout:=5.0
