@@ -25,7 +25,12 @@ def generate_launch_description():
         ),
         launch_arguments={
             "use_sim_time": "true",
-            "params_file": slam_params,
+            # NOTE: online_async_launch.py declares this argument as
+            # "slam_params_file", not "params_file". A key that doesn't
+            # match is silently dropped by launch (no error), and
+            # slam_toolbox falls back to its own bundled default params
+            # (including scan_topic: /scan) instead of this file.
+            "slam_params_file": slam_params,
         }.items(),
     )
 
