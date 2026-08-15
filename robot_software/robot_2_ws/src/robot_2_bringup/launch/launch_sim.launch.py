@@ -55,6 +55,19 @@ def generate_launch_description():
     )
 
     # -----------------------------
+    # Robot starting pose on the gamefield
+    # -----------------------------
+    spawn_x = LaunchConfiguration("spawn_x")
+    spawn_y = LaunchConfiguration("spawn_y")
+    spawn_z = LaunchConfiguration("spawn_z")
+    spawn_yaw = LaunchConfiguration("spawn_yaw")
+
+    spawn_x_arg = DeclareLaunchArgument("spawn_x", default_value="-2.44")
+    spawn_y_arg = DeclareLaunchArgument("spawn_y", default_value="-1.18")
+    spawn_z_arg = DeclareLaunchArgument("spawn_z", default_value="0.05")
+    spawn_yaw_arg = DeclareLaunchArgument("spawn_yaw", default_value="0.0")
+
+    # -----------------------------
     # Gazebo resource paths
     # -----------------------------
     gz_resources = AppendEnvironmentVariable(
@@ -91,7 +104,10 @@ def generate_launch_description():
         namespace="robot_2",
         arguments=['-topic', '/robot_2/robot_description',
                    '-name', 'robot_2',
-                   '-z', '0.4'],
+                   '-x', spawn_x,
+                   '-y', spawn_y,
+                   '-z', spawn_z,
+                   '-Y', spawn_yaw],
         output="screen",
     )
 
@@ -185,6 +201,10 @@ def generate_launch_description():
                 description='Use ros2_control if true'
             ),
             world_arg,
+            spawn_x_arg,
+            spawn_y_arg,
+            spawn_z_arg,
+            spawn_yaw_arg,
             gz_resources,
             robot_state_publisher,
             joint_state_publisher,
