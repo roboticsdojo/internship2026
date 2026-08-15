@@ -36,10 +36,8 @@
   <gazebo>
     <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
       <parameters>$(find robot_2_bringup)/config/my_controllers.yaml</parameters>
-      <!-- FIX: Force inner Gazebo nodes to link directly to your namespace and clock channels -->
       <ros>
         <namespace>/robot_2</namespace>
-        <remapping>/robot_2/clock:=/clock</remapping>
       </ros>
       <robot_param_node>/robot_2/robot_state_publisher</robot_param_node>
     </plugin>

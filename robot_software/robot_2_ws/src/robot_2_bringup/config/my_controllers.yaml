@@ -14,8 +14,9 @@
     use_sim_time: true
     publish_rate: 50.0
 
-    # Force the controller to accept non-stamped Twist messages from teleop
-    use_stamped_vel: false
+    # NOTE: on Jazzy, diff_drive_controller's cmd_vel input is always
+    # geometry_msgs/msg/TwistStamped. Publish stamped Twist to
+    # /robot_2/cmd_vel (e.g. teleop_twist_keyboard --ros-args -p stamped:=true).
 
     base_frame_id: robot_2/base_footprint
     odom_frame_id: robot_2/odom

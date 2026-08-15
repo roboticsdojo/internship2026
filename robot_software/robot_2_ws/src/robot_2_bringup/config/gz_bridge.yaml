@@ -18,8 +18,10 @@
   gz_type_name: "gz.msgs.Pose_V"
   direction: GZ_TO_ROS
 
-# FIX: Explicitly bridge global simulation time to your namespaced clock topic
-- ros_topic_name: "/robot_2/clock"
+# Global sim clock. Must stay unnamespaced: every node with use_sim_time:true
+# subscribes to the global "/clock" topic regardless of its own namespace,
+# so bridging it as "/robot_2/clock" means nobody ever receives it.
+- ros_topic_name: "/clock"
   gz_topic_name: "/clock"
   ros_type_name: "rosgraph_msgs/msg/Clock"
   gz_type_name: "gz.msgs.Clock"
