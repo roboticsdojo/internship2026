@@ -223,5 +223,8 @@ def generate_launch_description():
     #-----TELEOP COMMAND------
     #ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -p stamped:=true -r /cmd_vel:=/robot_2/cmd_vel
 
+    #------ RVIZ COMMAND------
+    #rviz2 -d /home/dickson-kabiru/internship2026/robot_software/robot_2_ws/src/robot_2_bringup/rviz/mapping_rviz.rviz
+
     #-----MAP SAVING COMMAND------
     #ros2 run nav2_map_server map_saver_cli -f ~/my_map --ros-args -p save_map_timeout:=5.0
