@@ -29,11 +29,11 @@
     <sensor name="laser" type="gpu_lidar">
       <pose>0 0 0 0 0 0</pose>
       <visualize>true</visualize>
-      <update_rate>10</update_rate>
+      <update_rate>5</update_rate>
       <lidar>
         <scan>
           <horizontal>
-            <samples>360</samples>
+            <samples>180</samples>
             <min_angle>-3.14</min_angle>
             <max_angle>3.14</max_angle>
           </horizontal>

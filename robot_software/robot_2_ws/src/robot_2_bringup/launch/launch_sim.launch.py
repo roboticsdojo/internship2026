@@ -90,7 +90,8 @@ def generate_launch_description():
             ]
         ),
         launch_arguments={
-            "gz_args": ["-r -v4 ", world],
+            #"gz_args": ["-r -v4 ", world],
+            "gz_args": ["-r -s -v4 ", world],
             "on_exit_shutdown": "true",
         }.items(),
     )
@@ -228,3 +229,5 @@ def generate_launch_description():
 
     #-----MAP SAVING COMMAND------
     #ros2 run nav2_map_server map_saver_cli -f ~/my_map --ros-args -p save_map_timeout:=5.0
+
+    # "gz_args": ["-r -v4 ", world],

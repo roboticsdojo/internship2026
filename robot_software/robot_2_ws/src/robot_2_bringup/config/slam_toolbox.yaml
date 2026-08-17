@@ -10,9 +10,6 @@ slam_toolbox:
     ceres_loss_function: None
 
     # Frames
-    # NOTE: tf frame_ids are global (not affected by node namespaces), and
-    # must match what robot_state_publisher / diff_cont actually publish —
-    # no robot_2/ prefix.
     odom_frame: odom
     map_frame: map
     base_frame: base_footprint
@@ -40,12 +37,18 @@ slam_toolbox:
     scan_buffer_maximum_scan_distance: 10.0
 
     # Loop closure
+    # NOTE: tightened after a false loop-closure caused the map to tear near
+    # the offloading stations - likely perceptual aliasing between
+    # similar-looking stations at short range. Higher response thresholds
+    # require a much more confident match before accepting a loop closure;
+    # a smaller search distance also stops it from considering candidates
+    # across a wider area where a wrong-but-similar-looking match could win.
     do_loop_closing: true
-    loop_search_maximum_distance: 3.0
+    loop_search_maximum_distance: 2.0
     loop_match_minimum_chain_size: 10
     loop_match_maximum_variance_coarse: 3.0
-    loop_match_minimum_response_coarse: 0.35
-    loop_match_minimum_response_fine: 0.45
+    loop_match_minimum_response_coarse: 0.45
+    loop_match_minimum_response_fine: 0.55
 
     # Correlation parameters
     correlation_search_space_dimension: 0.5
