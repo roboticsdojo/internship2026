@@ -1,0 +1,10 @@
+/robot_2/controller_manager:
+  ros__parameters:
+    update_rate: 30
+    use_sim_time: true
+    # FIX: Force the controller manager to listen to the global clock topic directly
+    extra_arguments: ["--ros-args", "-r", "/clock:=/clock"]
+
+/robot_2/gz_ros_control:
+  ros__parameters:
+    use_sim_time: true

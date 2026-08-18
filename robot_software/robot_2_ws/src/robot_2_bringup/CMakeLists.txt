@@ -7,9 +7,11 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 
-# Install configuration data and launch scripts into share directories
 install(
-  DIRECTORY config launch
+  DIRECTORY
+    config
+    launch
+    rviz
   DESTINATION share/${PROJECT_NAME}
 )
 

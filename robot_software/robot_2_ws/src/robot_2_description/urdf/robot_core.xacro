@@ -15,8 +15,26 @@
         <color rgba="0 0 0 1"/>
     </material>
 
+    <material name="red">
+        <color rgba="1 0 0 1"/>
+    </material>
+
+    <material name="purple">
+        <color rgba="0.5 0 0.5 1"/>
+    </material>
+
     <link name="base_link">
     </link>
+
+    <link name="base_footprint">
+    </link>
+
+    <joint name="base_footprint_joint" type="fixed">
+        <parent link="base_footprint"/>
+        <child link="base_link"/>
+        <!-- FIX: Offset changed to positive so base_link is elevated properly above floor grid -->
+        <origin xyz="0 0 0.0425" rpy="0 0 0"/>
+    </joint>
 
     <!-- CHASSIS -->
 
@@ -32,7 +50,7 @@
             <geometry>
                 <box size="0.3 0.25 0.18"/>
             </geometry>
-            <material name="white"/>
+            <material name="purple"/>
         </visual>
 
         <collision>
