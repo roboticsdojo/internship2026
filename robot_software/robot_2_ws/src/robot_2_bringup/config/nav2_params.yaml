@@ -97,3 +97,52 @@ global_costmap:
         plugin: "nav2_costmap_2d::InflationLayer"
         inflation_radius: 0.4
         cost_scaling_factor: 3.0
+
+planner_server:
+  ros__parameters:
+    use_sim_time: true
+    planner_plugins: ["GridBased"]
+    GridBased:
+      plugin: "nav2_navfn_planner::NavfnPlanner"
+      tolerance: 0.5
+      use_astar: true
+
+behavior_server:
+  ros__parameters:
+    use_sim_time: true
+    local_costmap_topic: local_costmap/costmap_raw
+    global_costmap_topic: global_costmap/costmap_raw
+    behavior_plugins: ["spin", "backup", "wait"]
+    spin:
+      plugin: "nav2_behaviors::Spin"
+    backup:
+      plugin: "nav2_behaviors::BackUp"
+    wait:
+      plugin: "nav2_behaviors::Wait"
+
+bt_navigator:
+  ros__parameters:
+    use_sim_time: true
+    global_frame: map
+    robot_base_frame: base_footprint
+
+map_server:
+  ros__parameters:
+    use_sim_time: true
+    yaml_filename: ""   # set via launch argument, see 2.4
+
+map_saver:
+  ros__parameters:
+    use_sim_time: true
+
+lifecycle_manager:
+  ros__parameters:
+    use_sim_time: true
+    autostart: true
+    node_names:
+      - map_server
+      - amcl
+      - controller_server
+      - planner_server
+      - behavior_server
+      - bt_navigator
