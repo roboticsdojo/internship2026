@@ -1,18 +1,20 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="robot">
 
-    <xacro:arg name="use_ros2_control" default="true"/>
+    <!-- use_ros2_control is intentionally no longer a switch: this chassis has 3 wheel
+         joints per side (left/right_wheel_{one,two,three}_joint) driven by the
+         diff_drive_controller via ros2_control. The old gazebo_control.xacro path used
+         a classic-Gazebo plugin that only understands a single left/right joint pair
+         and referenced joint names (left_wheel_joint/right_wheel_joint) that don't
+         exist on this robot at all, so it would break instantly if ever enabled, and
+         it has been removed rather than kept as a landmine. sim_mode still switches
+         ros2_control.xacro internally between the GazeboSimSystem hardware plugin
+         (sim) and the real Arduino hardware interface (physical robot). -->
     <xacro:arg name="sim_mode" default="true"/>
 
     <xacro:include filename="robot_core.xacro" />
+    <xacro:include filename="ros2_control.xacro" />
 
-    <xacro:if value="$(arg use_ros2_control)">
-        <xacro:include filename="ros2_control.xacro" />
-    </xacro:if>
-    <xacro:unless value="$(arg use_ros2_control)">
-        <xacro:include filename="gazebo_control.xacro" />
-    </xacro:unless>
-    
     <xacro:include filename="lidar.xacro" />
     <xacro:include filename="camera.xacro" />
     <xacro:include filename="face.xacro" />

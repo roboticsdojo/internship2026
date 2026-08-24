@@ -29,10 +29,15 @@
 #include "rclcpp/time.hpp"
 #include "rclcpp_lifecycle/node_interfaces/lifecycle_node_interface.hpp"
 #include "rclcpp_lifecycle/state.hpp"
-#include "diffdrive_arduino/visibility_control.h"
+// visibility_control.h only exists to define export macros for building
+// shared libraries on Windows; it isn't needed on Linux, so we fall back
+// to an empty macro instead of depending on a file this package doesn't have.
+#ifndef DIFFDRIVE_ARDUINO_PUBLIC
+#define DIFFDRIVE_ARDUINO_PUBLIC
+#endif
 
-#include "diffdrive_arduino/arduino_comms.hpp"
-#include "diffdrive_arduino/wheel.hpp"
+#include "arduino_comms.hpp"
+#include "wheel.hpp"
 
 namespace diffdrive_arduino
 {

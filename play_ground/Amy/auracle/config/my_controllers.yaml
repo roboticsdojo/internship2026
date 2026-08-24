@@ -21,8 +21,15 @@ diff_cont:
     left_wheel_names: ['left_wheel_one_joint', 'left_wheel_two_joint', 'left_wheel_three_joint']
     right_wheel_names: ['right_wheel_one_joint', 'right_wheel_two_joint', 'right_wheel_three_joint']
 
-    wheel_separation: 0.22
-    wheel_radius: 0.033
+    # Measured from emmanuel-assembly.stp: clustered the 6 wheel axle
+    # centers into left/right groups by their shared axis direction and
+    # took the distance between group centroids (~275.5mm), and read the
+    # tire's rolling-surface cylinder radius directly (~23.87mm). The old
+    # 0.22 value was chassis_width/2 + rocker_width/2 doubled - i.e. the
+    # rocker's mounting point on the chassis, not where the wheel actually
+    # contacts the ground once the bogie arm extends outward.
+    wheel_separation: 0.2755
+    wheel_radius: 0.0239
 
     pose_covariance_diagonal: [0.001, 0.001, 0.0, 0.0, 0.0, 0.01]
     twist_covariance_diagonal: [0.001, 0.0, 0.0, 0.0, 0.0, 0.01]
