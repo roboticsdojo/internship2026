@@ -152,12 +152,13 @@ def generate_launch_description():
         arguments=[
             "diff_cont",
             "-c", "/robot_2/controller_manager",
+            "-p", os.path.join(get_package_share_directory("robot_2_bringup"), "config", "my_controllers.yaml"),
             "--controller-ros-args",
             # cmd_vel: diff_cont's real topic is /robot_2/diff_cont/cmd_vel
-            "-r /robot_2/diff_cont/cmd_vel:=/robot_2/cmd_vel "
+            "-r", "/robot_2/diff_cont/cmd_vel:=/robot_2/cmd_vel",
             # odom: diff_cont's real topic is /robot_2/diff_cont/odom (matches
             # its actual namespaced node name, not the un-namespaced /diff_cont)
-            "-r /robot_2/diff_cont/odom:=/robot_2/odom"
+            "-r", "/robot_2/diff_cont/odom:=/robot_2/odom"
             # NOTE: no /tf or /tf_static remap here on purpose. tf2 broadcasters
             # (robot_state_publisher AND diff_cont) always publish to the global
             # /tf and /tf_static topics regardless of node namespace, so both
@@ -167,15 +168,15 @@ def generate_launch_description():
         ],
     )
 
-
     joint_broad_spawner = Node(
         package="controller_manager",
         executable="spawner",
         arguments=[
             "joint_broad",
-            "-c", "/robot_2/controller_manager", 
+            "-c", "/robot_2/controller_manager",
+            "-p", os.path.join(get_package_share_directory("robot_2_bringup"), "config", "my_controllers.yaml"),
             "--controller-ros-args",
-            "-r /joint_states:=/robot_2/joint_states"
+            "-r", "/joint_states:=/robot_2/joint_states"
         ],
     )
 
