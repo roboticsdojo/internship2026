@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<library path="robot_2_hardware">
+
+  <class
+    name="robot_2_hardware/Robot2System"
+    type="robot_2_hardware::Robot2System"
+    base_class_type="hardware_interface::SystemInterface">
+
+    <description>
+      Hardware interface for Robot 2 using an Arduino Uno,
+      L298 motor drivers, and two quadrature encoder feedback channels.
+    </description>
+
+  </class>
+
+</library>
