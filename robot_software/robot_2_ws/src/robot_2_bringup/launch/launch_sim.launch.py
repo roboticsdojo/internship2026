@@ -34,7 +34,16 @@ def generate_launch_description():
                 )
             ]
         ),
-        launch_arguments={'use_sim_time': 'true', 'use_ros2_control': use_ros2_control}.items()
+        launch_arguments={
+            'use_sim_time': 'true',
+            'use_ros2_control': use_ros2_control,
+            # NOTE: explicit here. ros2_control.xacro's sim_mode arg
+            # defaults to 'false' (real robot) so that launch_robot.launch.py
+            # doesn't need to pass anything extra. Sim must therefore set
+            # this explicitly, or it would silently try to load the real
+            # Arduino hardware interface instead of GazeboSimSystem.
+            'sim_mode': 'true',
+        }.items()
     )
 
     # -----------------------------
@@ -220,7 +229,7 @@ def generate_launch_description():
 
     #-------LAUNCH COMMANDS--------
     # ros2 launch robot_2_bringup launch_sim.launch.py
-    
+
     #-----TELEOP COMMAND------
     #ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -p stamped:=true -r /cmd_vel:=/robot_2/cmd_vel
 
