@@ -1,0 +1,10 @@
+<library path="auracle">
+  <class name="diffdrive_arduino/DiffDriveArduinoHardware"
+         type="diffdrive_arduino::DiffDriveArduinoHardware"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Auracle ros2_control hardware interface for an Arduino-driven differential drive robot,
+      including optional IMU state interfaces.
+    </description>
+  </class>
+</library>
