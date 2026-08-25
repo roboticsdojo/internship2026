@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<package format="3">
+
+  <name>robot_2_hardware</name>
+
+  <version>0.0.1</version>
+
+  <description>
+    ROS 2 control hardware interface for Robot 2 using
+    an Arduino Uno, L298 motor drivers, and encoder feedback.
+  </description>
+
+  <maintainer email="kabirud080@gmail.com">
+    Dickson
+  </maintainer>
+
+  <license>Apache-2.0</license>
+
+  <!-- Build system -->
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <!-- ROS 2 dependencies -->
+  <depend>hardware_interface</depend>
+  <depend>pluginlib</depend>
+  <depend>rclcpp</depend>
+  <depend>rclcpp_lifecycle</depend>
+
+  <export>
+
+    <!-- Tell colcon this is an ament_cmake package -->
+    <build_type>ament_cmake</build_type>
+
+    <!-- ros2_control hardware plugin -->
+    <hardware_interface plugin="${prefix}/robot_2_hardware.xml"/>
+
+  </export>
+
+</package>
