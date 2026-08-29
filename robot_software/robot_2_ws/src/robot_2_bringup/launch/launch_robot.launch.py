@@ -106,3 +106,14 @@ def generate_launch_description():
     #-----TELEOP COMMAND------
     # Same topic as sim, thanks to the cmd_vel remap above:
     # ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -p stamped:=true -r /cmd_vel:=/robot_2/cmd_vel
+
+    #--------tailscale commands on the PI---------
+    #export ROS_DOMAIN_ID=0
+    #export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+    #export ROS_STATIC_PEERS=100.98.167.30
+    #launch
+
+    #--------tailscale commands on the WSL2---------
+    #export ROS_DOMAIN_ID=0
+    #export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+    #export ROS_STATIC_PEERS=100.111.115.9
