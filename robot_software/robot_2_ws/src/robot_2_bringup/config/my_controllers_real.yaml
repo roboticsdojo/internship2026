@@ -1,0 +1,40 @@
+/robot_2/controller_manager:
+  ros__parameters:
+    update_rate: 30
+    # NOTE: no use_sim_time here (unlike my_controllers.yaml) - real
+    # hardware must use the system clock, not a /clock topic that
+    # doesn't exist outside simulation. Omitting the key defaults it
+    # to false.
+
+    diff_cont:
+      type: diff_drive_controller/DiffDriveController
+
+    joint_broad:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+/robot_2/diff_cont:
+  ros__parameters:
+    publish_rate: 50.0
+
+    # NOTE: on Jazzy, diff_drive_controller's cmd_vel input is always
+    # geometry_msgs/msg/TwistStamped. Publish stamped Twist to
+    # /robot_2/cmd_vel (e.g. teleop_twist_keyboard --ros-args -p stamped:=true).
+
+    # How long (s) a received cmd_vel is considered valid before the
+    # controller zeroes velocity on its own.
+    cmd_vel_timeout: 0.5
+
+    # diff_drive_controller AUTO-PREPENDS its own node namespace ("robot_2")
+    # to odom_frame_id/base_frame_id unless this is explicitly disabled.
+    # robot_state_publisher does NOT do this, so leaving it enabled splits
+    # the tf tree into "robot_2/odom -> robot_2/base_footprint" (disconnected)
+    # vs "base_footprint -> base_link -> ..." (bare, from robot_state_publisher).
+    tf_frame_prefix_enable: false
+
+    base_frame_id: base_footprint
+    odom_frame_id: odom
+
+    left_wheel_names: ['front_left_wheel_joint', 'back_left_wheel_joint']
+    right_wheel_names: ['front_right_wheel_joint', 'back_right_wheel_joint']
+    wheel_separation: 0.3
+    wheel_radius: 0.0425
