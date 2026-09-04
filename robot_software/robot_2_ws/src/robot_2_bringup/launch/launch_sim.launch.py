@@ -158,33 +158,19 @@ def generate_launch_description():
     diff_drive_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=[
-            "diff_cont",
-            "-c", "/robot_2/controller_manager",
-            "--controller-ros-args",
-            # cmd_vel: diff_cont's real topic is /robot_2/diff_cont/cmd_vel
-            "-r /robot_2/diff_cont/cmd_vel:=/robot_2/cmd_vel "
-            # odom: diff_cont's real topic is /robot_2/diff_cont/odom (matches
-            # its actual namespaced node name, not the un-namespaced /diff_cont)
-            "-r /robot_2/diff_cont/odom:=/robot_2/odom"
-            # NOTE: no /tf or /tf_static remap here on purpose. tf2 broadcasters
-            # (robot_state_publisher AND diff_cont) always publish to the global
-            # /tf and /tf_static topics regardless of node namespace, so both
-            # need to land in the same place. Remapping just diff_cont's tf
-            # elsewhere splits the tree and breaks anything that reads the
-            # global /tf (RViz, slam_toolbox, view_frames).
+        arguments=["diff_cont", "-c", "/robot_2/controller_manager"],
+        remappings=[
+            ("/robot_2/diff_cont/cmd_vel", "/robot_2/cmd_vel"),
+            ("/robot_2/diff_cont/odom", "/robot_2/odom"),
         ],
     )
-
 
     joint_broad_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=[
-            "joint_broad",
-            "-c", "/robot_2/controller_manager", 
-            "--controller-ros-args",
-            "-r /joint_states:=/robot_2/joint_states"
+        arguments=["joint_broad", "-c", "/robot_2/controller_manager"],
+        remappings=[
+            ("/joint_states", "/robot_2/joint_states"),
         ],
     )
 
