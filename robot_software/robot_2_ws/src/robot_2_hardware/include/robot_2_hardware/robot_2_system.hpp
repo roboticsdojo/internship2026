@@ -23,8 +23,13 @@ public:
   // ROS 2 CONTROL LIFECYCLE
   // ==========================================================
 
+  // NOTE: on_init(const HardwareInfo &) is deprecated as of Jazzy in
+  // favor of the HardwareComponentInterfaceParams-based overload below.
+  // The params struct wraps the same HardwareInfo (via params.hardware_info)
+  // plus a weak_ptr to the controller_manager's executor, which this plugin
+  // does not need.
   hardware_interface::CallbackReturn on_init(
-    const hardware_interface::HardwareInfo & info) override;
+    const hardware_interface::HardwareComponentInterfaceParams & params) override;
 
   hardware_interface::CallbackReturn on_configure(
     const rclcpp_lifecycle::State & previous_state) override;
@@ -92,6 +97,17 @@ private:
     double left_velocity,
     double right_velocity);
 
+  // Requests the 'i' IMU response: 9 space-separated floats
+  // (ax ay az gx gy gz roll pitch yaw). Returns false on timeout or a
+  // malformed response - callers should treat this as a soft failure
+  // (keep last known values) rather than failing the whole read()
+  // cycle the way a failed encoder read does, since losing one
+  // cycle's IMU data is far less serious than losing motor control.
+  bool requestImu(
+    double & ax, double & ay, double & az,
+    double & gx, double & gy, double & gz,
+    double & roll, double & pitch, double & yaw);
+
 
   // ==========================================================
   // CONVERSIONS
@@ -109,6 +125,14 @@ private:
   double ticksPerSecondToRadiansPerSecond(
     long delta_ticks,
     double period_seconds) const;
+
+  // Converts roll/pitch/yaw (radians, extrinsic XYZ / "ZYX" Euler
+  // convention matching REP-103) to a quaternion, filling
+  // qx/qy/qz/qw. Hand-rolled rather than pulling in tf2 purely to
+  // avoid adding a dependency for one small piece of math.
+  void eulerToQuaternion(
+    double roll, double pitch, double yaw,
+    double & qx, double & qy, double & qz, double & qw) const;
 
 
   // ==========================================================
@@ -147,6 +171,31 @@ private:
   std::vector<double> hw_positions_;
 
   std::vector<double> hw_velocities_;
+
+
+  // ==========================================================
+  // IMU SENSOR STORAGE
+  //
+  // Populated from info_.sensors (optional - if the URDF/xacro
+  // declares no <sensor> under this hardware block, imu_enabled_
+  // stays false and none of this is used).
+  //
+  // Order (matches REP-145 / semantic_components::IMUSensor):
+  //   0 = orientation.x        5 = angular_velocity.z
+  //   1 = orientation.y        6 = linear_acceleration.x
+  //   2 = orientation.z        7 = linear_acceleration.y
+  //   3 = orientation.w        8 = linear_acceleration.z
+  //   4 = angular_velocity.x
+  //   4..5 = angular_velocity.y/z (see .cpp for exact fill order)
+  // ==========================================================
+
+  bool imu_enabled_{false};
+
+  std::string imu_sensor_name_;
+
+  std::vector<double> imu_state_;
+
+  std::vector<std::string> imu_interface_names_;
 
 
   // ==========================================================
