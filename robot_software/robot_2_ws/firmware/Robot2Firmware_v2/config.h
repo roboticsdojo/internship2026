@@ -33,16 +33,24 @@
 
 /*
 ================================================
+ IMU (MPU6050, I2C)
+================================================
+ SDA = A4 (fixed on Uno - I2C hardware pin, not configurable)
+ SCL = A5 (fixed on Uno - I2C hardware pin, not configurable)
+ VCC = 5V (from buck converter rail - see robot_2_hardware README
+       for why this is NOT powered from the Arduino's own 5V pin
+       or the L298's onboard regulator)
+ GND = common ground (Arduino GND + L298 GNDs + encoder GND + IMU GND)
+*/
+
+/*
+================================================
  RESERVED
 ================================================
 */
 
 // Future servo
 #define SERVO_PIN 11
-
-// MPU6050
-// SDA = A4
-// SCL = A5
 
 /*
 ================================================
@@ -53,8 +61,11 @@
 #define ENCODER_TICKS_PER_REV 1980
 #define MOTOR_MAX_PWM 255
 
-// Measured minimum PWM from testing
-#define MOTOR_MIN_PWM 60
+// Measured minimum PWM from testing. Set to 0 to disable deadband
+// compensation entirely (see motor_driver.cpp) - this was done on the
+// current chassis after PID retuning revealed the compensation was
+// causing oscillation at low commanded speeds.
+#define MOTOR_MIN_PWM 0
 
 /*
  PID
