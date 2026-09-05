@@ -21,14 +21,19 @@ namespace robot_2_hardware
 // ============================================================
 
 hardware_interface::CallbackReturn Robot2System::on_init(
-  const hardware_interface::HardwareInfo & info)
+  const hardware_interface::HardwareComponentInterfaceParams & params)
 {
   if (
-    hardware_interface::SystemInterface::on_init(info) !=
+    hardware_interface::SystemInterface::on_init(params) !=
     hardware_interface::CallbackReturn::SUCCESS)
   {
     return hardware_interface::CallbackReturn::ERROR;
   }
+
+  // The base on_init(params) call above populates the protected info_
+  // member (from params.hardware_info) exactly as the old on_init(info)
+  // overload did - everything below is unchanged and still reads from
+  // info_.
 
   // ----------------------------------------------------------
   // Validate number of joints
@@ -107,6 +112,61 @@ hardware_interface::CallbackReturn Robot2System::on_init(
   hw_commands_.assign(info_.joints.size(), 0.0);
   hw_positions_.assign(info_.joints.size(), 0.0);
   hw_velocities_.assign(info_.joints.size(), 0.0);
+
+  // ----------------------------------------------------------
+  // IMU sensor (optional).
+  //
+  // If the xacro declares a <sensor> block under this hardware,
+  // info_.sensors will be non-empty. This is optional - existing
+  // robots without an IMU wired up simply won't declare one, and
+  // imu_enabled_ stays false, so read()/export_state_interfaces()
+  // skip all IMU handling entirely.
+  // ----------------------------------------------------------
+
+  imu_interface_names_ = {
+    "orientation.x", "orientation.y", "orientation.z", "orientation.w",
+    "angular_velocity.x", "angular_velocity.y", "angular_velocity.z",
+    "linear_acceleration.x", "linear_acceleration.y", "linear_acceleration.z"
+  };
+
+  if (!info_.sensors.empty()) {
+
+    const auto & imu_sensor = info_.sensors.front();
+
+    if (imu_sensor.state_interfaces.size() != imu_interface_names_.size()) {
+
+      RCLCPP_ERROR(
+        rclcpp::get_logger("robot_2_hardware"),
+        "IMU sensor '%s' must declare exactly %zu state interfaces "
+        "(orientation.x/y/z/w, angular_velocity.x/y/z, "
+        "linear_acceleration.x/y/z), got %zu",
+        imu_sensor.name.c_str(),
+        imu_interface_names_.size(),
+        imu_sensor.state_interfaces.size());
+
+      return hardware_interface::CallbackReturn::ERROR;
+    }
+
+    imu_sensor_name_ = imu_sensor.name;
+    imu_state_.assign(imu_interface_names_.size(), 0.0);
+    // Identity quaternion default (no rotation) rather than all-zero,
+    // which is not a valid quaternion.
+    imu_state_[3] = 1.0;  // orientation.w
+
+    imu_enabled_ = true;
+
+    RCLCPP_INFO(
+      rclcpp::get_logger("robot_2_hardware"),
+      "IMU sensor '%s' configured", imu_sensor_name_.c_str());
+
+  } else {
+
+    imu_enabled_ = false;
+
+    RCLCPP_INFO(
+      rclcpp::get_logger("robot_2_hardware"),
+      "No IMU sensor declared in URDF - skipping IMU support");
+  }
 
   // ----------------------------------------------------------
   // Hardware parameters
@@ -272,6 +332,11 @@ hardware_interface::CallbackReturn Robot2System::on_activate(
     hw_velocities_.end(),
     0.0);
 
+  if (imu_enabled_) {
+    std::fill(imu_state_.begin(), imu_state_.end(), 0.0);
+    imu_state_[3] = 1.0;  // orientation.w - identity quaternion
+  }
+
   previous_left_ticks_ = 0;
   previous_right_ticks_ = 0;
   first_read_ = true;
@@ -324,6 +389,15 @@ Robot2System::export_state_interfaces()
       &hw_velocities_[i]);
   }
 
+  if (imu_enabled_) {
+    for (std::size_t i = 0; i < imu_interface_names_.size(); ++i) {
+      state_interfaces.emplace_back(
+        imu_sensor_name_,
+        imu_interface_names_[i],
+        &imu_state_[i]);
+    }
+  }
+
   return state_interfaces;
 }
 
@@ -364,6 +438,13 @@ Robot2System::export_command_interfaces()
 // The Arduino returns cumulative encoder counts.
 // We calculate the delta between reads and convert it
 // into wheel position and velocity.
+//
+// If an IMU is configured, a second serial round-trip ('i') follows
+// the encoder read. This roughly doubles the serial time budget per
+// read() cycle - if this causes read timeouts under load (see the
+// 'Timed out waiting for encoder data' failure mode this project hit
+// during initial bring-up), consider raising timeout_ms or polling
+// the IMU less often than every cycle.
 // ============================================================
 
 hardware_interface::return_type Robot2System::read(
@@ -460,6 +541,49 @@ hardware_interface::return_type Robot2System::read(
 
   previous_left_ticks_ = left_ticks;
   previous_right_ticks_ = right_ticks;
+
+  // ----------------------------------------------------------
+  // IMU (optional, non-fatal on failure)
+  // ----------------------------------------------------------
+
+  if (imu_enabled_) {
+
+    double ax = 0.0, ay = 0.0, az = 0.0;
+    double gx = 0.0, gy = 0.0, gz = 0.0;
+    double roll = 0.0, pitch = 0.0, yaw = 0.0;
+
+    if (requestImu(ax, ay, az, gx, gy, gz, roll, pitch, yaw)) {
+
+      double qx = 0.0, qy = 0.0, qz = 0.0, qw = 1.0;
+      eulerToQuaternion(roll, pitch, yaw, qx, qy, qz, qw);
+
+      imu_state_[0] = qx;
+      imu_state_[1] = qy;
+      imu_state_[2] = qz;
+      imu_state_[3] = qw;
+
+      imu_state_[4] = gx;
+      imu_state_[5] = gy;
+      imu_state_[6] = gz;
+
+      imu_state_[7] = ax;
+      imu_state_[8] = ay;
+      imu_state_[9] = az;
+
+    } else {
+
+      // Non-fatal: keep the last known IMU values and let this
+      // read() cycle otherwise succeed, since encoder/motor control
+      // already succeeded above and is the priority. Losing one
+      // cycle of IMU data is far less serious than aborting the
+      // whole control loop over it.
+      RCLCPP_WARN_THROTTLE(
+        rclcpp::get_logger("robot_2_hardware"),
+        *rclcpp::Clock::make_shared(),
+        5000,
+        "Failed to read IMU data - using last known values");
+    }
+  }
 
   return hardware_interface::return_type::OK;
 }
@@ -908,6 +1032,46 @@ bool Robot2System::requestEncoders(
 
 
 // ============================================================
+// REQUEST IMU
+//
+// Arduino command:
+//
+// i
+//
+// Arduino response:
+//
+// ax ay az gx gy gz roll pitch yaw
+//
+// (linear accel m/s^2, angular velocity rad/s, orientation radians -
+// the Arduino firmware does the unit conversion, not this function)
+// ============================================================
+
+bool Robot2System::requestImu(
+  double & ax, double & ay, double & az,
+  double & gx, double & gy, double & gz,
+  double & roll, double & pitch, double & yaw)
+{
+  if (!writeSerial("i\n")) {
+    return false;
+  }
+
+  std::string line;
+
+  if (!readLine(line, timeout_ms_)) {
+    return false;
+  }
+
+  std::stringstream ss(line);
+
+  if (!(ss >> ax >> ay >> az >> gx >> gy >> gz >> roll >> pitch >> yaw)) {
+    return false;
+  }
+
+  return true;
+}
+
+
+// ============================================================
 // SEND MOTOR COMMAND
 //
 // Arduino expects:
@@ -1002,6 +1166,33 @@ double Robot2System::ticksPerSecondToRadiansPerSecond(
     ticks_per_second *
     (2.0 * M_PI) /
     encoder_ticks_per_rev_;
+}
+
+
+// ============================================================
+// EULER (roll, pitch, yaw) → QUATERNION
+//
+// Standard ZYX intrinsic Euler-to-quaternion conversion (matches
+// REP-103's convention: roll about X, pitch about Y, yaw about Z).
+// Hand-rolled rather than depending on tf2 purely to avoid pulling in
+// an extra dependency for one small, well-known formula.
+// ============================================================
+
+void Robot2System::eulerToQuaternion(
+  double roll, double pitch, double yaw,
+  double & qx, double & qy, double & qz, double & qw) const
+{
+  const double cr = std::cos(roll * 0.5);
+  const double sr = std::sin(roll * 0.5);
+  const double cp = std::cos(pitch * 0.5);
+  const double sp = std::sin(pitch * 0.5);
+  const double cy = std::cos(yaw * 0.5);
+  const double sy = std::sin(yaw * 0.5);
+
+  qw = cr * cp * cy + sr * sp * sy;
+  qx = sr * cp * cy - cr * sp * sy;
+  qy = cr * sp * cy + sr * cp * sy;
+  qz = cr * cp * sy - sr * sp * cy;
 }
 
 
