@@ -44,6 +44,14 @@
         <state_interface name="position"/>
         <state_interface name="velocity"/>
       </joint>
+
+      <!--
+        NOTE: no IMU sensor here yet for sim - gz_ros2_control would
+        need its own IMU sensor plugin/gazebo sensor tag wired up
+        separately if simulated IMU data is wanted later. Not added
+        now since the real robot's IMU was the immediate goal.
+      -->
+
     </ros2_control>
 
     <!-- Gazebo ros2_control plugin -->
@@ -125,6 +133,29 @@
         <state_interface name="position"/>
         <state_interface name="velocity"/>
       </joint>
+
+      <!--
+        IMU (MPU6050 over I2C on the Arduino - SDA=A4, SCL=A5).
+        Interface names below are the standard REP-145 IMU sensor set
+        (matches semantic_components::IMUSensor and what
+        robot_2_system.cpp's on_init() validates against - exactly
+        these 10 names, no more/fewer). Removing this <sensor> block
+        entirely is safe if the IMU isn't wired up: robot_2_system.cpp
+        treats it as fully optional and simply skips IMU handling if
+        info_.sensors is empty.
+      -->
+      <sensor name="imu_sensor">
+        <state_interface name="orientation.x"/>
+        <state_interface name="orientation.y"/>
+        <state_interface name="orientation.z"/>
+        <state_interface name="orientation.w"/>
+        <state_interface name="angular_velocity.x"/>
+        <state_interface name="angular_velocity.y"/>
+        <state_interface name="angular_velocity.z"/>
+        <state_interface name="linear_acceleration.x"/>
+        <state_interface name="linear_acceleration.y"/>
+        <state_interface name="linear_acceleration.z"/>
+      </sensor>
 
     </ros2_control>
 
