@@ -707,8 +707,15 @@ bool Robot2System::openSerial()
     return false;
   }
 
-  // Give Arduino time to reset after opening serial
-  usleep(2000000);
+  // Give Arduino time to reset after opening serial AND to clear
+  // setup(), which now includes imu.begin()'s ~2s blocking
+  // calcOffsets() calibration in addition to the usual bootloader
+  // reset delay. The old 2s value was tuned before the IMU was added
+  // and was too short - read() would start polling for encoder data
+  // while the Arduino was still stuck inside setup(), causing an
+  // immediate encoder-read timeout on the very first cycle after
+  // activation.
+  usleep(4500000);
 
   // Flush stale data
   tcflush(
