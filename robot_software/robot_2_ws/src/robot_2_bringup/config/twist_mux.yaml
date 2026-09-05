@@ -2,6 +2,12 @@ twist_mux:
   ros__parameters:
     topics:
       navigation:
+        # FIXED: was "/robot_2/cmd_vel", which is the FINAL output of
+        # the whole pipeline (twist_stamper -> diff_cont), not
+        # something Nav2 publishes into. collision_monitor's
+        # cmd_vel_out_topic (see nav2_params.yaml) publishes plain
+        # "cmd_vel" globally - that's what twist_mux actually needs
+        # to subscribe to in order to receive Nav2's velocity commands.
         topic: cmd_vel
         timeout: 0.5
         priority: 10

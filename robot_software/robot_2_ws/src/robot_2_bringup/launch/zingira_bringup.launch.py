@@ -89,7 +89,16 @@ def generate_launch_description():
         namespace='robot_2',
         output='screen',
         parameters=[{
-            'serial_port': '/dev/ttyUSB0',
+            # NOTE: was hardcoded to '/dev/ttyUSB0' - USB-serial
+            # enumeration order isn't guaranteed across reboots,
+            # especially with multiple USB-serial devices connected
+            # (Arduino + LiDAR both present here). If the LiDAR
+            # enumerates as ttyUSB1 instead of ttyUSB0 on a given
+            # boot, opening the wrong port causes an immediate SDK
+            # error and the node dies right after startup. Using the
+            # stable by-id path (matching rplidar.launch.py's own
+            # default) avoids this regardless of enumeration order.
+            'serial_port': '/dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0',
             'serial_baudrate': 115200,
             'frame_id': 'laser_frame',
             'angle_compensate': True,
@@ -151,7 +160,7 @@ def generate_launch_description():
     )
 
     # -------LAUNCH COMMAND--------
-    # ros2 launch robot_2_bringup full_bringup.launch.py
+    # ros2 launch robot_2_bringup zingira_bringup.launch.py
 
     # -----TELEOP COMMAND------
     # ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -p stamped:=true -r /cmd_vel:=/robot_2/cmd_vel
