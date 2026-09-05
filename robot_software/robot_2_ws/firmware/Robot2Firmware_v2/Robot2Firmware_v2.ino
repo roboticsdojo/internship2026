@@ -5,6 +5,7 @@
 #include "pid_controller.h"
 #include "serial_protocol.h"
 #include "watchdog.h"
+#include "imu_driver.h"
 
 /*
 ================================================
@@ -36,9 +37,24 @@ void setup()
     encoders.begin();
 
     /*
-      Initial PID tuning
-      These are starting values.
-      They will be tuned later.
+      Initialize IMU.
+      BLOCKS for ~2 seconds during calibration - robot must be
+      stationary and level here. If this fails (MPU6050 not wired/
+      detected), imu.isInitialized() stays false and the 'i' serial
+      command will simply keep returning zeros rather than erroring -
+      there is no serial print here to report failure, since any
+      startup banner text would pollute the buffer ROS2 expects to be
+      clean.
+    */
+    imu.begin();
+
+    /*
+      Initial PID tuning.
+      Retuned on the current chassis via live 'p' commands after the
+      original placeholder values (2.0, 0.0, 0.2) caused oscillation.
+      Adjust here once a final stable value is confirmed; see
+      pid_controller.cpp and the firmware README for the tuning
+      procedure.
     */
     leftPID.setTunings(2.0, 0.0, 0.2);
     rightPID.setTunings(2.0, 0.0, 0.2);
@@ -63,6 +79,14 @@ void loop()
       Always listen for commands from Serial
     */
     serialUpdate();
+
+    /*
+      Refresh the IMU's complementary filter. Must run every loop
+      iteration regardless of whether an 'i' command has arrived, so
+      the roll/pitch/yaw estimate stays current rather than only
+      updating whenever the Pi happens to poll it.
+    */
+    imu.update();
 
     /*
       PID update loop (20Hz)
@@ -98,9 +122,9 @@ void loop()
     /*
       Safety watchdog
       If Raspberry Pi stops sending motion commands ('m' or 'o'),
-      stop robot. Note: querying encoders ('e') does NOT reset this
-      timer, so a dead teleop link is caught even if odometry
-      polling keeps running.
+      stop robot. Note: querying encoders ('e') or the IMU ('i') does
+      NOT reset this timer, so a dead teleop link is caught even if
+      sensor polling keeps running.
     */
     if (watchdogExpired())
     {
