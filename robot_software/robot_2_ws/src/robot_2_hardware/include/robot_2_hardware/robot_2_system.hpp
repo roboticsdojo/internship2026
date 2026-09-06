@@ -23,11 +23,6 @@ public:
   // ROS 2 CONTROL LIFECYCLE
   // ==========================================================
 
-  // NOTE: on_init(const HardwareInfo &) is deprecated as of Jazzy in
-  // favor of the HardwareComponentInterfaceParams-based overload below.
-  // The params struct wraps the same HardwareInfo (via params.hardware_info)
-  // plus a weak_ptr to the controller_manager's executor, which this plugin
-  // does not need.
   hardware_interface::CallbackReturn on_init(
     const hardware_interface::HardwareComponentInterfaceParams & params) override;
 
@@ -89,24 +84,29 @@ private:
   // ARDUINO PROTOCOL
   // ==========================================================
 
-  bool requestEncoders(
-    long & left_ticks,
-    long & right_ticks);
+  // Combined encoder + IMU query ('b' command) - replaces the old
+  // separate requestEncoders()/requestImu() pair. Those required two
+  // sequential blocking serial round trips per read() cycle, each
+  // gated by the Arduino's loop() only checking Serial.available()
+  // once per pass (with imu.update()'s I2C transaction also running
+  // every loop() pass in between) - a meaningful chunk of the 33ms
+  // controller_manager cycle budget was going into that second
+  // round trip alone. One combined query halves the per-cycle
+  // serial latency.
+  //
+  // Returns false on timeout or a malformed response. Unlike the old
+  // requestEncoders()/requestImu() split, encoder and IMU data now
+  // succeed or fail together as a single unit - see read()'s comment
+  // for how this is handled.
+  bool requestCombined(
+    long & left_ticks, long & right_ticks,
+    double & ax, double & ay, double & az,
+    double & gx, double & gy, double & gz,
+    double & roll, double & pitch, double & yaw);
 
   bool sendMotorCommand(
     double left_velocity,
     double right_velocity);
-
-  // Requests the 'i' IMU response: 9 space-separated floats
-  // (ax ay az gx gy gz roll pitch yaw). Returns false on timeout or a
-  // malformed response - callers should treat this as a soft failure
-  // (keep last known values) rather than failing the whole read()
-  // cycle the way a failed encoder read does, since losing one
-  // cycle's IMU data is far less serious than losing motor control.
-  bool requestImu(
-    double & ax, double & ay, double & az,
-    double & gx, double & gy, double & gz,
-    double & roll, double & pitch, double & yaw);
 
 
   // ==========================================================
@@ -126,10 +126,6 @@ private:
     long delta_ticks,
     double period_seconds) const;
 
-  // Converts roll/pitch/yaw (radians, extrinsic XYZ / "ZYX" Euler
-  // convention matching REP-103) to a quaternion, filling
-  // qx/qy/qz/qw. Hand-rolled rather than pulling in tf2 purely to
-  // avoid adding a dependency for one small piece of math.
   void eulerToQuaternion(
     double roll, double pitch, double yaw,
     double & qx, double & qy, double & qz, double & qw) const;
@@ -175,18 +171,6 @@ private:
 
   // ==========================================================
   // IMU SENSOR STORAGE
-  //
-  // Populated from info_.sensors (optional - if the URDF/xacro
-  // declares no <sensor> under this hardware block, imu_enabled_
-  // stays false and none of this is used).
-  //
-  // Order (matches REP-145 / semantic_components::IMUSensor):
-  //   0 = orientation.x        5 = angular_velocity.z
-  //   1 = orientation.y        6 = linear_acceleration.x
-  //   2 = orientation.z        7 = linear_acceleration.y
-  //   3 = orientation.w        8 = linear_acceleration.z
-  //   4 = angular_velocity.x
-  //   4..5 = angular_velocity.y/z (see .cpp for exact fill order)
   // ==========================================================
 
   bool imu_enabled_{false};
@@ -204,7 +188,12 @@ private:
 
   std::string device_;
 
-  int baud_rate_{57600};
+  // NOTE: default here is only used if the "baud_rate" hardware
+  // parameter is absent from ros2_control.xacro entirely. The
+  // firmware's actual SERIAL_BAUD (config.h) MUST match whatever
+  // value ros2_control.xacro passes - raised to 115200 alongside the
+  // firmware to roughly halve per-message transmission time.
+  int baud_rate_{115200};
 
   int timeout_ms_{200};
 
