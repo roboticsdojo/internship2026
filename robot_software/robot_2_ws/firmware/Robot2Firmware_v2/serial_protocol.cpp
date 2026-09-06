@@ -187,6 +187,36 @@ void processCommand(char command, float arg1, float arg2, float arg3)
             leftPID.reset();
             rightPID.reset();
             break;
+            
+        case 'b':
+            // Combined encoder + IMU query, matching
+            // Robot2System::requestCombined() on the ROS side. See
+            // config.h/robot_2_system.hpp for why this replaced two
+            // separate 'e' + 'i' round trips per read() cycle.
+            // NOTE: does NOT reset the watchdog - passive sensor
+            // poll, same reasoning as 'e' and 'i'.
+            Serial.print(encoders.getLeftTicks());
+            Serial.print(" ");
+            Serial.print(encoders.getRightTicks());
+            Serial.print(" ");
+            Serial.print(imu.getAccelX(), 4);
+            Serial.print(" ");
+            Serial.print(imu.getAccelY(), 4);
+            Serial.print(" ");
+            Serial.print(imu.getAccelZ(), 4);
+            Serial.print(" ");
+            Serial.print(imu.getGyroX(), 4);
+            Serial.print(" ");
+            Serial.print(imu.getGyroY(), 4);
+            Serial.print(" ");
+            Serial.print(imu.getGyroZ(), 4);
+            Serial.print(" ");
+            Serial.print(imu.getRoll(), 4);
+            Serial.print(" ");
+            Serial.print(imu.getPitch(), 4);
+            Serial.print(" ");
+            Serial.println(imu.getYaw(), 4);
+            break;
 
         default:
             // Do nothing to avoid polluting the buffer if trash data is
