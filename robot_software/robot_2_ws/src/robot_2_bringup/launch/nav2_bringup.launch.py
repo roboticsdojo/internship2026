@@ -124,3 +124,5 @@ def generate_launch_description():
     #
     # If you don't have twist_stamper installed yet:
     #   sudo apt install ros-jazzy-twist-stamper
+    # ros2 lifecycle get /map_server
+    # ros2 lifecycle get /amcl

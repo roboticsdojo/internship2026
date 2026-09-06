@@ -5,7 +5,7 @@ amcl:
     alpha3: 0.2
     alpha4: 0.2
     alpha5: 0.2
-    ~set_initial_pose: true
+    set_initial_pose: true
     initial_pose:
       x: 0.0
       y: 0.0
