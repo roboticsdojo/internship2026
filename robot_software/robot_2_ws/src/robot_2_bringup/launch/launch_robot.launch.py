@@ -117,3 +117,7 @@ def generate_launch_description():
     #export ROS_DOMAIN_ID=0
     #export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
     #export ROS_STATIC_PEERS=100.111.115.9
+    #picocom -b 57600 /dev/ttyUSB_ARDUINO
+    #ls -l /dev/ttyUSB_ARDUINO
+    #ros2 control list_controllers -c /robot_2/controller_manager
+    #ros2 control list_hardware_components -c /robot_2/controller_manager
