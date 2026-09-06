@@ -75,6 +75,6 @@
 /*
  SERIAL
 */
-#define SERIAL_BAUD 57600
+#define SERIAL_BAUD 115200   // was 57600 - halves per-message transmission time
 
 #endif
