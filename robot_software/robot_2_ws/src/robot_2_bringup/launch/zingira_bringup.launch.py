@@ -4,9 +4,11 @@ from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
 from launch.actions import (
+    DeclareLaunchArgument,
     IncludeLaunchDescription,
     RegisterEventHandler,
 )
+from launch.conditions import IfCondition
 from launch.event_handlers import OnProcessStart
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
@@ -15,6 +17,25 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
+
+    # -----------------------------
+    # Toggle for SLAM mapping mode.
+    # -----------------------------
+    # slam_toolbox (mapping) and Nav2's map_server+AMCL (navigation)
+    # both publish to the global /map topic. Running both at once
+    # means they fight over it - slam_toolbox republishes its own
+    # partial, growing map every map_update_interval seconds and
+    # stomps on map_server's static saved map. Default false here:
+    # use slam:=true only while actively building/updating a map;
+    # leave it false when you're about to bring up
+    # nav2_bringup.launch.py for actual navigation.
+    slam_arg = LaunchConfiguration('slam')
+    declare_slam_cmd = DeclareLaunchArgument(
+        'slam',
+        default_value='false',
+        description='Launch slam_toolbox in mapping mode. Set false '
+                     'when using map_server+AMCL for navigation instead.',
+    )
 
     # -----------------------------
     # 1. Robot State Publisher (starts first)
@@ -89,15 +110,6 @@ def generate_launch_description():
         namespace='robot_2',
         output='screen',
         parameters=[{
-            # NOTE: was hardcoded to '/dev/ttyUSB0' - USB-serial
-            # enumeration order isn't guaranteed across reboots,
-            # especially with multiple USB-serial devices connected
-            # (Arduino + LiDAR both present here). If the LiDAR
-            # enumerates as ttyUSB1 instead of ttyUSB0 on a given
-            # boot, opening the wrong port causes an immediate SDK
-            # error and the node dies right after startup. Using the
-            # stable by-id path (matching rplidar.launch.py's own
-            # default) avoids this regardless of enumeration order.
             'serial_port': '/dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0',
             'serial_baudrate': 115200,
             'frame_id': 'laser_frame',
@@ -107,7 +119,8 @@ def generate_launch_description():
     )
 
     # -----------------------------
-    # 3. slam_toolbox (starts after lidar node comes up)
+    # 3. slam_toolbox (starts after lidar node comes up) - MAPPING ONLY,
+    # only included at all when slam:=true is passed.
     # -----------------------------
     slam_toolbox = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -126,13 +139,13 @@ def generate_launch_description():
                 "slam_toolbox.yaml",
             ),
             'use_sim_time': 'false',
-        }.items()
+        }.items(),
+        condition=IfCondition(slam_arg),
     )
 
     # -----------------------------
     # Event-based sequencing
     # -----------------------------
-    # Once controller_manager actually starts, launch the LiDAR.
     start_lidar_after_controller_manager = RegisterEventHandler(
         OnProcessStart(
             target_action=controller_manager,
@@ -140,7 +153,8 @@ def generate_launch_description():
         )
     )
 
-    # Once the LiDAR node actually starts, launch slam_toolbox.
+    # slam_toolbox's own IfCondition above means this simply no-ops
+    # when slam:=false - no separate condition needed here.
     start_slam_after_lidar = RegisterEventHandler(
         OnProcessStart(
             target_action=lidar_node,
@@ -150,6 +164,7 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
+            declare_slam_cmd,
             robot_state_publisher,
             controller_manager,
             diff_drive_spawner,
@@ -159,8 +174,14 @@ def generate_launch_description():
         ]
     )
 
-    # -------LAUNCH COMMAND--------
-    # ros2 launch robot_2_bringup zingira_bringup.launch.py
+    # -------LAUNCH COMMANDS--------
+    # Mapping mode (build/update a map):
+    #   ros2 launch robot_2_bringup zingira_bringup.launch.py slam:=true
+    #
+    # Navigation mode (robot + lidar only, no SLAM):
+    #   ros2 launch robot_2_bringup zingira_bringup.launch.py
+    #   (then, in a SEPARATE terminal, once that's stable:)
+    #   ros2 launch robot_2_bringup nav2_bringup.launch.py map:=<path/to/map.yaml>
 
     # -----TELEOP COMMAND------
     # ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -p stamped:=true -r /cmd_vel:=/robot_2/cmd_vel

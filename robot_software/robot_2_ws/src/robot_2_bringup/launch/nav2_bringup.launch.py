@@ -19,7 +19,7 @@ def generate_launch_description():
     twist_mux_params_file = os.path.join(bringup_pkg, "config", "twist_mux.yaml")
 
     default_map = os.path.join(
-        bringup_pkg, "config", "maps", "my_map.yaml"
+        bringup_pkg, "config", "maps", "my_room.yaml"
     )
 
     map_yaml_file = LaunchConfiguration("map")
