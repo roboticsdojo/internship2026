@@ -124,8 +124,10 @@ def generate_launch_description():
     #
     # If you don't have twist_stamper installed yet:
     #   sudo apt install ros-jazzy-twist-stamper
-    # ros2 lifecycle get /map_server
-    # ros2 lifecycle get /amcl
-    #ros2 topic hz /cmd_vel               collision_monitor's output
-    #ros2 topic hz /cmd_vel_unstamped     twist_mux's output
-    #ros2 topic hz /robot_2/cmd_vel       twist_stamper's final output -> what diff_cont actually receives
+    #   ros2 lifecycle get /map_server
+    #   ros2 lifecycle get /amcl
+    #   ros2 topic hz /cmd_vel               collision_monitor's output
+    #   ros2 topic hz /cmd_vel_unstamped     twist_mux's output
+    #   ros2 topic hz /robot_2/cmd_vel       twist_stamper's final output -> what diff_cont actually receives
+    #   ros2 topic pub /robot_2/cmd_vel geometry_msgs/msg/TwistStamped "{twist: {linear: {x: 0.3}}}" -r 10
+    #   ros2 topic echo /robot_2/odom --once
