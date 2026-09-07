@@ -56,8 +56,8 @@ void setup()
       pid_controller.cpp and the firmware README for the tuning
       procedure.
     */
-    leftPID.setTunings(2.0, 0.0, 0.2);
-    rightPID.setTunings(2.0, 0.0, 0.2);
+    leftPID.setTunings(2.0, 0.3, 0.2);
+    rightPID.setTunings(2.0, 0.3, 0.2);
 
     /*
       Start watchdog timer
