@@ -1,13 +1,16 @@
 twist_mux:
   ros__parameters:
+    # FIXED: was left undeclared, which made twist_mux default to
+    # true (expecting TwistStamped on its subscribed topics).
+    # collision_monitor publishes plain Twist on /cmd_vel (unstamped
+    # is exactly what "cmd_vel_unstamped" as twist_mux's output name
+    # implies) - twist_stamper further downstream is what converts to
+    # TwistStamped before diff_cont. The type mismatch meant
+    # twist_mux's subscription never connected to collision_monitor's
+    # publisher at all, silently dropping every command.
+    use_stamped: false
     topics:
       navigation:
-        # FIXED: was "/robot_2/cmd_vel", which is the FINAL output of
-        # the whole pipeline (twist_stamper -> diff_cont), not
-        # something Nav2 publishes into. collision_monitor's
-        # cmd_vel_out_topic (see nav2_params.yaml) publishes plain
-        # "cmd_vel" globally - that's what twist_mux actually needs
-        # to subscribe to in order to receive Nav2's velocity commands.
         topic: cmd_vel
         timeout: 0.5
         priority: 10
