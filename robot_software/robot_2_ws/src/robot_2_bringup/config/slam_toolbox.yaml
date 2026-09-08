@@ -1,3 +1,7 @@
+#here is the launh command
+#ros2 launch slam_toolbox online_async_launch.py slam_params_file:=/home/dicky_nikita_joan_karani/internship2026/robot_software/robot_2_ws/install/robot_2_bringup/share/robot_2_bringup/config/slam_toolbox.yaml use_sim_time:=false
+
+
 slam_toolbox:
   ros__parameters:
 
@@ -18,7 +22,7 @@ slam_toolbox:
     # General
     mode: mapping
     use_map_saver: true
-    use_sim_time: true
+    use_sim_time: false
 
     # Map update
     map_update_interval: 2.0

@@ -3,7 +3,11 @@ import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
+from launch.actions import (
+    IncludeLaunchDescription,
+    RegisterEventHandler,
+)
+from launch.event_handlers import OnProcessStart
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 
@@ -13,9 +17,8 @@ from launch_ros.actions import Node
 def generate_launch_description():
 
     # -----------------------------
-    # Robot State Publisher
+    # 1. Robot State Publisher (starts first)
     # -----------------------------
-
     robot_state_publisher = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
@@ -29,9 +32,6 @@ def generate_launch_description():
         launch_arguments={
             'use_sim_time': 'false',
             'use_ros2_control': 'true',
-            # Selects the real-robot <ros2_control> block in
-            # ros2_control.xacro (Arduino/L298 via robot_2_hardware)
-            # instead of GazeboSimSystem.
             'sim_mode': 'false',
         }.items()
     )
@@ -39,12 +39,6 @@ def generate_launch_description():
     # -----------------------------
     # Controller Manager
     # -----------------------------
-    # Unlike sim (where gz_ros2_control runs controller_manager as part
-    # of the Gazebo plugin), the real robot needs its own
-    # ros2_control_node process reading robot_description from the
-    # topic robot_state_publisher publishes, and its own real-robot
-    # controller params (use_sim_time: false, unlike my_controllers.yaml
-    # which is sim-only and hardcodes use_sim_time: true throughout).
     controller_manager = Node(
         package="controller_manager",
         executable="ros2_control_node",
@@ -63,9 +57,6 @@ def generate_launch_description():
     # -----------------------------
     # Hardware Controller Spawners
     # -----------------------------
-    # Same remap pattern as launch_sim.launch.py so teleop and any tools
-    # that publish to /robot_2/cmd_vel or read /robot_2/odom work
-    # identically whether the robot is real or simulated.
     diff_drive_spawner = Node(
         package="controller_manager",
         executable="spawner",
@@ -75,8 +66,6 @@ def generate_launch_description():
             "--controller-ros-args",
             "-r /robot_2/diff_cont/cmd_vel:=/robot_2/cmd_vel "
             "-r /robot_2/diff_cont/odom:=/robot_2/odom"
-            # NOTE: no /tf or /tf_static remap - see launch_sim.launch.py
-            # for why (global tf tree must not be split).
         ],
     )
 
@@ -91,29 +80,78 @@ def generate_launch_description():
         ],
     )
 
+    # -----------------------------
+    # 2. LiDAR (starts after controller_manager comes up)
+    # -----------------------------
+    lidar_node = Node(
+        package='rplidar_ros',
+        executable='rplidar_composition',
+        namespace='robot_2',
+        output='screen',
+        parameters=[{
+            'serial_port': '/dev/ttyUSB0',
+            'serial_baudrate': 115200,
+            'frame_id': 'laser_frame',
+            'angle_compensate': True,
+            'scan_mode': 'Standard'
+        }]
+    )
+
+    # -----------------------------
+    # 3. slam_toolbox (starts after lidar node comes up)
+    # -----------------------------
+    slam_toolbox = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            [
+                os.path.join(
+                    get_package_share_directory("slam_toolbox"),
+                    "launch",
+                    "online_async_launch.py",
+                )
+            ]
+        ),
+        launch_arguments={
+            'slam_params_file': os.path.join(
+                get_package_share_directory("robot_2_bringup"),
+                "config",
+                "slam_toolbox.yaml",
+            ),
+            'use_sim_time': 'false',
+        }.items()
+    )
+
+    # -----------------------------
+    # Event-based sequencing
+    # -----------------------------
+    # Once controller_manager actually starts, launch the LiDAR.
+    start_lidar_after_controller_manager = RegisterEventHandler(
+        OnProcessStart(
+            target_action=controller_manager,
+            on_start=[lidar_node],
+        )
+    )
+
+    # Once the LiDAR node actually starts, launch slam_toolbox.
+    start_slam_after_lidar = RegisterEventHandler(
+        OnProcessStart(
+            target_action=lidar_node,
+            on_start=[slam_toolbox],
+        )
+    )
+
     return LaunchDescription(
         [
             robot_state_publisher,
             controller_manager,
             diff_drive_spawner,
             joint_broad_spawner,
+            start_lidar_after_controller_manager,
+            start_slam_after_lidar,
         ]
     )
 
-    #-------LAUNCH COMMAND--------
-    # ros2 launch robot_2_bringup launch_robot.launch.py
+    # -------LAUNCH COMMAND--------
+    # ros2 launch robot_2_bringup full_bringup.launch.py
 
-    #-----TELEOP COMMAND------
-    # Same topic as sim, thanks to the cmd_vel remap above:
+    # -----TELEOP COMMAND------
     # ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -p stamped:=true -r /cmd_vel:=/robot_2/cmd_vel
-
-    #--------tailscale commands on the PI---------
-    #export ROS_DOMAIN_ID=0
-    #export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
-    #export ROS_STATIC_PEERS=100.98.167.30
-    #launch
-
-    #--------tailscale commands on the WSL2---------
-    #export ROS_DOMAIN_ID=0
-    #export ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
-    #export ROS_STATIC_PEERS=100.111.115.9
