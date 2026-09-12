@@ -10,7 +10,7 @@
   <xacro:arg name="sim_mode" default="false"/>
 
   <!-- ====================================================== -->
-  <!-- SIMULATION            -->
+  <!-- SIMULATION -->
   <!-- ====================================================== -->
 
   <xacro:if value="$(arg sim_mode)">
@@ -69,7 +69,7 @@
 
 
   <!-- ====================================================== -->
-  <!-- REAL ROBOT (Arduino Uno + 2x L298N + quadrature enc.)   -->
+  <!-- REAL ROBOT (Arduino Uno + 2x L298N + quadrature enc.)  -->
   <!-- ====================================================== -->
 
   <xacro:unless value="$(arg sim_mode)">
