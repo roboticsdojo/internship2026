@@ -3,6 +3,7 @@
 #include "motor_driver.h"
 #include "pid_controller.h"
 #include "watchdog.h"
+#include "imu_driver.h"
 
 String inputString = "";
 bool commandReady = false;
@@ -121,6 +122,35 @@ void processCommand(char command, float arg1, float arg2, float arg3)
             Serial.println(encoders.getRightTicks());
             break;
 
+        case 'i':
+            // ROS asks for IMU data. Returns 9 space-separated floats:
+            // ax ay az gx gy gz roll pitch yaw
+            // Linear accel in m/s^2, angular velocity in rad/s,
+            // orientation (roll/pitch/yaw) in radians. If the IMU
+            // failed to initialize, these are all 0.0 - the caller
+            // (robot_2_hardware) treats a failed/zeroed IMU read as
+            // non-fatal, unlike a failed encoder read.
+            // NOTE: does NOT reset the watchdog - passive sensor poll,
+            // same reasoning as 'e'.
+            Serial.print(imu.getAccelX(), 4);
+            Serial.print(" ");
+            Serial.print(imu.getAccelY(), 4);
+            Serial.print(" ");
+            Serial.print(imu.getAccelZ(), 4);
+            Serial.print(" ");
+            Serial.print(imu.getGyroX(), 4);
+            Serial.print(" ");
+            Serial.print(imu.getGyroY(), 4);
+            Serial.print(" ");
+            Serial.print(imu.getGyroZ(), 4);
+            Serial.print(" ");
+            Serial.print(imu.getRoll(), 4);
+            Serial.print(" ");
+            Serial.print(imu.getPitch(), 4);
+            Serial.print(" ");
+            Serial.println(imu.getYaw(), 4);
+            break;
+
         case 'm':
             // ROS sets target velocities. We pass them directly to the
             // PID controllers. This is a live motion command, so it
@@ -156,6 +186,36 @@ void processCommand(char command, float arg1, float arg2, float arg3)
             motorSetPWM(0, 0);
             leftPID.reset();
             rightPID.reset();
+            break;
+            
+        case 'b':
+            // Combined encoder + IMU query, matching
+            // Robot2System::requestCombined() on the ROS side. See
+            // config.h/robot_2_system.hpp for why this replaced two
+            // separate 'e' + 'i' round trips per read() cycle.
+            // NOTE: does NOT reset the watchdog - passive sensor
+            // poll, same reasoning as 'e' and 'i'.
+            Serial.print(encoders.getLeftTicks());
+            Serial.print(" ");
+            Serial.print(encoders.getRightTicks());
+            Serial.print(" ");
+            Serial.print(imu.getAccelX(), 4);
+            Serial.print(" ");
+            Serial.print(imu.getAccelY(), 4);
+            Serial.print(" ");
+            Serial.print(imu.getAccelZ(), 4);
+            Serial.print(" ");
+            Serial.print(imu.getGyroX(), 4);
+            Serial.print(" ");
+            Serial.print(imu.getGyroY(), 4);
+            Serial.print(" ");
+            Serial.print(imu.getGyroZ(), 4);
+            Serial.print(" ");
+            Serial.print(imu.getRoll(), 4);
+            Serial.print(" ");
+            Serial.print(imu.getPitch(), 4);
+            Serial.print(" ");
+            Serial.println(imu.getYaw(), 4);
             break;
 
         default:

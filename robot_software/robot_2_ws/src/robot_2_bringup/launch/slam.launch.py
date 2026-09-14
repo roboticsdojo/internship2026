@@ -24,7 +24,16 @@ def generate_launch_description():
             )
         ),
         launch_arguments={
-            "use_sim_time": "true",
+            # FIXED: was "true". There's no /clock publisher on real
+            # hardware, so slam_toolbox's node clock never advances
+            # against real sensor timestamps with sim time on - this
+            # can stall TF lookups and scan buffering, degrading or
+            # corrupting the resulting map. slam_toolbox.yaml itself
+            # already declares use_sim_time: false, and
+            # zingira_bringup.launch.py's inline slam_toolbox include
+            # already does this correctly - this file was the
+            # inconsistent one.
+            "use_sim_time": "false",
             # NOTE: online_async_launch.py declares this argument as
             # "slam_params_file", not "params_file". A key that doesn't
             # match is silently dropped by launch (no error), and

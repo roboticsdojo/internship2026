@@ -37,12 +37,12 @@ void setLeftMotor(int pwm)
         pwm = MOTOR_MAX_PWM;
 
     /*
-      Deadband compensation.
-      Below MOTOR_MIN_PWM the motor draws current but does not
-      actually turn, which stalls the PID loop (it sees zero
-      ticks and keeps ramping error/integral). Any nonzero
-      command is bumped up to the measured minimum that actually
-      moves the wheels.
+      Deadband compensation. Currently inert (MOTOR_MIN_PWM = 0 in
+      config.h) - was set to a measured value on the old chassis, but
+      on the current chassis it was found to cause PID oscillation
+      (small PID outputs got snapped up to MOTOR_MIN_PWM, overshooting
+      past target every cycle). If re-enabling this on a future
+      chassis, retune PID gains afterward - the two interact.
     */
     if (pwm > 0 && pwm < MOTOR_MIN_PWM)
         pwm = MOTOR_MIN_PWM;

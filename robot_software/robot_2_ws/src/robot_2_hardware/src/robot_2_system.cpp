@@ -21,18 +21,14 @@ namespace robot_2_hardware
 // ============================================================
 
 hardware_interface::CallbackReturn Robot2System::on_init(
-  const hardware_interface::HardwareInfo & info)
+  const hardware_interface::HardwareComponentInterfaceParams & params)
 {
   if (
-    hardware_interface::SystemInterface::on_init(info) !=
+    hardware_interface::SystemInterface::on_init(params) !=
     hardware_interface::CallbackReturn::SUCCESS)
   {
     return hardware_interface::CallbackReturn::ERROR;
   }
-
-  // ----------------------------------------------------------
-  // Validate number of joints
-  // ----------------------------------------------------------
 
   if (info_.joints.size() != 4) {
     RCLCPP_ERROR(
@@ -48,10 +44,6 @@ hardware_interface::CallbackReturn Robot2System::on_init(
   for (const auto & joint : info_.joints) {
     joint_names_.push_back(joint.name);
 
-    // --------------------------------------------------------
-    // Each joint must have one velocity command interface
-    // --------------------------------------------------------
-
     if (joint.command_interfaces.size() != 1 ||
         joint.command_interfaces[0].name !=
         hardware_interface::HW_IF_VELOCITY)
@@ -63,10 +55,6 @@ hardware_interface::CallbackReturn Robot2System::on_init(
 
       return hardware_interface::CallbackReturn::ERROR;
     }
-
-    // --------------------------------------------------------
-    // Position + velocity state interfaces
-    // --------------------------------------------------------
 
     if (joint.state_interfaces.size() != 2) {
       RCLCPP_ERROR(
@@ -100,17 +88,52 @@ hardware_interface::CallbackReturn Robot2System::on_init(
     }
   }
 
-  // ----------------------------------------------------------
-  // Allocate storage
-  // ----------------------------------------------------------
-
   hw_commands_.assign(info_.joints.size(), 0.0);
   hw_positions_.assign(info_.joints.size(), 0.0);
   hw_velocities_.assign(info_.joints.size(), 0.0);
 
-  // ----------------------------------------------------------
-  // Hardware parameters
-  // ----------------------------------------------------------
+  imu_interface_names_ = {
+    "orientation.x", "orientation.y", "orientation.z", "orientation.w",
+    "angular_velocity.x", "angular_velocity.y", "angular_velocity.z",
+    "linear_acceleration.x", "linear_acceleration.y", "linear_acceleration.z"
+  };
+
+  if (!info_.sensors.empty()) {
+
+    const auto & imu_sensor = info_.sensors.front();
+
+    if (imu_sensor.state_interfaces.size() != imu_interface_names_.size()) {
+
+      RCLCPP_ERROR(
+        rclcpp::get_logger("robot_2_hardware"),
+        "IMU sensor '%s' must declare exactly %zu state interfaces "
+        "(orientation.x/y/z/w, angular_velocity.x/y/z, "
+        "linear_acceleration.x/y/z), got %zu",
+        imu_sensor.name.c_str(),
+        imu_interface_names_.size(),
+        imu_sensor.state_interfaces.size());
+
+      return hardware_interface::CallbackReturn::ERROR;
+    }
+
+    imu_sensor_name_ = imu_sensor.name;
+    imu_state_.assign(imu_interface_names_.size(), 0.0);
+    imu_state_[3] = 1.0;  // orientation.w
+
+    imu_enabled_ = true;
+
+    RCLCPP_INFO(
+      rclcpp::get_logger("robot_2_hardware"),
+      "IMU sensor '%s' configured", imu_sensor_name_.c_str());
+
+  } else {
+
+    imu_enabled_ = false;
+
+    RCLCPP_INFO(
+      rclcpp::get_logger("robot_2_hardware"),
+      "No IMU sensor declared in URDF - skipping IMU support");
+  }
 
   device_ = getStringParameter(
     "device",
@@ -119,7 +142,7 @@ hardware_interface::CallbackReturn Robot2System::on_init(
   baud_rate_ = static_cast<int>(
     getNumericParameter(
       "baud_rate",
-      57600));
+      115200));
 
   timeout_ms_ = static_cast<int>(
     getNumericParameter(
@@ -165,10 +188,6 @@ hardware_interface::CallbackReturn Robot2System::on_init(
     getNumericParameter(
       "right_command_sign",
       1.0);
-
-  // ----------------------------------------------------------
-  // Initial state
-  // ----------------------------------------------------------
 
   previous_left_ticks_ = 0;
   previous_right_ticks_ = 0;
@@ -224,7 +243,6 @@ hardware_interface::CallbackReturn Robot2System::on_configure(
     return hardware_interface::CallbackReturn::ERROR;
   }
 
-  // Reset Arduino encoder counters
   if (!writeSerial("r\n")) {
     RCLCPP_WARN(
       rclcpp::get_logger("robot_2_hardware"),
@@ -250,7 +268,6 @@ hardware_interface::CallbackReturn Robot2System::on_activate(
     rclcpp::get_logger("robot_2_hardware"),
     "Activating Robot 2 hardware");
 
-  // Ensure motors are stopped before operation
   if (!writeSerial("s\n")) {
     RCLCPP_WARN(
       rclcpp::get_logger("robot_2_hardware"),
@@ -271,6 +288,11 @@ hardware_interface::CallbackReturn Robot2System::on_activate(
     hw_velocities_.begin(),
     hw_velocities_.end(),
     0.0);
+
+  if (imu_enabled_) {
+    std::fill(imu_state_.begin(), imu_state_.end(), 0.0);
+    imu_state_[3] = 1.0;
+  }
 
   previous_left_ticks_ = 0;
   previous_right_ticks_ = 0;
@@ -324,6 +346,15 @@ Robot2System::export_state_interfaces()
       &hw_velocities_[i]);
   }
 
+  if (imu_enabled_) {
+    for (std::size_t i = 0; i < imu_interface_names_.size(); ++i) {
+      state_interfaces.emplace_back(
+        imu_sensor_name_,
+        imu_interface_names_[i],
+        &imu_state_[i]);
+    }
+  }
+
   return state_interfaces;
 }
 
@@ -355,15 +386,16 @@ Robot2System::export_command_interfaces()
 //
 // Arduino command:
 //
-// e
+// b
 //
-// Arduino response:
+// Arduino response (single combined query - see requestCombined()):
 //
-// left_ticks right_ticks
+// left_ticks right_ticks ax ay az gx gy gz roll pitch yaw
 //
-// The Arduino returns cumulative encoder counts.
-// We calculate the delta between reads and convert it
-// into wheel position and velocity.
+// FIXED: previously issued two separate blocking round trips ('e'
+// then 'i') per read() cycle. Combined into one 'b' round trip -
+// see requestCombined()'s comment in the header for why this
+// mattered for the 33ms controller_manager cycle budget.
 // ============================================================
 
 hardware_interface::return_type Robot2System::read(
@@ -376,12 +408,24 @@ hardware_interface::return_type Robot2System::read(
 
   long left_ticks = 0;
   long right_ticks = 0;
+  double ax = 0.0, ay = 0.0, az = 0.0;
+  double gx = 0.0, gy = 0.0, gz = 0.0;
+  double roll = 0.0, pitch = 0.0, yaw = 0.0;
 
-  if (!requestEncoders(left_ticks, right_ticks)) {
+  const bool combined_ok = requestCombined(
+    left_ticks, right_ticks,
+    ax, ay, az,
+    gx, gy, gz,
+    roll, pitch, yaw);
 
+  if (!combined_ok) {
+
+    // Encoder data is safety-critical (motor control depends on it),
+    // so a failed combined read still fails the whole cycle exactly
+    // as the old requestEncoders() failure did.
     RCLCPP_ERROR(
       rclcpp::get_logger("robot_2_hardware"),
-      "Failed to read encoder values");
+      "Failed to read combined encoder/IMU data");
 
     return hardware_interface::return_type::ERROR;
   }
@@ -436,7 +480,6 @@ hardware_interface::return_type Robot2System::read(
           delta_right * right_encoder_sign_),
         period_seconds);
 
-    // Both front and rear joints represent the same side
     hw_velocities_[0] = left_velocity;
     hw_velocities_[2] = left_velocity;
 
@@ -444,22 +487,37 @@ hardware_interface::return_type Robot2System::read(
     hw_velocities_[3] = right_velocity;
   }
 
-  // ----------------------------------------------------------
-  // Both joints on each side share the same encoder
-  // ----------------------------------------------------------
-
   hw_positions_[0] = left_position;
   hw_positions_[2] = left_position;
 
   hw_positions_[1] = right_position;
   hw_positions_[3] = right_position;
 
-  // ----------------------------------------------------------
-  // Save encoder counts
-  // ----------------------------------------------------------
-
   previous_left_ticks_ = left_ticks;
   previous_right_ticks_ = right_ticks;
+
+  // ----------------------------------------------------------
+  // IMU (still populated from the same combined response)
+  // ----------------------------------------------------------
+
+  if (imu_enabled_) {
+
+    double qx = 0.0, qy = 0.0, qz = 0.0, qw = 1.0;
+    eulerToQuaternion(roll, pitch, yaw, qx, qy, qz, qw);
+
+    imu_state_[0] = qx;
+    imu_state_[1] = qy;
+    imu_state_[2] = qz;
+    imu_state_[3] = qw;
+
+    imu_state_[4] = gx;
+    imu_state_[5] = gy;
+    imu_state_[6] = gz;
+
+    imu_state_[7] = ax;
+    imu_state_[8] = ay;
+    imu_state_[9] = az;
+  }
 
   return hardware_interface::return_type::OK;
 }
@@ -467,23 +525,6 @@ hardware_interface::return_type Robot2System::read(
 
 // ============================================================
 // WRITE
-//
-// ros2_control gives wheel angular velocities in rad/s.
-//
-// Arduino firmware expects target encoder ticks per PID
-// period.
-//
-// Therefore:
-//
-// rad/s
-//   ↓
-// rad / PID period
-//   ↓
-// revolutions / PID period
-//   ↓
-// encoder ticks / PID period
-//
-// The Arduino PID controller then controls PWM.
 // ============================================================
 
 hardware_interface::return_type Robot2System::write(
@@ -493,10 +534,6 @@ hardware_interface::return_type Robot2System::write(
   if (!active_) {
     return hardware_interface::return_type::ERROR;
   }
-
-  // ----------------------------------------------------------
-  // Average front/rear commands for each side
-  // ----------------------------------------------------------
 
   const double left_velocity =
     (
@@ -510,19 +547,11 @@ hardware_interface::return_type Robot2System::write(
       hw_commands_[3]
     ) / 2.0;
 
-  // ----------------------------------------------------------
-  // Apply command direction corrections
-  // ----------------------------------------------------------
-
   const double corrected_left =
     left_velocity * left_command_sign_;
 
   const double corrected_right =
     right_velocity * right_command_sign_;
-
-  // ----------------------------------------------------------
-  // Convert rad/s to encoder ticks per PID period
-  // ----------------------------------------------------------
 
   const double left_ticks =
     velocityToTicksPerPeriod(
@@ -531,10 +560,6 @@ hardware_interface::return_type Robot2System::write(
   const double right_ticks =
     velocityToTicksPerPeriod(
       corrected_right);
-
-  // ----------------------------------------------------------
-  // Send command
-  // ----------------------------------------------------------
 
   if (!sendMotorCommand(
       left_ticks,
@@ -583,10 +608,8 @@ bool Robot2System::openSerial()
     return false;
   }
 
-  // Give Arduino time to reset after opening serial
-  usleep(2000000);
+  usleep(4500000);
 
-  // Flush stale data
   tcflush(
     serial_fd_,
     TCIOFLUSH);
@@ -785,10 +808,7 @@ bool Robot2System::readLine(
     const auto now =
       std::chrono::steady_clock::now();
 
-    const auto elapsed =
-      std::chrono::duration_cast<
-        std::chrono::milliseconds>(
-          now - start).count();
+    const auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - start).count();
 
     if (elapsed >= timeout_ms) {
       return false;
@@ -862,18 +882,28 @@ bool Robot2System::readLine(
 
 
 // ============================================================
-// REQUEST ENCODERS
+// REQUEST COMBINED (ENCODERS + IMU)
+//
+// Arduino command:
+//
+// b
+//
+// Arduino response:
+//
+// left_ticks right_ticks ax ay az gx gy gz roll pitch yaw
 // ============================================================
 
-bool Robot2System::requestEncoders(
-  long & left_ticks,
-  long & right_ticks)
+bool Robot2System::requestCombined(
+  long & left_ticks, long & right_ticks,
+  double & ax, double & ay, double & az,
+  double & gx, double & gy, double & gz,
+  double & roll, double & pitch, double & yaw)
 {
-  if (!writeSerial("e\n")) {
+  if (!writeSerial("b\n")) {
 
     RCLCPP_ERROR(
       rclcpp::get_logger("robot_2_hardware"),
-      "Failed to request encoder data");
+      "Failed to request combined encoder/IMU data");
 
     return false;
   }
@@ -886,18 +916,21 @@ bool Robot2System::requestEncoders(
   {
     RCLCPP_ERROR(
       rclcpp::get_logger("robot_2_hardware"),
-      "Timed out waiting for encoder data");
+      "Timed out waiting for combined encoder/IMU data");
 
     return false;
   }
 
   std::stringstream ss(line);
 
-  if (!(ss >> left_ticks >> right_ticks)) {
-
+  if (!(ss >> left_ticks >> right_ticks
+           >> ax >> ay >> az
+           >> gx >> gy >> gz
+           >> roll >> pitch >> yaw))
+  {
     RCLCPP_ERROR(
       rclcpp::get_logger("robot_2_hardware"),
-      "Invalid encoder response: '%s'",
+      "Invalid combined response: '%s'",
       line.c_str());
 
     return false;
@@ -909,11 +942,6 @@ bool Robot2System::requestEncoders(
 
 // ============================================================
 // SEND MOTOR COMMAND
-//
-// Arduino expects:
-//
-// m <left ticks/period> <right ticks/period>
-//
 // ============================================================
 
 bool Robot2System::sendMotorCommand(
@@ -1002,6 +1030,28 @@ double Robot2System::ticksPerSecondToRadiansPerSecond(
     ticks_per_second *
     (2.0 * M_PI) /
     encoder_ticks_per_rev_;
+}
+
+
+// ============================================================
+// EULER (roll, pitch, yaw) → QUATERNION
+// ============================================================
+
+void Robot2System::eulerToQuaternion(
+  double roll, double pitch, double yaw,
+  double & qx, double & qy, double & qz, double & qw) const
+{
+  const double cr = std::cos(roll * 0.5);
+  const double sr = std::sin(roll * 0.5);
+  const double cp = std::cos(pitch * 0.5);
+  const double sp = std::sin(pitch * 0.5);
+  const double cy = std::cos(yaw * 0.5);
+  const double sy = std::sin(yaw * 0.5);
+
+  qw = cr * cp * cy + sr * sp * sy;
+  qx = sr * cp * cy - cr * sp * sy;
+  qy = cr * sp * cy + sr * cp * sy;
+  qz = cr * cp * sy - sr * sp * cy;
 }
 
 

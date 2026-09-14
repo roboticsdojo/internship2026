@@ -24,7 +24,7 @@ public:
   // ==========================================================
 
   hardware_interface::CallbackReturn on_init(
-    const hardware_interface::HardwareInfo & info) override;
+    const hardware_interface::HardwareComponentInterfaceParams & params) override;
 
   hardware_interface::CallbackReturn on_configure(
     const rclcpp_lifecycle::State & previous_state) override;
@@ -84,9 +84,25 @@ private:
   // ARDUINO PROTOCOL
   // ==========================================================
 
-  bool requestEncoders(
-    long & left_ticks,
-    long & right_ticks);
+  // Combined encoder + IMU query ('b' command) - replaces the old
+  // separate requestEncoders()/requestImu() pair. Those required two
+  // sequential blocking serial round trips per read() cycle, each
+  // gated by the Arduino's loop() only checking Serial.available()
+  // once per pass (with imu.update()'s I2C transaction also running
+  // every loop() pass in between) - a meaningful chunk of the 33ms
+  // controller_manager cycle budget was going into that second
+  // round trip alone. One combined query halves the per-cycle
+  // serial latency.
+  //
+  // Returns false on timeout or a malformed response. Unlike the old
+  // requestEncoders()/requestImu() split, encoder and IMU data now
+  // succeed or fail together as a single unit - see read()'s comment
+  // for how this is handled.
+  bool requestCombined(
+    long & left_ticks, long & right_ticks,
+    double & ax, double & ay, double & az,
+    double & gx, double & gy, double & gz,
+    double & roll, double & pitch, double & yaw);
 
   bool sendMotorCommand(
     double left_velocity,
@@ -109,6 +125,10 @@ private:
   double ticksPerSecondToRadiansPerSecond(
     long delta_ticks,
     double period_seconds) const;
+
+  void eulerToQuaternion(
+    double roll, double pitch, double yaw,
+    double & qx, double & qy, double & qz, double & qw) const;
 
 
   // ==========================================================
@@ -150,12 +170,30 @@ private:
 
 
   // ==========================================================
+  // IMU SENSOR STORAGE
+  // ==========================================================
+
+  bool imu_enabled_{false};
+
+  std::string imu_sensor_name_;
+
+  std::vector<double> imu_state_;
+
+  std::vector<std::string> imu_interface_names_;
+
+
+  // ==========================================================
   // SERIAL CONFIGURATION
   // ==========================================================
 
   std::string device_;
 
-  int baud_rate_{57600};
+  // NOTE: default here is only used if the "baud_rate" hardware
+  // parameter is absent from ros2_control.xacro entirely. The
+  // firmware's actual SERIAL_BAUD (config.h) MUST match whatever
+  // value ros2_control.xacro passes - raised to 115200 alongside the
+  // firmware to roughly halve per-message transmission time.
+  int baud_rate_{115200};
 
   int timeout_ms_{200};
 

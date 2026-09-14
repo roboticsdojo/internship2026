@@ -49,6 +49,14 @@ void setRightMotor(
 
  NOTE: The encoder vcc - 5V and GND - GND
 
+ ******* IMU (MPU6050, I2C) *******
+ SDA - A4 (fixed I2C pin on the Uno, not configurable)
+ SCL - A5 (fixed I2C pin on the Uno, not configurable)
+ VCC - 5V (from the buck converter rail - NOT the Arduino's own
+       5V pin and NOT the L298's onboard regulator, same reasoning
+       as the encoders above)
+ GND - GND
+
  ******* GND SHARING *******
-Arduino GND + both L298 Motor driver GND + Encoder GND
+Arduino GND + both L298 Motor driver GND + Encoder GND + IMU GND
 */
