@@ -25,4 +25,21 @@
         </xacro:inertial_box>
     </link>
 
+    <!-- Gazebo IMU sensor - this was missing entirely, which is why imu_broadcaster
+         couldn't activate in sim ("state interface 'imu_sensor/orientation.x' is not
+         available"). Name must match the <sensor name="imu_sensor"> interface block
+         added to ros2_control.xacro's sim section, and imu_broadcaster/sensor_name in
+         my_controllers.yaml. Without this, the EKF gets no gyro data and heading drift
+         goes uncorrected - which is what's been tearing the map even after the
+         wheel_separation and loop-closure fixes. -->
+    <gazebo reference="imu_link">
+        <sensor name="imu_sensor" type="imu">
+            <always_on>true</always_on>
+            <update_rate>100</update_rate>
+            <visualize>false</visualize>
+            <topic>imu/data</topic>
+            <gz_frame_id>imu_link</gz_frame_id>
+        </sensor>
+    </gazebo>
+
 </robot>

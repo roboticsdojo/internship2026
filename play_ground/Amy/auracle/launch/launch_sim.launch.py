@@ -24,7 +24,7 @@ def generate_launch_description():
     rsp = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
             get_package_share_directory(package_name),'launch','rsp.launch.py'
-        )]), launch_arguments={'use_sim_time': 'true', 'use_ros2_control': 'true'}.items()
+        )]), launch_arguments={'use_sim_time': 'true'}.items()
     )
 
     joystick = IncludeLaunchDescription(
@@ -49,6 +49,21 @@ def generate_launch_description():
                     ('/cmd_vel_out', '/diff_cont/cmd_vel')]
     )
 
+    # NEW: fuses diff_cont's wheel odometry with the IMU and publishes the
+    # odom->base_link TF. diff_cont has enable_odom_tf:false specifically so
+    # this node is the ONLY thing broadcasting that transform - without it
+    # running, nothing publishes odom->base_link at all and slam_toolbox has
+    # no way to transform incoming scans, which is why they were queuing up
+    # and getting dropped.
+    ekf_params = os.path.join(get_package_share_directory(package_name), 'config', 'ekf.yaml')
+    robot_localization_node = Node(
+        package='robot_localization',
+        executable='ekf_node',
+        name='ekf_filter_node',
+        output='screen',
+        parameters=[ekf_params, {'use_sim_time': True}]
+    )
+
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
             get_package_share_directory('ros_gz_sim'), 'launch', 'gz_sim.launch.py')]),
@@ -71,21 +86,19 @@ def generate_launch_description():
         output='screen'
     )
 
+    # laser_frame_alias (a static identity transform to 'my_bot/base_link/laser') was
+    # removed: lidar.xacro's sensor tag already sets <gz_frame_id>laser_frame</gz_frame_id>,
+    # so /scan is published directly in the 'laser_frame' that robot_state_publisher
+    # already knows about. The alias was pointing at a frame nothing downstream consumed.
     gz_bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
         arguments=[
             '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
             '/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
+            '/camera/image@sensor_msgs/msg/Image[gz.msgs.Image',
+            '/camera/camera_info@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo',
         ],
-        output='screen'
-    )
-
-    laser_frame_alias = Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        arguments=['--frame-id', 'laser_frame',
-                   '--child-frame-id', 'my_bot/base_link/laser'],
         output='screen'
     )
 
@@ -99,6 +112,12 @@ def generate_launch_description():
         package="controller_manager",
         executable="spawner",
         arguments=["joint_broad"],
+    )
+
+    imu_broadcaster_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["imu_broadcaster"],
     )
 
     delayed_diff_drive_spawner = RegisterEventHandler(
@@ -115,16 +134,24 @@ def generate_launch_description():
         )
     )
 
+    delayed_imu_broadcaster_spawner = RegisterEventHandler(
+        event_handler=OnProcessStart(
+            target_action=spawn_entity,
+            on_start=[imu_broadcaster_spawner],
+        )
+    )
+
     return LaunchDescription([
         set_gz_resource_path,
         rsp,
         joystick,
         twist_mux,
         twist_stamper,
+        robot_localization_node,
         gazebo,
         gz_bridge,
-        laser_frame_alias,
         spawn_entity,
         delayed_diff_drive_spawner,
-        delayed_joint_broad_spawner
+        delayed_joint_broad_spawner,
+        delayed_imu_broadcaster_spawner
     ])

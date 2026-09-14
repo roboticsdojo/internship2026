@@ -8,12 +8,47 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_lifecycle REQUIRED)
 find_package(rclpy REQUIRED)
+find_package(hardware_interface REQUIRED)
+find_package(pluginlib REQUIRED)
 
-# install directories
+## COMPILE
+add_library(
+  auracle
+  SHARED
+  src/diffbot_system.cpp
+)
+target_compile_features(auracle PUBLIC cxx_std_17)
+target_include_directories(auracle PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
+)
+ament_target_dependencies(
+  auracle PUBLIC
+  rclcpp
+  rclcpp_lifecycle
+  hardware_interface
+  pluginlib
+)
+
+# Export hardware plugins
+pluginlib_export_plugin_description_file(hardware_interface auracle.xml)
+
+# INSTALL
+install(
+  DIRECTORY include/
+  DESTINATION include/${PROJECT_NAME}
+)
 install(
   DIRECTORY launch description config worlds models
   DESTINATION share/${PROJECT_NAME}
+)
+install(TARGETS auracle
+  EXPORT export_auracle
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
 )
 
 if(BUILD_TESTING)
@@ -28,4 +63,12 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
+## EXPORTS
+ament_export_targets(export_auracle HAS_LIBRARY_TARGET)
+ament_export_dependencies(
+  rclcpp
+  rclcpp_lifecycle
+  hardware_interface
+  pluginlib
+)
 ament_package()

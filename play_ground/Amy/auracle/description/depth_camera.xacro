@@ -14,8 +14,15 @@
             </geometry>
             <material name="red"/>
         </visual>
+        <collision>
+            <geometry>
+                <box size="0.010 0.03 0.03"/>
+            </geometry>
+        </collision>
+        <xacro:inertial_box mass="0.01" x="0.010" y="0.03" z="0.03">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </xacro:inertial_box>
     </link>
-
 
     <joint name="camera_optical_joint" type="fixed">
         <parent link="camera_link"/>
@@ -25,32 +32,33 @@
 
     <link name="camera_link_optical"></link>
 
-
-
+    <!-- Harmonic-native sensor: no plugin needed here, gz-sim-sensors-system (already
+         loaded in worlds/gamefield.world) renders this directly. rgbd_camera publishes
+         both a color image and a depth image/pointcloud, replacing what the old
+         libgazebo_ros_camera.so classic plugin gave you. Bridge these topics in your
+         launch file with ros_gz_bridge/ros_gz_image the same way /scan is bridged. -->
     <gazebo reference="camera_link">
         <material>Gazebo/Red</material>
 
-        <sensor name="camera" type="depth">
-            <pose> 0 0 0 0 0 0 </pose>
-            <visualize>true</visualize>
+        <sensor name="camera" type="rgbd_camera">
+            <pose>0 0 0 0 0 0</pose>
+            <topic>camera</topic>
+            <gz_frame_id>camera_link_optical</gz_frame_id>
             <update_rate>10</update_rate>
+            <visualize>true</visualize>
+            <always_on>true</always_on>
             <camera>
                 <horizontal_fov>1.089</horizontal_fov>
                 <image>
-                    <format>B8G8R8</format>
                     <width>640</width>
                     <height>480</height>
+                    <format>R8G8B8</format>
                 </image>
                 <clip>
                     <near>0.05</near>
                     <far>8.0</far>
                 </clip>
             </camera>
-            <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
-                <frame_name>camera_link_optical</frame_name>
-                <min_depth>0.1</min_depth>
-                <max_depth>100.0</max_depth>
-            </plugin>
         </sensor>
     </gazebo>
 

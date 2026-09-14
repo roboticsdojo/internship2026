@@ -19,6 +19,16 @@
         name="gz::sim::systems::Sensors">
         <render_engine>ogre2</render_engine>
     </plugin>
+    <!-- gz-sim-sensors-system above only drives rendering-based sensors
+         (camera, lidar). IMU is handled by a separate physics-based system
+         plugin - without it, the <sensor type="imu"> tag in the robot model
+         is inert: it exists but never produces data, so imu_broadcaster
+         waits indefinitely for a valid reading and "Switch controller timed
+         out after 5 seconds!" is the result. -->
+    <plugin
+        filename="gz-sim-imu-system"
+        name="gz::sim::systems::Imu">
+    </plugin>
     <plugin
         filename="gz-sim-contact-system"
         name="gz::sim::systems::Contact">

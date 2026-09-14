@@ -39,12 +39,6 @@ Add worlds and models folders
 # Install dependencies
 sudo apt update && sudo apt install ros-jazzy-ros-gz ros-jazzy-ros2-control ros-jazzy-ros2-controllers ros-jazzy-gz-ros2-control ros-jazzy-twist-mux ros-jazzy-twist-stamper
 
-# Swap gazebo classic plugins for gazebo harmonic plugins in ros2_control.xacro and launch_sim.launch.py, and create yaml files within config folder
-my_controllers.yaml — wheel geometry (separation: 0.297, radius: 0.033) is pulled straight from your gazebo_control.xacro. If your real robot's actual wheel measurements differ, update these — wrong values mean the robot drives but odometry will be off.
-joystick.yaml — button/axis numbers assume a standard Xbox-layout gamepad (axis 1 = left stick vertical, axis 0 = left stick horizontal, button 4 = LB as the dead-man switch). If you're on keyboard-only or a different controller, this needs adjusting — let me know which and I'll fix the mapping.
-twist_mux.yaml — routes both /cmd_vel_joy (your joystick) and /cmd_vel_tracker (from ball_tracker.launch.py) into the single output, joystick taking priority. No lock/e-stop topic configured — fine for now, just flagging it's empty.
-gaz_ros2_ctl_use_sim.yaml -- for launching i think idk
-
 # Build and launch
 cd ~/Documents/ros2_ws
 colcon build --packages-select auracle --symlink-install && source install/setup.bash
@@ -58,7 +52,7 @@ ros2 topic echo /cmd_vel_joy
 ros2 topic echo /diff_cont/cmd_vel_unstamped
 
 # Install mapping dependencies
-sudo apt update && sudo apt install ros-jazzy-slam-toolbox ros-jazzy-navigation2 ros-jazzy-nav2-bringup 
+sudo apt update && sudo apt install ros-jazzy-slam-toolbox ros-jazzy-navigation2 ros-jazzy-nav2-bringup libserial-dev
 
 # Copy required files from official nav2 packages
 cp /opt/ros/jazzy/share/nav2_bringup/params/nav2_params.yaml \
@@ -72,14 +66,12 @@ scan_topic in the costmap observation_sources/plugins → matches your lidar's t
 behavior_server block → should already say behavior_plugins (not recovery_plugins) in a current nav2_bringup copy, since you're pulling from Jazzy's package directly
 
 # Build and launch the simualtion on gazebo and SLAM_toolbox alongside simulation
-cd ~/Documents/ros2_ws
-colcon build --packages-select auracle --symlink-install 
+cd ~/Documents/ros2_ws && colcon build --packages-select auracle --symlink-install 
 source install/setup.bash && ros2 launch auracle launch_sim.launch.py
 source install/setup.bash && ros2 launch auracle online_async_launch.py use_sim_time:=true
 
 # Confirm scan and map topic exists for mapping and it publishes data
 ros2 topic list
-
 
 # Open rviz 
 rviz2
@@ -92,10 +84,6 @@ Optionally add LaserScan on /scan and TF to watch it build live
 source install/setup.bash && ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/cmd_vel_joy
 
 # Save the map via CLI - saves to home folder, navigate and move to workspace
-ros2 run nav2_map_server map_saver_cli -f ~/map_1
-mv ~/map_1.* .
+ros2 run nav2_map_server map_saver_cli -f ~/map_5
+mv ~/map_5.* .
 
-# Improve map quality
-Set min_laser_range in mapper_param_online_async.yaml to 0.4 from 0.0, minimum_travel_distance/heading: 0.5 vs. your 0.2, and a bigger scan_buffer_size (30 vs 10) with link_scan_maximum_distance: 0.5 vs your 1.5
-Wheel calibration: your wheel_separation: 0.22 / wheel_radius: 0.033 in my_controllers.yaml should be double-checked against the actual physical robot with a tape measure/caliper — a few-mm error here directly causes rotational drift of exactly the kind you're seeing, and it's free to fix.
-launch_robot.launch.py sets use_sim_time: 'false' for rsp but hardcodes {'use_sim_time': True} on twist_mux and twist_stamper even in the real-robot launch. Probably copy-paste leftover from sim — worth cleaning up so all nodes agree on clock source.

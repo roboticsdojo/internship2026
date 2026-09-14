@@ -14,7 +14,8 @@
     <xacro:property name="rocker_height" value="0.2"/>
     <xacro:property name="tilted_link" value="0.1"/>
     <xacro:property name="rocker_mass" value="0.5"/>
-    <xacro:property name="wheel_radius" value="0.033"/>
+    <!-- Measured from emmanuel-assembly.stp tire rolling-surface cylinder (was 0.033) -->
+    <xacro:property name="wheel_radius" value="0.0239"/>
     <xacro:property name="wheel_thickness" value="0.026"/>
     <xacro:property name="wheel_mass" value="0.05"/>
     <xacro:property name="wheel_offset_x" value="0.226"/>
@@ -57,7 +58,7 @@
 
     <link name="chassis">
         <visual>
-            <origin xyz="${chassis_length/2} 0 0"/>
+            <origin xyz="${chassis_length/2} 0 ${chassis_height/2}"/>
             <geometry>
                 <box size="${chassis_length} ${chassis_width} ${chassis_height}"/>
             </geometry>
