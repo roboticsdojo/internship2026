@@ -3,20 +3,24 @@
 <package format="3">
   <name>auracle_hardware</name>
   <version>0.0.0</version>
-  <description>Part of ROS-Arduino bridge</description>
+  <description>ros2_control SystemInterface plugin bridging the diff-drive controller to the Arduino Nano over serial</description>
   <maintainer email="amy.kibara@gmail.com">Amy Kibara</maintainer>
   <license>Apache-2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>rclcpp</depend>
-  <depend>rclpy</depend>
-  <depend>std_msgs</depend>
+  <depend>rclcpp_lifecycle</depend>
+  <depend>hardware_interface</depend>
+  <depend>pluginlib</depend>
+  <!-- apt package: libserial-dev -->
+  <depend>libserial</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
+    <hardware_interface plugin="${prefix}/auracle_hardware.xml"/>
   </export>
 </package>

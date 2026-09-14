@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:unless value="$(arg sim_mode)">
+        <ros2_control name="RealRobot" type="system">
+            <hardware>
+                <!-- This plugin name must match the export name in hardware.xml -->
+                <plugin>auracle_hardware/AuracleHardwareInterface</plugin>
+                <param name="left_wheel_name">left_wheel_two_joint</param>
+                <param name="right_wheel_name">right_wheel_two_joint</param>
+                <param name="loop_rate">30</param>
+                <param name="device">/dev/ttyUSB0</param>
+                <param name="baud_rate">115200</param>
+                <param name="timeout_ms">1000</param>
+                <param name="enc_counts_per_rev">3436</param>
+                <param name="imu_sensor_name">imu_sensor</param>
+            </hardware>
+            <joint name="left_wheel_two_joint">
+                <command_interface name="velocity"/>
+                <state_interface name="velocity"/>
+                <state_interface name="position"/>
+            </joint>
+            <joint name="right_wheel_two_joint">
+                <command_interface name="velocity"/>
+                <state_interface name="velocity"/>
+                <state_interface name="position"/>
+            </joint>
+            <sensor name="imu_sensor">
+                <state_interface name="orientation.x"/><state_interface name="orientation.y"/>
+                <state_interface name="orientation.z"/><state_interface name="orientation.w"/>
+                <state_interface name="angular_velocity.x"/><state_interface name="angular_velocity.y"/>
+                <state_interface name="angular_velocity.z"/><state_interface name="linear_acceleration.x"/>
+                <state_interface name="linear_acceleration.y"/><state_interface name="linear_acceleration.z"/>
+            </sensor>
+        </ros2_control>
+    </xacro:unless>
+
+    <xacro:if value="$(arg sim_mode)">
+        <ros2_control name="GazeboSystem" type="system">
+            <hardware>
+                <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+            </hardware>
+            <!-- We only control the middle wheels in sim too, for consistency -->
+            <joint name="left_wheel_two_joint">
+                <command_interface name="velocity"/>
+                <state_interface name="velocity"/><state_interface name="position"/>
+            </joint>
+            <joint name="right_wheel_two_joint">
+                <command_interface name="velocity"/>
+                <state_interface name="velocity"/><state_interface name="position"/>
+            </joint>
+            <sensor name="imu_sensor">
+                <state_interface name="orientation.x"/><state_interface name="orientation.y"/>
+                <state_interface name="orientation.z"/><state_interface name="orientation.w"/>
+                <state_interface name="angular_velocity.x"/><state_interface name="angular_velocity.y"/>
+                <state_interface name="angular_velocity.z"/><state_interface name="linear_acceleration.x"/>
+                <state_interface name="linear_acceleration.y"/><state_interface name="linear_acceleration.z"/>
+            </sensor>
+        </ros2_control>
+    </xacro:if>
+
+    <gazebo>
+        <plugin name="gz_ros2_control::GazeboSimROS2ControlPlugin" filename="libgz_ros2_control-system.so">
+            <parameters>$(find auracle_bringup)/config/my_controllers.yaml</parameters>
+        </plugin>
+    </gazebo>
+</robot>

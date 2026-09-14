@@ -1,0 +1,7 @@
+<pluginlib namespace="auracle_hardware">
+  <class name="auracle_hardware/AuracleHardwareInterface" 
+         type="auracle_hardware::AuracleHardwareInterface" 
+         base_class_type="hardware_interface::SystemInterface">
+    <description>Hardware interface for Auracle Robot Arduino Comms</description>
+  </class>
+</pluginlib>

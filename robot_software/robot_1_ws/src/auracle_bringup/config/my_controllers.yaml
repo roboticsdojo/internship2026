@@ -1,0 +1,32 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 30 
+
+    diff_cont:
+      type: diff_drive_controller/DiffDriveController
+    joint_broad:
+      type: joint_state_broadcaster/JointStateBroadcaster
+    imu_broadcaster:
+      type: imu_sensor_broadcaster/IMUSensorBroadcaster
+
+diff_cont:
+  ros__parameters:
+    publish_rate: 50.0
+    base_frame_id: base_footprint
+    odom_frame_id: odom
+
+    # MATCHED TO ROS2_CONTROL.XACRO
+    left_wheel_names: ['left_wheel_two_joint']
+    right_wheel_names: ['right_wheel_two_joint']
+
+    wheel_separation: 0.2755
+    wheel_radius: 0.0239
+    enable_odom_tf: false
+
+imu_broadcaster:
+  ros__parameters:
+    sensor_name: imu_sensor
+    frame_id: imu_link
+    static_covariance_orientation: [-1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    static_covariance_angular_velocity: [0.02, 0.0, 0.0, 0.0, 0.02, 0.0, 0.0, 0.0, 0.02]
+    static_covariance_linear_acceleration: [0.04, 0.0, 0.0, 0.0, 0.04, 0.0, 0.0, 0.0, 0.04]
