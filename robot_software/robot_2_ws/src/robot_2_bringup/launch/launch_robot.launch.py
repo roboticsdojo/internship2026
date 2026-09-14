@@ -121,3 +121,5 @@ def generate_launch_description():
     #ls -l /dev/ttyUSB_ARDUINO
     #ros2 control list_controllers -c /robot_2/controller_manager
     #ros2 control list_hardware_components -c /robot_2/controller_manager
+    #vcgencmd get_throttled
+    #vcgencmd pmic_read_adc
