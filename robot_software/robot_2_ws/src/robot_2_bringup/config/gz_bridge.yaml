@@ -6,18 +6,6 @@
   gz_type_name: "gz.msgs.LaserScan"
   direction: GZ_TO_ROS
 
-- ros_topic_name: "/robot_2/odom"
-  gz_topic_name: "/robot_2/odom"
-  ros_type_name: "nav_msgs/msg/Odometry"
-  gz_type_name: "gz.msgs.Odometry"
-  direction: GZ_TO_ROS
-
-- ros_topic_name: "/robot_2/tf"
-  gz_topic_name: "/robot_2/tf"
-  ros_type_name: "tf2_msgs/msg/TFMessage"
-  gz_type_name: "gz.msgs.Pose_V"
-  direction: GZ_TO_ROS
-
 # Global sim clock. Must stay unnamespaced: every node with use_sim_time:true
 # subscribes to the global "/clock" topic regardless of its own namespace,
 # so bridging it as "/robot_2/clock" means nobody ever receives it.
@@ -26,3 +14,9 @@
   ros_type_name: "rosgraph_msgs/msg/Clock"
   gz_type_name: "gz.msgs.Clock"
   direction: GZ_TO_ROS
+
+# NOTE: cmd_vel does NOT need a bridge entry. gz_ros2_control's
+# GazeboSimSystem hardware interface runs inside the same gz-sim process
+# and reads command values directly from diff_cont's ros2_control
+# interface -- it never goes through gz-transport, so there's nothing
+# to bridge.
