@@ -254,3 +254,4 @@ def generate_launch_description():
     #ros2 run nav2_map_server map_saver_cli -f ~/my_map --ros-args -p save_map_timeout:=5.0
 
     # "gz_args": ["-r -v4 ", world],
+    #ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -p stamped:=true -p use_sim_time:=true -r /cmd_vel:=/robot_2/cmd_vel
