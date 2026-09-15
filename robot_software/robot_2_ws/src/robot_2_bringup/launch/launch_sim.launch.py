@@ -8,7 +8,9 @@ from launch.actions import (
     DeclareLaunchArgument,
     AppendEnvironmentVariable,
     UnsetEnvironmentVariable,
+    RegisterEventHandler,
 )
+from launch.event_handlers import OnProcessExit
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 
@@ -123,15 +125,12 @@ def generate_launch_description():
         output="screen",
     )
 
-    joint_state_publisher = Node(
-        package="joint_state_publisher",
-        executable="joint_state_publisher",
-        namespace="robot_2",
-        parameters=[
-            {"use_sim_time": True},
-        ],
-        output="screen",
-    )
+    # NOTE: standalone joint_state_publisher node removed. It publishes
+    # default/zero joint positions on a timer and was competing with
+    # joint_broad (joint_state_broadcaster), which publishes the *real*
+    # joint states coming from Gazebo via GazeboSimSystem. With
+    # use_ros2_control:true, joint_broad is the only thing that should
+    # ever publish /robot_2/joint_states.
 
     # -----------------------------
     # ROS <-> Gazebo Bridge
@@ -189,6 +188,18 @@ def generate_launch_description():
         ],
     )
 
+    # Only start the controller spawners once the robot has actually been
+    # spawned into Gazebo -- gz_ros2_control's controller_manager doesn't
+    # exist until the entity (and its plugins) load, so launching the
+    # spawners in parallel with spawn_robot risks a race where they can't
+    # find /robot_2/controller_manager yet.
+    delayed_controller_spawners = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=spawn_robot,
+            on_exit=[diff_drive_spawner, joint_broad_spawner],
+        )
+    )
+
     # -----------------------------
     # SLAM Toolbox Instance
     # -----------------------------
@@ -222,12 +233,10 @@ def generate_launch_description():
             spawn_yaw_arg,
             gz_resources,
             robot_state_publisher,
-            joint_state_publisher,
             gazebo,
             spawn_robot,
             ros_gz_bridge,
-            diff_drive_spawner,
-            joint_broad_spawner,
+            delayed_controller_spawners,
             slam,
         ]
     )
