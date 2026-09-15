@@ -1,0 +1,61 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 30 # Hz
+
+    diff_cont:
+      type: diff_drive_controller/DiffDriveController
+
+    joint_broad:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    imu_broadcaster:
+      type: imu_sensor_broadcaster/IMUSensorBroadcaster
+
+diff_cont:
+  ros__parameters:
+    publish_rate: 50.0
+
+    base_frame_id: base_link
+    odom_frame_id: odom
+
+    left_wheel_names: ['left_wheel_one_joint', 'left_wheel_two_joint', 'left_wheel_three_joint']
+    right_wheel_names: ['right_wheel_one_joint', 'right_wheel_two_joint', 'right_wheel_three_joint']
+
+    # Measured from emmanuel-assembly.stp: clustered the 6 wheel axle
+    # centers into left/right groups by their shared axis direction and
+    # took the distance between group centroids (~275.5mm), and read the
+    # tire's rolling-surface cylinder radius directly (~23.87mm). The old
+    # 0.22 value was chassis_width/2 + rocker_width/2 doubled - i.e. the
+    # rocker's mounting point on the chassis, not where the wheel actually
+    # contacts the ground once the bogie arm extends outward.
+    wheel_separation: 0.2755
+    wheel_radius: 0.0239
+
+    pose_covariance_diagonal: [0.001, 0.001, 0.0, 0.0, 0.0, 0.01]
+    twist_covariance_diagonal: [0.001, 0.0, 0.0, 0.0, 0.0, 0.01]
+
+    # IMPORTANT: the EKF (ekf.yaml) now publishes odom->base_link after fusing
+    # this controller's wheel odometry with the MPU6050. If diff_cont ALSO
+    # publishes that same transform from wheel encoders alone, you get two
+    # competing broadcasters of the same TF and slam_toolbox will get whichever
+    # one wrote last - defeats the whole point of adding the IMU.
+    enable_odom_tf: false
+
+imu_broadcaster:
+  ros__parameters:
+    sensor_name: imu_sensor       # must match the <sensor name="..."> in ros2_control.xacro
+    frame_id: imu_link
+    # MPU6050 has no magnetometer, so its "orientation" state is just the
+    # identity placeholder from the hardware interface, not real data.
+    # A negative first covariance element is the standard sensor_msgs/Imu
+    # convention for "orientation estimate not available" - robot_localization's
+    # ekf.yaml is configured to not fuse orientation from this topic because of it.
+    static_covariance_orientation: [-1.0, 0.0, 0.0,
+                                      0.0, 0.0, 0.0,
+                                      0.0, 0.0, 0.0]
+    static_covariance_angular_velocity: [0.02, 0.0, 0.0,
+                                          0.0, 0.02, 0.0,
+                                          0.0, 0.0, 0.02]
+    static_covariance_linear_acceleration: [0.04, 0.0, 0.0,
+                                             0.0, 0.04, 0.0,
+                                             0.0, 0.0, 0.04]
