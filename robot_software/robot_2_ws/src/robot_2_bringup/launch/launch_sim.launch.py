@@ -7,6 +7,7 @@ from launch.actions import (
     IncludeLaunchDescription,
     DeclareLaunchArgument,
     AppendEnvironmentVariable,
+    UnsetEnvironmentVariable,
 )
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
@@ -99,8 +100,9 @@ def generate_launch_description():
             ]
         ),
         launch_arguments={
-            #"gz_args": ["-r -v4 ", world],
-            "gz_args": ["-r -s -v4 ", world],
+            # Start Gazebo Harmonic server and GUI.
+            "gz_args": ["-r -v4 ", world],
+            #"gz_args": ["-r -s -v4 ", world],
             "on_exit_shutdown": "true",
         }.items(),
     )
@@ -152,7 +154,7 @@ def generate_launch_description():
         output="screen",
     )
 
-        # -----------------------------
+    # -----------------------------
     # Hardware Controller Spawners
     # -----------------------------
     diff_drive_spawner = Node(
@@ -176,13 +178,12 @@ def generate_launch_description():
         ],
     )
 
-
     joint_broad_spawner = Node(
         package="controller_manager",
         executable="spawner",
         arguments=[
             "joint_broad",
-            "-c", "/robot_2/controller_manager", 
+            "-c", "/robot_2/controller_manager",
             "--controller-ros-args",
             "-r /joint_states:=/robot_2/joint_states"
         ],
@@ -205,6 +206,10 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
+            # Remove GTK_PATH inherited from Snap-installed VS Code.
+            # Without this, Gazebo GUI may load Snap's incompatible libpthread.
+            UnsetEnvironmentVariable("GTK_PATH"),
+
             DeclareLaunchArgument(
                 'use_ros2_control',
                 default_value='true',
