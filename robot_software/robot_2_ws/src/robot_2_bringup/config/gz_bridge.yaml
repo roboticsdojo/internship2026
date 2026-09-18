@@ -15,6 +15,12 @@
   gz_type_name: "gz.msgs.Clock"
   direction: GZ_TO_ROS
 
+  ros_topic_name: "/robot_2/imu"
+  gz_topic_name: "/robot_2/imu"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  gz_type_name: "gz.msgs.IMU"
+  direction: GZ_TO_ROS
+
 # NOTE: cmd_vel does NOT need a bridge entry. gz_ros2_control's
 # GazeboSimSystem hardware interface runs inside the same gz-sim process
 # and reads command values directly from diff_cont's ros2_control
