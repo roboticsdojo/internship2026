@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org">
+
+  <!--
+    Sim IMU. Mounted at chassis center (no offset) since no physical
+    placement has been specified yet for the gamefield build - move
+    the joint origin below once the real MPU6050 mount point is known.
+  -->
+  <joint name="imu_joint" type="fixed">
+    <parent link="chassis"/>
+    <child link="imu_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="imu_link">
+    <visual>
+      <geometry>
+        <box size="0.02 0.02 0.01"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.02 0.02 0.01"/>
+      </geometry>
+      <material name="black"/>
+    </collision>
+    <xacro:inertial_box mass="0.01" x="0.02" y="0.02" z="0.01">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:inertial_box>
+  </link>
+
+  <gazebo reference="imu_link">
+    <sensor name="imu_sensor" type="imu">
+      <pose>0 0 0 0 0 0</pose>
+      <always_on>true</always_on>
+      <update_rate>50</update_rate>
+      <visualize>false</visualize>
+      <topic>/robot_2/imu</topic>
+      <gz_frame_id>imu_link</gz_frame_id>
+    </sensor>
+  </gazebo>
+
+  <!-- Required to make the "imu" sensor type actually produce data -
+       unlike gpu_lidar, it's not covered by the Sensors system alone. -->
+  <gazebo>
+    <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"/>
+  </gazebo>
+
+</robot>
