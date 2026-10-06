@@ -1,0 +1,23 @@
+<root BTCPP_format="4" main_tree_to_execute="MainTree">
+  <BehaviorTree ID="MainTree">
+    <Sequence name="Mission">
+
+      <!-- Leg 1: go to A (placeholder coordinates in the map frame - edit these) -->
+      <NavigateToPose name="Go to A" x="1.0" y="0.5" yaw="0.0"/>
+
+      <!-- Hold position for 5 s -->
+      <Sleep name="Hold 5s" msec="5000"/>
+
+      <!-- Leg 2: go to B within time_limit seconds.
+           Nav2 plans the route; SpeedAdapter raises/lowers the speed limit to hit the deadline.
+           If time runs out SpeedAdapter fails -> Parallel fails -> navigation is canceled. -->
+      <Parallel name="Go to B on time" success_count="1" failure_count="1">
+        <NavigateToPose name="Go to B" x="2.5" y="-1.0" yaw="1.57"
+                        distance_remaining="{dist_b}"/>
+        <SpeedAdapter name="Pace" distance_remaining="{dist_b}"
+                      time_limit="30.0" min_speed="0.10" max_speed="0.50"/>
+      </Parallel>
+
+    </Sequence>
+  </BehaviorTree>
+</root>
