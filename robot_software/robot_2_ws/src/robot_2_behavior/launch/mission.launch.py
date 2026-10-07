@@ -27,3 +27,6 @@ def generate_launch_description():
             }],
         ),
     ])
+
+    #dickson    - 192.168.4.182
+    #tailscale  - 100.78.228.85 
