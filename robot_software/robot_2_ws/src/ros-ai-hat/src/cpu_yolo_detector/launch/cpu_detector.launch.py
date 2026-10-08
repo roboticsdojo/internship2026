@@ -30,3 +30,7 @@ def generate_launch_description():
             }],
         ),
     ])
+
+# ros2 launch cpu_yolo_detector cpu_detector.launch.py \
+  #model_path:=/home/smartai/internship2026/robot_software/robot_2_ws/src/ros-ai-hat/src/models/v0.1.0_yolo26n_2026-10-07_07-08-alpha.onnx \
+  #input_topic:=/camera/image_raw

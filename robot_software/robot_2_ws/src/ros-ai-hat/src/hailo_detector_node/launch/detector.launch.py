@@ -24,3 +24,7 @@ def generate_launch_description():
             }],
         ),
     ])
+
+# ros2 launch hailo_yolo_detector detector.launch.py \
+ # hef_path:=/home/smartai/rpi5-hailo8l/models/yolov8n.hef \
+ # input_topic:=/camera/image_raw
