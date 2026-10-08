@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>hailo_yolo_detector</name>
+  <version>0.1.0</version>
+  <description>
+    ROS2 node that runs YOLO object detection on a Hailo-8L NPU via HailoRT's
+    C++ Async Infer API directly. 
+    No TAPPAS, no GStreamer, no Python bindings --only requires libhailort + a compiled .hef model.
+  </description>
+  <maintainer email="codewithlennylen254@gmail.com">Lenny Ng'ang'a</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>sensor_msgs</depend>
+  <depend>vision_msgs</depend>
+  <depend>cv_bridge</depend>
+  <depend>image_transport</depend>
+  <!-- <depend>OpenCV</depend> -->
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
