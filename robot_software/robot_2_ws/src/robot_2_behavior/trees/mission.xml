@@ -4,13 +4,17 @@
   <BehaviorTree ID="MainTree">
     <Sequence name="Mission">
 
+      <!-- Detector switch: 0 = skip Hailo and use the CPU detector,
+           1 = try Hailo first (only once the real waste-model .hef exists). -->
+      <Script name="use_hailo = 0" code="use_hailo:=0"/>
+
       <!-- 1. Go to A (the screen) -->
       <SubTree ID="GoTo" wp="A"/>
 
-      <!-- 2. Camera -> Hailo detector (fallback: CPU detector) -> waste_type -->
-      <SubTree ID="IdentifyWaste" waste_type="{waste_type}"/>
+      <!-- 2. Camera -> detector (Hailo, else CPU) -> waste_type -->
+      <SubTree ID="IdentifyWaste" waste_type="{waste_type}" use_hailo="{use_hailo}"/>
 
-      <!-- 3. Go to the loading station for this waste: B metallic, C organic, D plastic -->
+      <!-- 3. Loading station for this waste: B metallic, C organic, D plastic -->
       <Switch3 name="Pick loading station" variable="{waste_type}"
                case_1="metallic" case_2="organic" case_3="plastic">
         <SubTree ID="GoTo" wp="B"/>
@@ -33,9 +37,10 @@
         <AlwaysFailure/>
       </Switch3>
 
-      <!-- 6. Open the servo to offload -->
-      <OpenServo name="Offload" topic="/robot_2/offload_servo"
-                 open_angle="90.0" close_angle="0.0" hold_ms="2000"/>
+      <!-- 6. Open the servo to offload (g = open, h = close - confirm the letters).
+           Replace device with the real /dev/serial/by-id/... of the servo Arduino. -->
+      <OpenServo name="Offload" device="/dev/serial/by-id/REPLACE_ME" baud="115200"
+                 open_cmd="g" close_cmd="h" hold_ms="2000"/>
 
     </Sequence>
   </BehaviorTree>
@@ -47,35 +52,36 @@
     </RetryUntilSuccessful>
   </BehaviorTree>
 
-  <!-- ===================== Camera + detector with CPU fallback =====================
-       Hailo needs a compiled .hef model. There is only .onnx/.pt in models/, so until
-       you have a .hef the Hailo branch fails and the CPU branch takes over (intended). -->
+  <!-- ===================== Camera + detector with CPU fallback ===================== -->
   <BehaviorTree ID="IdentifyWaste">
     <Sequence name="Identify waste">
 
       <LaunchProcess name="Start camera" id="camera" settle_ms="3000"
-        command="ros2 launch camera_ros camera.launch.py"/>
+        command="source $HOME/ws_env.sh &amp;&amp; ros2 run camera_ros camera_node --ros-args -p width:=640 -p height:=480 -p format:=BGR888 -p camera:=0"/>
 
       <Fallback name="Hailo, else CPU">
 
-        <Sequence name="Hailo detector">
+        <!-- Skipped while use_hailo == 0. The yolov8n.hef below is only a stand-in:
+             it is a general COCO model, so its class ids 0/1/2 are NOT metallic/organic/
+             plastic. Do not set use_hailo to 1 until you have the waste-model .hef. -->
+        <Sequence name="Hailo detector" _skipIf="use_hailo==0">
           <LaunchProcess name="Start hailo" id="hailo" settle_ms="5000"
-            command="ros2 launch hailo_yolo_detector detector.launch.py hef_path:=$HOME/internship2026/robot_software/robot_2_ws/src/ros-ai-hat/src/models/model.hef input_topic:=/camera/image_raw"/>
+            command="source $HOME/ws_env.sh &amp;&amp; ros2 launch hailo_yolo_detector detector.launch.py hef_path:=/home/smartai/rpi5-hailo8l/models/yolov8n.hef input_topic:=/camera/image_raw"/>
           <ReadWasteClass name="Read class (hailo)" topic="/waste_class"
             confirm="5" timeout_ms="10000" waste_type="{waste_type}"/>
         </Sequence>
 
-        <Sequence name="CPU detector (fallback)">
+        <Sequence name="CPU detector">
           <KillProcess name="Stop hailo" id="hailo"/>
           <LaunchProcess name="Start cpu" id="cpu" settle_ms="5000"
-            command="ros2 launch cpu_yolo_detector cpu_detector.launch.py model_path:=$HOME/internship2026/robot_software/robot_2_ws/src/ros-ai-hat/src/models/v0.1.0_yolo26n_2026-10-07_07-08-alpha.onnx input_topic:=/camera/image_raw"/>
+            command="source $HOME/ws_env.sh &amp;&amp; ros2 launch cpu_yolo_detector cpu_detector.launch.py model_path:=/home/smartai/internship2026/robot_software/robot_2_ws/src/ros-ai-hat/src/models/v0.1.0_yolo26n_2026-10-07_07-08-alpha.onnx input_topic:=/camera/image_raw"/>
           <ReadWasteClass name="Read class (cpu)" topic="/waste_class"
             confirm="5" timeout_ms="20000" waste_type="{waste_type}"/>
         </Sequence>
 
       </Fallback>
 
-      <!-- Free the camera and CPU/NPU once we have the answer -->
+      <!-- Free the camera and detectors once we have the answer -->
       <KillProcess name="Stop hailo" id="hailo"/>
       <KillProcess name="Stop cpu" id="cpu"/>
       <KillProcess name="Stop camera" id="camera"/>

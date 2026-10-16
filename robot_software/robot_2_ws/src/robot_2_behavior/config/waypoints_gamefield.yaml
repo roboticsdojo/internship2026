@@ -1,0 +1,14 @@
+# Waypoints in the "map" frame for the real GAMEFIELD map.
+# Fill these in after mapping the gamefield and picking points with Publish Point.
+# Format: NAME: [x, y, yaw]   (metres, metres, radians). Use decimals (0.0, not 0).
+mission_bt:
+  ros__parameters:
+    waypoints:
+      # A: [0.0, 0.0, 0.0]
+      # B: [0.0, 0.0, 0.0]
+      # C: [0.0, 0.0, 0.0]
+      # D: [0.0, 0.0, 0.0]
+      # E: [0.0, 0.0, 0.0]
+      # F: [0.0, 0.0, 0.0]
+      # G: [0.0, 0.0, 0.0]
+      # H: [0.0, 0.0, 0.0]

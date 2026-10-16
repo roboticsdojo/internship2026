@@ -19,7 +19,7 @@ def generate_launch_description():
         # Switch to waypoints_gamefield.yaml for the real gamefield map.
         DeclareLaunchArgument(
             'waypoints',
-            default_value=os.path.join(pkg, 'config', 'waypoints_instruction.yaml')),
+            default_value=os.path.join(pkg, 'config', 'waypoints_gamefield.yaml')),
         Node(
             package='robot_2_behavior',
             executable='mission_bt',
