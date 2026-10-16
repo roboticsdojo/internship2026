@@ -1,23 +1,86 @@
 <root BTCPP_format="4" main_tree_to_execute="MainTree">
+
+  <!-- ===================== Whole mission ===================== -->
   <BehaviorTree ID="MainTree">
     <Sequence name="Mission">
 
-      <!-- Leg 1: go to A (placeholder coordinates in the map frame - edit these) -->
-      <NavigateToPose name="Go to A" x="1.0" y="0.5" yaw="0.0"/>
+      <!-- 1. Go to A (the screen) -->
+      <SubTree ID="GoTo" wp="A"/>
 
-      <!-- Hold position for 5 s -->
-      <Sleep name="Hold 5s" msec="5000"/>
+      <!-- 2. Camera -> Hailo detector (fallback: CPU detector) -> waste_type -->
+      <SubTree ID="IdentifyWaste" waste_type="{waste_type}"/>
 
-      <!-- Leg 2: go to B within time_limit seconds.
-           Nav2 plans the route; SpeedAdapter raises/lowers the speed limit to hit the deadline.
-           If time runs out SpeedAdapter fails -> Parallel fails -> navigation is canceled. -->
-      <Parallel name="Go to B on time" success_count="1" failure_count="1">
-        <NavigateToPose name="Go to B" x="2.5" y="-1.0" yaw="1.57"
-                        distance_remaining="{dist_b}"/>
-        <SpeedAdapter name="Pace" distance_remaining="{dist_b}"
-                      time_limit="30.0" min_speed="0.10" max_speed="0.50"/>
-      </Parallel>
+      <!-- 3. Go to the loading station for this waste: B metallic, C organic, D plastic -->
+      <Switch3 name="Pick loading station" variable="{waste_type}"
+               case_1="metallic" case_2="organic" case_3="plastic">
+        <SubTree ID="GoTo" wp="B"/>
+        <SubTree ID="GoTo" wp="C"/>
+        <SubTree ID="GoTo" wp="D"/>
+        <AlwaysFailure/>
+      </Switch3>
+      <Sleep name="Loading (10 s)" msec="10000"/>
+
+      <!-- 4. Waiting area E -->
+      <SubTree ID="GoTo" wp="E"/>
+      <Sleep name="Wait at E (10 s)" msec="10000"/>
+
+      <!-- 5. Offloading station: F metallic, G organic, H plastic -->
+      <Switch3 name="Pick offloading station" variable="{waste_type}"
+               case_1="metallic" case_2="organic" case_3="plastic">
+        <SubTree ID="GoTo" wp="F"/>
+        <SubTree ID="GoTo" wp="G"/>
+        <SubTree ID="GoTo" wp="H"/>
+        <AlwaysFailure/>
+      </Switch3>
+
+      <!-- 6. Open the servo to offload -->
+      <OpenServo name="Offload" topic="/robot_2/offload_servo"
+                 open_angle="90.0" close_angle="0.0" hold_ms="2000"/>
 
     </Sequence>
   </BehaviorTree>
+
+  <!-- ===================== Drive to a named waypoint, retry up to 3x ===================== -->
+  <BehaviorTree ID="GoTo">
+    <RetryUntilSuccessful num_attempts="3">
+      <NavigateToPose name="Navigate" waypoint="{wp}"/>
+    </RetryUntilSuccessful>
+  </BehaviorTree>
+
+  <!-- ===================== Camera + detector with CPU fallback =====================
+       Hailo needs a compiled .hef model. There is only .onnx/.pt in models/, so until
+       you have a .hef the Hailo branch fails and the CPU branch takes over (intended). -->
+  <BehaviorTree ID="IdentifyWaste">
+    <Sequence name="Identify waste">
+
+      <LaunchProcess name="Start camera" id="camera" settle_ms="3000"
+        command="ros2 launch camera_ros camera.launch.py"/>
+
+      <Fallback name="Hailo, else CPU">
+
+        <Sequence name="Hailo detector">
+          <LaunchProcess name="Start hailo" id="hailo" settle_ms="5000"
+            command="ros2 launch hailo_yolo_detector detector.launch.py hef_path:=$HOME/internship2026/robot_software/robot_2_ws/src/ros-ai-hat/src/models/model.hef input_topic:=/camera/image_raw"/>
+          <ReadWasteClass name="Read class (hailo)" topic="/waste_class"
+            confirm="5" timeout_ms="10000" waste_type="{waste_type}"/>
+        </Sequence>
+
+        <Sequence name="CPU detector (fallback)">
+          <KillProcess name="Stop hailo" id="hailo"/>
+          <LaunchProcess name="Start cpu" id="cpu" settle_ms="5000"
+            command="ros2 launch cpu_yolo_detector cpu_detector.launch.py model_path:=$HOME/internship2026/robot_software/robot_2_ws/src/ros-ai-hat/src/models/v0.1.0_yolo26n_2026-10-07_07-08-alpha.onnx input_topic:=/camera/image_raw"/>
+          <ReadWasteClass name="Read class (cpu)" topic="/waste_class"
+            confirm="5" timeout_ms="20000" waste_type="{waste_type}"/>
+        </Sequence>
+
+      </Fallback>
+
+      <!-- Free the camera and CPU/NPU once we have the answer -->
+      <KillProcess name="Stop hailo" id="hailo"/>
+      <KillProcess name="Stop cpu" id="cpu"/>
+      <KillProcess name="Stop camera" id="camera"/>
+
+    </Sequence>
+  </BehaviorTree>
+
 </root>

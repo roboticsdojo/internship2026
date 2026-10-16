@@ -10,13 +10,15 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(nav2_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
 find_package(behaviortree_cpp REQUIRED)
 
 add_executable(mission_bt src/mission_bt.cpp)
 target_compile_features(mission_bt PUBLIC cxx_std_17)
-ament_target_dependencies(mission_bt rclcpp rclcpp_action nav2_msgs geometry_msgs behaviortree_cpp)
+ament_target_dependencies(mission_bt
+  rclcpp rclcpp_action nav2_msgs geometry_msgs std_msgs behaviortree_cpp)
 
 install(TARGETS mission_bt DESTINATION lib/${PROJECT_NAME})
-install(DIRECTORY trees launch DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY trees launch config DESTINATION share/${PROJECT_NAME})
 
 ament_package()
