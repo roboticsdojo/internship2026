@@ -22,7 +22,7 @@ def generate_launch_description():
         ),
         Node(
             package='rplidar_ros',
-            executable='rplidar_composition',
+            executable='rplidar_node',
             namespace = 'robot_2',
             output='screen',
             parameters=[{

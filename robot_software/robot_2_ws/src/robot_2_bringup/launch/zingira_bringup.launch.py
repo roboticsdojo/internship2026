@@ -114,7 +114,7 @@ def generate_launch_description():
     #     are not competing for CPU/USB power at the same instant.
     lidar_node = Node(
         package='rplidar_ros',
-        executable='rplidar_composition',
+        executable='rplidar_node',
         namespace='robot_2',
         output='screen',
         respawn=True,
