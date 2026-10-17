@@ -1,8 +1,6 @@
 #pragma once
 
-#include <fcntl.h>
 #include <sys/wait.h>
-#include <termios.h>
 #include <unistd.h>
 
 #include <algorithm>
@@ -18,6 +16,7 @@
 #include "nav2_msgs/msg/speed_limit.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
+#include "std_msgs/msg/float64_multi_array.hpp"
 #include "std_msgs/msg/int32.hpp"
 
 namespace robot_2_behavior
@@ -472,89 +471,13 @@ private:
 };
 
 // ---------------------------------------------------------------------------
-// Serial ports opened by the tree (kept open once opened). Opening a port
-// usually resets an Arduino, so we remember when it was opened and let callers
-// wait for the board to boot before the first write.
-// ---------------------------------------------------------------------------
-class SerialPorts
-{
-public:
-  static SerialPorts & instance()
-  {
-    static SerialPorts p;
-    return p;
-  }
-
-  ~SerialPorts()
-  {
-    for (auto & kv : ports_) {close(kv.second.fd);}
-  }
-
-  // Returns the file descriptor, or -1 if the port cannot be opened.
-  int get(const std::string & device, int baud)
-  {
-    const auto it = ports_.find(device);
-    if (it != ports_.end()) {return it->second.fd;}
-
-    const int fd = ::open(device.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
-    if (fd < 0) {return -1;}
-
-    termios tty{};
-    if (tcgetattr(fd, &tty) != 0) {
-      ::close(fd);
-      return -1;
-    }
-    cfmakeraw(&tty);
-    const speed_t sp = toSpeed(baud);
-    cfsetispeed(&tty, sp);
-    cfsetospeed(&tty, sp);
-    tty.c_cflag |= (CLOCAL | CREAD);
-    tty.c_cflag &= ~CSTOPB;
-    tty.c_cflag &= ~CRTSCTS;
-    if (tcsetattr(fd, TCSANOW, &tty) != 0) {
-      ::close(fd);
-      return -1;
-    }
-    ports_[device] = {fd, SteadyClock::now()};
-    return fd;
-  }
-
-  // True once the board has had `boot_s` seconds since the port was opened.
-  bool ready(const std::string & device, double boot_s) const
-  {
-    const auto it = ports_.find(device);
-    return it != ports_.end() && secondsSince(it->second.opened) >= boot_s;
-  }
-
-private:
-  struct Port
-  {
-    int fd;
-    SteadyClock::time_point opened;
-  };
-
-  static speed_t toSpeed(int baud)
-  {
-    switch (baud) {
-      case 9600: return B9600;
-      case 19200: return B19200;
-      case 38400: return B38400;
-      case 57600: return B57600;
-      case 230400: return B230400;
-      default: return B115200;
-    }
-  }
-
-  std::map<std::string, Port> ports_;
-};
-
-// ---------------------------------------------------------------------------
-// OpenServo: sends open_cmd over serial, holds for hold_ms, sends close_cmd.
-// The Pi talks to the Arduino with single characters (g = open, h = close).
+// OpenServo: opens the offload servo, holds for hold_ms, closes it again.
 //
-// NOTE: only one process should own a serial port. If this servo is on the same
-// Arduino that ros2_control (robot_2_hardware) already talks to, do NOT use this
-// node - the servo has to go through the hardware interface instead.
+// The servo is a ros2_control command interface ("open": 1.0 = open, 0.0 =
+// closed) owned by robot_2_hardware, which sends g / h to the Arduino. We reach
+// it through a ForwardCommandController that listens on `topic` for a
+// std_msgs/Float64MultiArray with one value. The tree never touches the
+// serial port itself.
 // ---------------------------------------------------------------------------
 class OpenServo : public BT::StatefulActionNode
 {
@@ -565,73 +488,76 @@ public:
   static BT::PortsList providedPorts()
   {
     return {
-      BT::InputPort<std::string>("device", "serial device of the servo Arduino"),
-      BT::InputPort<int>("baud", 115200, "serial baud rate"),
-      BT::InputPort<std::string>("open_cmd", "g", "text sent to open"),
-      BT::InputPort<std::string>("close_cmd", "h", "text sent to close"),
-      BT::InputPort<int>("hold_ms", 2000, "how long to stay open"),
-      BT::InputPort<double>("boot_s", 2.0, "wait after opening the port (Arduino reset)")};
+      BT::InputPort<std::string>(
+        "topic", "/robot_2/servo_controller/commands", "servo controller command topic"),
+      BT::InputPort<double>("open_value", 1.0, "value that opens the servo"),
+      BT::InputPort<double>("close_value", 0.0, "value that closes the servo"),
+      BT::InputPort<int>("hold_ms", 2000, "how long to stay open")};
   }
 
   BT::NodeStatus onStart() override
   {
-    int baud = 115200, hold = 2000;
-    getInput("baud", baud);
+    std::string topic = "/robot_2/servo_controller/commands";
+    getInput("topic", topic);
+    if (!pub_ || topic != topic_) {
+      topic_ = topic;
+      pub_ = node_->create_publisher<std_msgs::msg::Float64MultiArray>(topic_, rclcpp::QoS(10));
+    }
+    getInput("open_value", open_);
+    getInput("close_value", close_);
+    int hold = 2000;
     getInput("hold_ms", hold);
-    getInput("boot_s", boot_s_);
-    getInput("open_cmd", open_cmd_);
-    getInput("close_cmd", close_cmd_);
     hold_s_ = hold / 1000.0;
-
-    if (!getInput("device", device_) || device_.empty()) {
-      RCLCPP_ERROR(node_->get_logger(), "[%s] missing 'device' port", name().c_str());
-      return BT::NodeStatus::FAILURE;
-    }
-    fd_ = SerialPorts::instance().get(device_, baud);
-    if (fd_ < 0) {
-      RCLCPP_ERROR(
-        node_->get_logger(), "[%s] cannot open serial device %s", name().c_str(), device_.c_str());
-      return BT::NodeStatus::FAILURE;
-    }
     opened_ = false;
+    t0_ = SteadyClock::now();
     return BT::NodeStatus::RUNNING;
   }
 
   BT::NodeStatus onRunning() override
   {
-    if (!opened_) {
-      if (!SerialPorts::instance().ready(device_, boot_s_)) {return BT::NodeStatus::RUNNING;}
-      if (!send(open_cmd_)) {return BT::NodeStatus::FAILURE;}
+    constexpr double kSettle = 0.3;  // let the controller's subscription be discovered
+    const double t = secondsSince(t0_);
+    if (!opened_ && t >= kSettle) {
+      if (pub_->get_subscription_count() == 0) {
+        RCLCPP_WARN_THROTTLE(
+          node_->get_logger(), *node_->get_clock(), 2000,
+          "[%s] nobody is listening on %s - is the servo controller running?",
+          name().c_str(), topic_.c_str());
+        return secondsSince(t0_) > 10.0 ? BT::NodeStatus::FAILURE : BT::NodeStatus::RUNNING;
+      }
+      send(open_);
       opened_ = true;
       t_open_ = SteadyClock::now();
-      RCLCPP_INFO(node_->get_logger(), "[%s] servo open ('%s')", name().c_str(), open_cmd_.c_str());
+      RCLCPP_INFO(node_->get_logger(), "[%s] servo open", name().c_str());
       return BT::NodeStatus::RUNNING;
     }
-    if (secondsSince(t_open_) >= hold_s_) {
-      const bool ok = send(close_cmd_);
-      RCLCPP_INFO(node_->get_logger(), "[%s] servo closed ('%s')", name().c_str(), close_cmd_.c_str());
-      return ok ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
+    if (opened_ && secondsSince(t_open_) >= hold_s_) {
+      send(close_);
+      RCLCPP_INFO(node_->get_logger(), "[%s] servo closed", name().c_str());
+      return BT::NodeStatus::SUCCESS;
     }
     return BT::NodeStatus::RUNNING;
   }
 
   void onHalted() override
   {
-    if (opened_) {send(close_cmd_);}
+    if (opened_) {send(close_);}
   }
 
 private:
-  bool send(const std::string & cmd)
+  void send(double value)
   {
-    return ::write(fd_, cmd.data(), cmd.size()) == static_cast<ssize_t>(cmd.size());
+    std_msgs::msg::Float64MultiArray msg;
+    msg.data = {value};
+    pub_->publish(msg);
   }
 
   rclcpp::Node::SharedPtr node_;
-  std::string device_, open_cmd_{"g"}, close_cmd_{"h"};
-  int fd_{-1};
-  double boot_s_{2.0}, hold_s_{2.0};
+  rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr pub_;
+  std::string topic_;
+  double open_{1.0}, close_{0.0}, hold_s_{2.0};
   bool opened_{false};
-  SteadyClock::time_point t_open_;
+  SteadyClock::time_point t0_, t_open_;
 };
 
 }  // namespace robot_2_behavior

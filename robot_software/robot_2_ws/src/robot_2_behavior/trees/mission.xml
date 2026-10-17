@@ -37,10 +37,10 @@
         <AlwaysFailure/>
       </Switch3>
 
-      <!-- 6. Open the servo to offload (g = open, h = close - confirm the letters).
-           Replace device with the real /dev/serial/by-id/... of the servo Arduino. -->
-      <OpenServo name="Offload" device="/dev/serial/by-id/REPLACE_ME" baud="115200"
-                 open_cmd="g" close_cmd="h" hold_ms="2000"/>
+      <!-- 6. Open the servo to offload. robot_2_hardware sends g (open) / h (close) to the
+           Arduino; the tree reaches it through the servo ForwardCommandController. -->
+      <OpenServo name="Offload" topic="/robot_2/servo_controller/commands"
+                 open_value="1.0" close_value="0.0" hold_ms="2000"/>
 
     </Sequence>
   </BehaviorTree>
