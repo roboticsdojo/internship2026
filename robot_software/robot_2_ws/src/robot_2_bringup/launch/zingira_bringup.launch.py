@@ -102,6 +102,19 @@ def generate_launch_description():
         ],
     )
 
+    # Servo (offload) - ForwardCommandController on the "servo/open"
+    # command interface. Listens on /robot_2/servo_controller/commands
+    # (std_msgs/Float64MultiArray, data: [1.0] = open, [0.0] = closed).
+    # The behavior tree publishes to this topic.
+    servo_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=[
+            "servo_controller",
+            "-c", "/robot_2/controller_manager",
+        ],
+    )
+
     # -----------------------------
     # 2. LiDAR
     # -----------------------------
@@ -114,7 +127,7 @@ def generate_launch_description():
     #     are not competing for CPU/USB power at the same instant.
     lidar_node = Node(
         package='rplidar_ros',
-        executable='rplidar_node',
+        executable='rplidar_composition',
         namespace='robot_2',
         output='screen',
         respawn=True,
@@ -156,17 +169,31 @@ def generate_launch_description():
     # -----------------------------
     # Sequencing
     # -----------------------------
-    # The joint_broad spawner is the last thing to finish during startup, so
-    # its exit means the hardware interface and controllers are fully up.
-    # Then: wait 2 s, start the lidar; wait a further 6 s, start slam_toolbox.
+    # Spawners run one after another so the controller_manager is never
+    # asked to load two controllers at once:
+    #   diff_cont + joint_broad (started with the controller manager)
+    #     -> joint_broad exits -> servo_controller spawner starts
+    #     -> servo spawner exits -> wait 2 s, start the lidar;
+    #                               wait a further 6 s, start slam_toolbox.
+    #
+    # OnProcessExit fires whether the spawner succeeded or failed, so the
+    # lidar still starts if the servo controller cannot be loaded (e.g. the
+    # servo <gpio> is removed from the URDF).
     #
     # slam_toolbox is started on a timer rather than via OnProcessStart on
     # the lidar node: with respawn=True, OnProcessStart would fire again on
     # every lidar restart and try to launch a second slam_toolbox.
     # slam_toolbox's IfCondition makes this a no-op when slam:=false.
-    start_lidar_and_slam = RegisterEventHandler(
+    start_servo = RegisterEventHandler(
         OnProcessExit(
             target_action=joint_broad_spawner,
+            on_exit=[servo_spawner],
+        )
+    )
+
+    start_lidar_and_slam = RegisterEventHandler(
+        OnProcessExit(
+            target_action=servo_spawner,
             on_exit=[
                 TimerAction(period=2.0, actions=[lidar_node]),
                 TimerAction(period=8.0, actions=[slam_toolbox]),
@@ -181,6 +208,7 @@ def generate_launch_description():
             controller_manager,
             diff_drive_spawner,
             joint_broad_spawner,
+            start_servo,
             start_lidar_and_slam,
         ]
     )
@@ -196,3 +224,8 @@ def generate_launch_description():
 
     # -----TELEOP COMMAND------
     # ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -p stamped:=true -r /cmd_vel:=/robot_2/cmd_vel
+
+    # -----SERVO TEST (after bringup)------
+    #   ros2 control list_controllers -c /robot_2/controller_manager
+    #   ros2 topic pub --once /robot_2/servo_controller/commands std_msgs/msg/Float64MultiArray "{data: [1.0]}"   # open  (g)
+    #   ros2 topic pub --once /robot_2/servo_controller/commands std_msgs/msg/Float64MultiArray "{data: [0.0]}"   # close (h)
