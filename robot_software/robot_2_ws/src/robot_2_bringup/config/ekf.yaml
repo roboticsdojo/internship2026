@@ -1,0 +1,44 @@
+# robot_localization EKF: fuses wheel odometry with the MPU6050 and publishes
+# the odom -> base_footprint transform plus /odometry/filtered.
+#
+# Why these choices (skid-steer, slips when turning and on rough ground):
+#   - wheel odometry contributes FORWARD VELOCITY only (its yaw is unreliable)
+#   - the gyro contributes YAW RATE, which does not care about wheel slip
+#   - absolute IMU yaw is NOT used (an MPU6050 has no magnetometer, so it drifts);
+#     AMCL corrects the remaining drift against the map.
+#
+# Config vector order: x, y, z, roll, pitch, yaw, vx, vy, vz, vroll, vpitch, vyaw, ax, ay, az
+ekf_filter_node:
+  ros__parameters:
+    use_sim_time: false
+    frequency: 30.0
+    sensor_timeout: 0.2
+    two_d_mode: true
+    publish_tf: true
+    publish_acceleration: false
+
+    map_frame: map
+    odom_frame: odom
+    base_link_frame: base_footprint
+    world_frame: odom
+
+    odom0: /robot_2/odom
+    odom0_config: [false, false, false,
+                   false, false, false,
+                   true,  false, false,
+                   false, false, false,
+                   false, false, false]
+    odom0_queue_size: 10
+    odom0_differential: false
+    odom0_relative: false
+
+    imu0: /robot_2/imu
+    imu0_config: [false, false, false,
+                  false, false, false,
+                  false, false, false,
+                  false, false, true,
+                  false, false, false]
+    imu0_queue_size: 10
+    imu0_differential: false
+    imu0_relative: false
+    imu0_remove_gravitational_acceleration: true

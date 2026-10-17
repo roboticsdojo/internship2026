@@ -12,6 +12,11 @@
     joint_broad:
       type: joint_state_broadcaster/JointStateBroadcaster
 
+    # Publishes the MPU6050 (the "imu_sensor" <sensor> in ros2_control.xacro)
+    # as sensor_msgs/Imu. Fused with wheel odometry by the EKF (config/ekf.yaml).
+    imu_broad:
+      type: imu_sensor_broadcaster/IMUSensorBroadcaster
+
     # Servo open/close. Commands the "servo/open" interface exported
     # by robot_2_hardware (1.0 = open fully, 0.0 = closed).
     servo_controller:
@@ -39,10 +44,34 @@
     base_frame_id: base_footprint
     odom_frame_id: odom
 
+    # The EKF (config/ekf.yaml) now publishes the odom -> base_footprint
+    # transform, fusing wheel odometry with the IMU. If this stayed true,
+    # two nodes would publish the same transform and the robot would jitter.
+    # ROLLBACK: set this back to true and stop ekf_filter_node.
+    enable_odom_tf: false
+
+    # Covariances the EKF uses to weigh wheel odometry. Only linear x velocity
+    # is fused (wheel yaw is unreliable on a skid-steer), so the yaw values just
+    # need to be "large".
+    pose_covariance_diagonal: [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
+    twist_covariance_diagonal: [0.01, 0.01, 1000000.0, 1000000.0, 1000000.0, 0.1]
+
     left_wheel_names: ['front_left_wheel_joint', 'back_left_wheel_joint']
     right_wheel_names: ['front_right_wheel_joint', 'back_right_wheel_joint']
     wheel_separation: 0.3
     wheel_radius: 0.0425
+
+/robot_2/imu_broad:
+  ros__parameters:
+    # Name of the <sensor> in ros2_control.xacro.
+    sensor_name: imu_sensor
+    # Must be a frame that exists in the TF tree. base_link is used so the
+    # EKF can transform the data without needing a dedicated imu_link; this
+    # assumes the MPU6050 is mounted flat with x forward and z up.
+    frame_id: base_link
+    static_covariance_orientation: [0.01, 0.0, 0.0, 0.0, 0.01, 0.0, 0.0, 0.0, 0.05]
+    static_covariance_angular_velocity: [0.001, 0.0, 0.0, 0.0, 0.001, 0.0, 0.0, 0.0, 0.001]
+    static_covariance_linear_acceleration: [0.1, 0.0, 0.0, 0.0, 0.1, 0.0, 0.0, 0.0, 0.1]
 
 /robot_2/servo_controller:
   ros__parameters:

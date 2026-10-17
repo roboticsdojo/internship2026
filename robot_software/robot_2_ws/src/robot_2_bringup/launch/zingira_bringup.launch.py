@@ -102,6 +102,18 @@ def generate_launch_description():
         ],
     )
 
+    # IMU (MPU6050) -> sensor_msgs/Imu on /robot_2/imu
+    imu_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=[
+            "imu_broad",
+            "-c", "/robot_2/controller_manager",
+            "--controller-ros-args",
+            "-r /robot_2/imu_broad/imu:=/robot_2/imu"
+        ],
+    )
+
     # Servo (offload) - ForwardCommandController on the "servo/open"
     # command interface. Listens on /robot_2/servo_controller/commands
     # (std_msgs/Float64MultiArray, data: [1.0] = open, [0.0] = closed).
@@ -112,6 +124,26 @@ def generate_launch_description():
         arguments=[
             "servo_controller",
             "-c", "/robot_2/controller_manager",
+        ],
+    )
+
+    # -----------------------------
+    # EKF: wheel odometry + IMU -> odom -> base_footprint TF and
+    # /odometry/filtered. diff_cont no longer publishes that TF
+    # (enable_odom_tf: false in my_controllers_real.yaml).
+    # Runs in the global namespace like the Nav2 nodes.
+    # -----------------------------
+    ekf_node = Node(
+        package="robot_localization",
+        executable="ekf_node",
+        name="ekf_filter_node",
+        output="screen",
+        parameters=[
+            os.path.join(
+                get_package_share_directory("robot_2_bringup"),
+                "config",
+                "ekf.yaml",
+            )
         ],
     )
 
@@ -172,21 +204,29 @@ def generate_launch_description():
     # Spawners run one after another so the controller_manager is never
     # asked to load two controllers at once:
     #   diff_cont + joint_broad (started with the controller manager)
-    #     -> joint_broad exits -> servo_controller spawner starts
+    #     -> joint_broad exits -> imu_broad spawner starts
+    #     -> imu spawner exits -> servo_controller spawner starts
     #     -> servo spawner exits -> wait 2 s, start the lidar;
     #                               wait a further 6 s, start slam_toolbox.
     #
     # OnProcessExit fires whether the spawner succeeded or failed, so the
-    # lidar still starts if the servo controller cannot be loaded (e.g. the
-    # servo <gpio> is removed from the URDF).
+    # chain (and the lidar) still continues if one controller cannot be
+    # loaded (e.g. the servo <gpio> is removed from the URDF).
     #
     # slam_toolbox is started on a timer rather than via OnProcessStart on
     # the lidar node: with respawn=True, OnProcessStart would fire again on
     # every lidar restart and try to launch a second slam_toolbox.
     # slam_toolbox's IfCondition makes this a no-op when slam:=false.
-    start_servo = RegisterEventHandler(
+    start_imu = RegisterEventHandler(
         OnProcessExit(
             target_action=joint_broad_spawner,
+            on_exit=[imu_spawner],
+        )
+    )
+
+    start_servo = RegisterEventHandler(
+        OnProcessExit(
+            target_action=imu_spawner,
             on_exit=[servo_spawner],
         )
     )
@@ -208,8 +248,10 @@ def generate_launch_description():
             controller_manager,
             diff_drive_spawner,
             joint_broad_spawner,
+            start_imu,
             start_servo,
             start_lidar_and_slam,
+            ekf_node,
         ]
     )
 
@@ -229,3 +271,8 @@ def generate_launch_description():
     #   ros2 control list_controllers -c /robot_2/controller_manager
     #   ros2 topic pub --once /robot_2/servo_controller/commands std_msgs/msg/Float64MultiArray "{data: [1.0]}"   # open  (g)
     #   ros2 topic pub --once /robot_2/servo_controller/commands std_msgs/msg/Float64MultiArray "{data: [0.0]}"   # close (h)
+
+    # -----IMU / EKF CHECKS (after bringup)------
+    #   ros2 topic echo /robot_2/imu --once          # still: accel z ~ 9.8, gyro ~ 0
+    #   ros2 topic hz /odometry/filtered
+    #   ros2 run tf2_ros tf2_echo odom base_footprint
