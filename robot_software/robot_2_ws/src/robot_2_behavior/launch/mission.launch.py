@@ -16,7 +16,9 @@ def generate_launch_description():
         DeclareLaunchArgument('use_sim_time', default_value='false'),
         DeclareLaunchArgument(
             'tree_file', default_value=os.path.join(pkg, 'trees', 'mission.xml')),
-        # Switch to waypoints_gamefield.yaml for the real gamefield map.
+        # waypoints_gamefield.yaml currently holds the INSTRUCTION ROOM coordinates;
+        # replace them with the real gamefield ones once that map is made.
+        # The detector (CPU by default) is chosen by the use_hailo line in mission.xml.
         DeclareLaunchArgument(
             'waypoints',
             default_value=os.path.join(pkg, 'config', 'waypoints_gamefield.yaml')),
