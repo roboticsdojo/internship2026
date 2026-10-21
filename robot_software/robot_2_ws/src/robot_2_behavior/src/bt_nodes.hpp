@@ -17,7 +17,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
 #include "std_msgs/msg/float64_multi_array.hpp"
-#include "std_msgs/msg/int32.hpp"
+#include "vision_msgs/msg/detection2_d_array.hpp"
 
 namespace robot_2_behavior
 {
@@ -384,17 +384,22 @@ public:
 };
 
 // ---------------------------------------------------------------------------
-// ReadWasteClass: waits for the detector to report the same class `confirm`
-// times in a row. 0 = metallic, 1 = organic, 2 = plastic.
+// ReadWasteClass: reads the detector's output (vision_msgs/Detection2DArray,
+// e.g. /cpu/detections) and waits until the same class has been the top
+// detection `confirm` messages in a row.
+//   class id 0 = metallic, 1 = organic, 2 = plastic
 // Writes waste_type = "metallic" | "organic" | "plastic".
 //
-// ASSUMPTION (adapt to your detector): it publishes std_msgs/Int32 with the
-// class id on `topic`. If your detector publishes something else (e.g.
-// vision_msgs/Detection2DArray), only the subscription + callback below change.
+//  - per message the highest-score detection (score >= min_score) is used
+//  - messages with no usable detection are ignored (they neither confirm nor reset)
+//  - a different class resets the count
+//  - FAILURE if nothing is confirmed within timeout_ms
 // ---------------------------------------------------------------------------
 class ReadWasteClass : public BT::StatefulActionNode
 {
 public:
+  using Detections = vision_msgs::msg::Detection2DArray;
+
   ReadWasteClass(
     const std::string & name, const BT::NodeConfig & config, rclcpp::Node::SharedPtr node)
   : BT::StatefulActionNode(name, config), node_(std::move(node)) {}
@@ -402,38 +407,32 @@ public:
   static BT::PortsList providedPorts()
   {
     return {
-      BT::InputPort<std::string>("topic", "/waste_class", "detector output topic"),
-      BT::InputPort<int>("confirm", 5, "same class this many times in a row"),
+      BT::InputPort<std::string>("topic", "/cpu/detections", "detector output topic"),
+      BT::InputPort<int>("confirm", 5, "same class this many messages in a row"),
       BT::InputPort<int>("timeout_ms", 10000, "fail if not confirmed within this time"),
+      BT::InputPort<double>("min_score", 0.30, "ignore detections below this score"),
       BT::OutputPort<std::string>("waste_type", "metallic | organic | plastic")};
   }
 
   BT::NodeStatus onStart() override
   {
-    std::string topic = "/waste_class";
+    std::string topic = "/cpu/detections";
     getInput("topic", topic);
-    if (!sub_ || topic != topic_) {
-      topic_ = topic;
-      sub_ = node_->create_subscription<std_msgs::msg::Int32>(
-        topic_, rclcpp::QoS(10), [this](std_msgs::msg::Int32::SharedPtr msg) {
-          if (!listening_) {return;}
-          if (msg->data < 0 || msg->data > 2) {
-            streak_ = 0;
-            return;
-          }
-          if (msg->data == last_) {
-            ++streak_;
-          } else {
-            last_ = msg->data;
-            streak_ = 1;
-          }
-        });
-    }
     int confirm = 5, timeout = 10000;
     getInput("confirm", confirm);
     getInput("timeout_ms", timeout);
+    getInput("min_score", min_score_);
     confirm_ = confirm;
     timeout_s_ = timeout / 1000.0;
+
+    if (!sub_ || topic != topic_) {
+      topic_ = topic;
+      // SensorDataQoS (best effort) connects to both reliable and best-effort publishers.
+      sub_ = node_->create_subscription<Detections>(
+        topic_, rclcpp::SensorDataQoS(),
+        [this](Detections::SharedPtr msg) {onDetections(*msg);});
+    }
+
     last_ = -1;
     streak_ = 0;
     listening_ = true;
@@ -447,12 +446,14 @@ public:
       static const char * names[] = {"metallic", "organic", "plastic"};
       listening_ = false;
       setOutput("waste_type", std::string(names[last_]));
-      RCLCPP_INFO(node_->get_logger(), "[%s] detected: %s (class %d)", name().c_str(), names[last_], last_);
+      RCLCPP_INFO(
+        node_->get_logger(), "[%s] detected: %s (class %d)", name().c_str(), names[last_], last_);
       return BT::NodeStatus::SUCCESS;
     }
     if (secondsSince(t0_) > timeout_s_) {
       listening_ = false;
-      RCLCPP_WARN(node_->get_logger(), "[%s] no confirmed class on %s", name().c_str(), topic_.c_str());
+      RCLCPP_WARN(
+        node_->get_logger(), "[%s] no confirmed class on %s", name().c_str(), topic_.c_str());
       return BT::NodeStatus::FAILURE;
     }
     return BT::NodeStatus::RUNNING;
@@ -461,12 +462,50 @@ public:
   void onHalted() override {listening_ = false;}
 
 private:
+  void onDetections(const Detections & msg)
+  {
+    if (!listening_) {return;}
+
+    int best_class = -1;
+    double best_score = -1.0;
+    bool parsed_any = false;
+    for (const auto & det : msg.detections) {
+      for (const auto & r : det.results) {
+        if (r.hypothesis.score < min_score_) {continue;}
+        int cls = -1;
+        try {
+          cls = std::stoi(r.hypothesis.class_id);
+        } catch (...) {
+          continue;  // class id is not a number
+        }
+        parsed_any = true;
+        if (r.hypothesis.score > best_score) {
+          best_score = r.hypothesis.score;
+          best_class = cls;
+        }
+      }
+    }
+    if (!parsed_any) {return;}  // nothing usable in this message: ignore it
+
+    if (best_class < 0 || best_class > 2) {  // a class we do not map
+      streak_ = 0;
+      last_ = -1;
+      return;
+    }
+    if (best_class == last_) {
+      ++streak_;
+    } else {
+      last_ = best_class;
+      streak_ = 1;
+    }
+  }
+
   rclcpp::Node::SharedPtr node_;
-  rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr sub_;
+  rclcpp::Subscription<Detections>::SharedPtr sub_;
   std::string topic_;
   bool listening_{false};
   int last_{-1}, streak_{0}, confirm_{5};
-  double timeout_s_{10.0};
+  double min_score_{0.30}, timeout_s_{10.0};
   SteadyClock::time_point t0_;
 };
 
