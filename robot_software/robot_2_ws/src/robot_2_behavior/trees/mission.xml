@@ -67,16 +67,16 @@
         <Sequence name="Hailo detector" _skipIf="use_hailo==0">
           <LaunchProcess name="Start hailo" id="hailo" settle_ms="5000"
             command="source $HOME/ws_env.sh &amp;&amp; ros2 launch hailo_yolo_detector detector.launch.py hef_path:=/home/smartai/rpi5-hailo8l/models/yolov8n.hef input_topic:=/camera/image_raw"/>
-          <ReadWasteClass name="Read class (hailo)" topic="/waste_class"
-            confirm="5" timeout_ms="10000" waste_type="{waste_type}"/>
+          <ReadWasteClass name="Read class (hailo)" topic="/hailo/detections"
+            confirm="5" timeout_ms="10000" min_score="0.30" waste_type="{waste_type}"/>
         </Sequence>
 
         <Sequence name="CPU detector">
           <KillProcess name="Stop hailo" id="hailo"/>
           <LaunchProcess name="Start cpu" id="cpu" settle_ms="5000"
             command="source $HOME/ws_env.sh &amp;&amp; ros2 launch cpu_yolo_detector cpu_detector.launch.py model_path:=/home/smartai/internship2026/robot_software/robot_2_ws/src/ros-ai-hat/src/models/v0.1.0_yolo26n_2026-10-07_07-08-alpha.onnx input_topic:=/camera/image_raw"/>
-          <ReadWasteClass name="Read class (cpu)" topic="/waste_class"
-            confirm="5" timeout_ms="20000" waste_type="{waste_type}"/>
+          <ReadWasteClass name="Read class (cpu)" topic="/cpu/detections"
+            confirm="5" timeout_ms="20000" min_score="0.30" waste_type="{waste_type}"/>
         </Sequence>
 
       </Fallback>
