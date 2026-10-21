@@ -36,3 +36,19 @@ def generate_launch_description():
             ],
         ),
     ])
+
+#   Terminal 1:
+#   ros2 launch robot_2_bringup zingira_bringup.launch.py
+
+#   Terminal 2: Nav2
+#      ros2 launch robot_2_bringup nav2_bringup.launch.py \
+#     map:=$HOME/internship2026/robot_software/robot_2_ws/src/robot_2_bringup/config/maps/instruction.yaml
+
+#   Terminal 3: rviz2
+
+# Confirm no camera node is on: ros2 node list
+
+#   Groot2: <pi-ip>:1662
+
+#   Terminal 4: Mission
+#   ros2 launch robot_2_behavior mission.launch.py
