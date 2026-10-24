@@ -1,11 +1,13 @@
-# Waypoints in the "map" frame, picked with RViz Publish Point.
+# Waypoints in the "map" frame, picked with RViz Publish Point on the map that Nav2
+# was running. Run the mission with the SAME map, or the points will be in the wrong
+# places. Replace these with the real gamefield coordinates once that map exists.
 # Format: NAME: [x, y, yaw]   (metres, metres, radians). Use decimals (0.0, not 0).
 #
 # A screen            B metallic load    C organic load    D plastic load
 # E waiting area      F metallic offload G organic offload H plastic offload
 #
 # yaw is the direction the robot faces when it arrives (0.0 = along the map's +x axis).
-# All set to 0.0 for now. It matters at A (the camera must face the screen) and at the
+# All 0.0 for now. It matters at A (the camera must face the screen) and at the
 # loading/offloading stations (the robot must face the chute / bin). Set each one with:
 #   yaw = atan2(target_y - y, target_x - x)
 # where (target_x, target_y) is the point the robot should face.
@@ -15,13 +17,13 @@
 mission_bt:
   ros__parameters:
     waypoints:
-      A: [1.71, 1.04, -0.051]
-      B: [4.05, -0.90, 2.255]
-      C: [3.63, -1.85, 1.95]
-      D: [4.11, -3.39, 1.948]
-      E: [1.81, -4.20, 1.439]
-      F: [0.74, -5.60, 1.31]
-      G: [-0.77, -8.32, 1.233]
-      H: [1.17, 1.83, -0.558]
+      A: [-0.03, -1.98, 0.0]
+      B: [-1.72, -1.79, 0.0]
+      C: [-2.37, -2.13, 0.0]
+      D: [-2.43, -3.57, 0.0]
+      E: [-0.74, -3.59, 0.0]
+      F: [-0.06, -4.81, 0.0]
+      G: [1.57, -4.81, 0.0]
+      H: [1.81, -2.36, 0.0]
 
-      # python3 -c "import math; x,y=1.71,1.04; tx,ty=2.5,1.0; print(math.atan2(ty-y, tx-x))"
+      # python3 -c "import math; x,y=-0.03,-1.98; tx,ty=SCREEN_X,SCREEN_Y; print(math.atan2(ty-y, tx-x))"

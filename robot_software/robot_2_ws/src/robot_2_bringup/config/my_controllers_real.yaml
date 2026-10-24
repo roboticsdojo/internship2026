@@ -31,8 +31,10 @@
     # /robot_2/cmd_vel (e.g. teleop_twist_keyboard --ros-args -p stamped:=true).
 
     # How long (s) a received cmd_vel is considered valid before the
-    # controller zeroes velocity on its own.
-    cmd_vel_timeout: 0.5
+    # controller zeroes velocity on its own. Must be longer than the
+    # keyboard auto-repeat delay (~0.5-0.66 s), otherwise holding a key
+    # makes the robot move, stop, then move again. 0.5 was too short.
+    cmd_vel_timeout: 1.0
 
     # diff_drive_controller AUTO-PREPENDS its own node namespace ("robot_2")
     # to odom_frame_id/base_frame_id unless this is explicitly disabled.

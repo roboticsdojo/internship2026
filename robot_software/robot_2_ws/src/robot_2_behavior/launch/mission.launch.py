@@ -52,3 +52,8 @@ def generate_launch_description():
 
 #   Terminal 4: Mission
 #   ros2 launch robot_2_behavior mission.launch.py
+
+
+
+# Map coordinates getting
+#      ros2 topic echo /clicked_point --once
