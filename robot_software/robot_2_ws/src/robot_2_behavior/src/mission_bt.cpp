@@ -39,6 +39,7 @@ int main(int argc, char ** argv)
   factory.registerNodeType<robot_2_behavior::SpeedAdapter>("SpeedAdapter", node);
   factory.registerNodeType<robot_2_behavior::LaunchProcess>("LaunchProcess");
   factory.registerNodeType<robot_2_behavior::KillProcess>("KillProcess");
+  factory.registerNodeType<robot_2_behavior::WaitProcessExit>("WaitProcessExit");
   factory.registerNodeType<robot_2_behavior::ReadWasteClass>("ReadWasteClass", node);
   factory.registerNodeType<robot_2_behavior::OpenServo>("OpenServo", node);
 

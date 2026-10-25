@@ -120,6 +120,10 @@ public:
     opts.result_callback = [this, id](const GoalHandle::WrappedResult & res) {
       if (id != goal_id_) {return;}
       code_ = res.code;
+      if (res.result) {
+        error_code_ = res.result->error_code;
+        error_msg_ = res.result->error_msg;
+      }
       done_ = true;
     };
 
@@ -139,7 +143,17 @@ public:
     }
     if (done_) {
       const bool ok = (code_ == rclcpp_action::ResultCode::SUCCEEDED);
-      RCLCPP_INFO(node_->get_logger(), "[%s] %s", name().c_str(), ok ? "arrived" : "failed");
+      if (ok) {
+        RCLCPP_INFO(node_->get_logger(), "[%s] arrived", name().c_str());
+      } else {
+        const char * what = code_ == rclcpp_action::ResultCode::ABORTED ? "aborted" :
+          code_ == rclcpp_action::ResultCode::CANCELED ? "canceled" : "failed";
+        RCLCPP_WARN(
+          node_->get_logger(),
+          "[%s] %s by Nav2: error_code %u '%s', %.2f m from the goal along the path",
+          name().c_str(), what, static_cast<unsigned>(error_code_), error_msg_.c_str(),
+          distance_);
+      }
       return ok ? BT::NodeStatus::SUCCESS : BT::NodeStatus::FAILURE;
     }
     return BT::NodeStatus::RUNNING;
@@ -159,6 +173,8 @@ private:
   uint64_t goal_id_{0};
   bool done_{false}, rejected_{false}, cancel_requested_{false};
   rclcpp_action::ResultCode code_{rclcpp_action::ResultCode::UNKNOWN};
+  uint16_t error_code_{0};
+  std::string error_msg_;
   double distance_{-1.0};
 };
 
@@ -351,7 +367,12 @@ public:
 
   BT::NodeStatus onRunning() override
   {
-    if (!ProcessRegistry::instance().alive(id_)) {return BT::NodeStatus::FAILURE;}
+    if (!ProcessRegistry::instance().alive(id_)) {
+      RCLCPP_WARN(
+        rclcpp::get_logger("mission_bt"), "[%s] process '%s' exited before it settled",
+        name().c_str(), id_.c_str());
+      return BT::NodeStatus::FAILURE;
+    }
     return secondsSince(t0_) >= settle_s_ ? BT::NodeStatus::SUCCESS : BT::NodeStatus::RUNNING;
   }
 
@@ -381,6 +402,53 @@ public:
     if (getInput("id", id)) {ProcessRegistry::instance().stop(id);}
     return BT::NodeStatus::SUCCESS;
   }
+};
+
+// Waits (up to timeout_ms) for a process started by LaunchProcess to finish on its own,
+// e.g. the image saver finishing its batch. Always SUCCESS: if the process is still
+// running when the time is up (or was never running), the tree simply carries on.
+class WaitProcessExit : public BT::StatefulActionNode
+{
+public:
+  WaitProcessExit(const std::string & name, const BT::NodeConfig & config)
+  : BT::StatefulActionNode(name, config) {}
+
+  static BT::PortsList providedPorts()
+  {
+    return {
+      BT::InputPort<std::string>("id", "name given to LaunchProcess"),
+      BT::InputPort<int>("timeout_ms", 8000, "carry on after this long even if still running")};
+  }
+
+  BT::NodeStatus onStart() override
+  {
+    getInput("id", id_);
+    int timeout = 8000;
+    getInput("timeout_ms", timeout);
+    timeout_s_ = timeout / 1000.0;
+    t0_ = SteadyClock::now();
+    return ProcessRegistry::instance().alive(id_) ? BT::NodeStatus::RUNNING :
+           BT::NodeStatus::SUCCESS;
+  }
+
+  BT::NodeStatus onRunning() override
+  {
+    if (!ProcessRegistry::instance().alive(id_)) {return BT::NodeStatus::SUCCESS;}
+    if (secondsSince(t0_) > timeout_s_) {
+      RCLCPP_WARN(
+        rclcpp::get_logger("mission_bt"), "[%s] '%s' still running after %.0f s, carrying on",
+        name().c_str(), id_.c_str(), timeout_s_);
+      return BT::NodeStatus::SUCCESS;
+    }
+    return BT::NodeStatus::RUNNING;
+  }
+
+  void onHalted() override {}
+
+private:
+  std::string id_;
+  double timeout_s_{8.0};
+  SteadyClock::time_point t0_;
 };
 
 // ---------------------------------------------------------------------------
