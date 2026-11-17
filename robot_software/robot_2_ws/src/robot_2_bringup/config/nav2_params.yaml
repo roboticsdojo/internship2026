@@ -89,7 +89,9 @@ controller_server:
       az_max: 3.5
       vx_std: 0.2
       vy_std: 0.2
-      wz_std: 0.4
+      # CHANGED (turning speed): was 0.4. A larger angular noise std lets MPPI sample
+      # faster turns instead of staying close to the current angular velocity.
+      wz_std: 0.9
       vx_max: 0.5
       vx_min: -0.35
       vy_max: 0.5
@@ -122,32 +124,33 @@ controller_server:
       PathAlignCritic:
         enabled: true
         cost_power: 1
-        cost_weight: 14.0
+        cost_weight: 8.0   # CHANGED: was 14.0 (too dominant, discouraged heading changes)
         max_path_occupancy_ratio: 0.05
         trajectory_point_step: 4
         threshold_to_consider: 0.5
         offset_from_furthest: 20
         use_path_orientations: false
       PathFollowCritic: {enabled: true, cost_power: 1, cost_weight: 5.0, offset_from_furthest: 5, threshold_to_consider: 1.4}
-      PathAngleCritic: {enabled: true, cost_power: 1, cost_weight: 2.0, offset_from_furthest: 4, threshold_to_consider: 0.5, max_angle_to_furthest: 1.0, mode: 0}
+      # CHANGED: cost_weight was 2.0; higher makes the robot rotate toward the path sooner.
+      PathAngleCritic: {enabled: true, cost_power: 1, cost_weight: 4.0, offset_from_furthest: 4, threshold_to_consider: 0.5, max_angle_to_furthest: 1.0, mode: 0}
 
 # ---------------------------------------------------------------------------
-# ROBOT SIZE: body 0.30 m long x 0.34 m wide (wheel to wheel). Centre of rotation
-# assumed to be the middle of that rectangle (base_footprint in the middle).
-# Farthest corner from the centre = sqrt(0.15^2 + 0.17^2) = 0.227 m, so
-# robot_radius = 0.23 covers the robot even while it turns on the spot.
+# ROBOT SIZE: body 0.30 m long x 0.34 m wide (half-width 0.17, half-length 0.15),
+# centre of rotation assumed in the middle of the body (base_footprint).
 #
-# Values that depend on the size, if it ever changes:
-#   robot_radius (local + global costmap) ........ circle covering the whole robot (0.23)
-#   inflation_radius (local + global costmap) .... robot_radius + 0.05 (0.28)
-#   collision_monitor StopZone ................... real body outline + 0.02 m
-#   collision_monitor SlowZone ................... real body outline + 0.12 m
-# inflation_radius is measured from the wall to the robot's CENTRE, not to its
-# edge, so it must be at least robot_radius (it used to be 0.05 / 0.10, smaller
-# than the radius, which made the costmaps think the centre could sit 5-10 cm
-# from a wall).
-# With robot_radius 0.23 the centre stays at least 0.23 m from a wall, i.e. about
-# 8 cm between the front or back edge and the wall and 6 cm between a side edge and it.
+# robot_radius decides the NO-GO zone around walls (the purple/red band in RViz):
+# the robot's centre is never planned closer than robot_radius to a wall.
+# inflation_radius only decides how far the passable cost gradient (the blue band)
+# reaches beyond that, so it is robot_radius + a few cm.
+#
+# CHANGED: robot_radius 0.21 (was 0.23): a bit more than the half-width, so the
+# robot can use narrow passages (side edge about 4 cm and front edge about 6 cm from a
+# wall at closest). A turn on the spot near a wall can still bring a corner (0.227 m
+# from the centre) close to it; the collision monitor below protects against that.
+# inflation_radius 0.26 (robot_radius + 5 cm) and cost_scaling_factor 8.0 give a narrow,
+# steep gradient. Both costmaps use the same values.
+# Do NOT set inflation_radius below robot_radius (it used to be 0.05 / 0.10): the
+# costmap then believes the robot is smaller than it really is.
 # ---------------------------------------------------------------------------
 local_costmap:
   local_costmap:
@@ -160,9 +163,9 @@ local_costmap:
       width: 3
       height: 3
       resolution: 0.05
-      robot_radius: 0.23
+      robot_radius: 0.21
       plugins: [voxel_layer, inflation_layer]
-      inflation_layer: {plugin: nav2_costmap_2d::InflationLayer, cost_scaling_factor: 6.0, inflation_radius: 0.28}
+      inflation_layer: {plugin: nav2_costmap_2d::InflationLayer, cost_scaling_factor: 8.0, inflation_radius: 0.26}
       voxel_layer:
         plugin: nav2_costmap_2d::VoxelLayer
         enabled: true
@@ -192,7 +195,7 @@ global_costmap:
       publish_frequency: 1.0
       global_frame: map
       robot_base_frame: base_footprint
-      robot_radius: 0.23
+      robot_radius: 0.21
       resolution: 0.05
       track_unknown_space: true
       plugins: [static_layer, obstacle_layer, inflation_layer]
@@ -211,7 +214,7 @@ global_costmap:
           raytrace_min_range: 0.15
           obstacle_max_range: 2.5
           obstacle_min_range: 0.15
-      inflation_layer: {plugin: nav2_costmap_2d::InflationLayer, cost_scaling_factor: 6.0, inflation_radius: 0.10}
+      inflation_layer: {plugin: nav2_costmap_2d::InflationLayer, cost_scaling_factor: 8.0, inflation_radius: 0.26}
       always_send_full_costmap: true
 
 map_saver:
@@ -251,8 +254,9 @@ behavior_server:
     robot_base_frame: base_footprint
     transform_tolerance: 0.1
     simulate_ahead_time: 2.0
-    max_rotational_vel: 1.0
-    min_rotational_vel: 0.4
+    # CHANGED (recovery spins only): was max 1.0 / min 0.4
+    max_rotational_vel: 1.5
+    min_rotational_vel: 0.6
     rotational_acc_lim: 3.2
 
 waypoint_follower:
@@ -292,15 +296,17 @@ velocity_smoother:
     velocity_timeout: 1.0
 
 # COLLISION MONITOR
-# CHANGED: it used the "approach" action on the footprint published by the local
-# costmap (a circle). "approach" slows the robot so that it could stop within
-# time_before_collision (1.2 s) of any obstacle, so near a wall the allowed speed
-# drops to almost nothing (gap / 1.2 s) and the goal then fails with no progress.
-# Now two rectangles that follow the real body (0.30 m long x 0.34 m wide, centred
-# on base_footprint, x forward, y left):
-#   StopZone  (body + 0.02 m): stop only if something is within 2 cm of the body outline
-#   SlowZone  (body + 0.12 m): inside it, limit speed to 40 % of the maximum
-# so the robot can work with a few cm between its edge and a wall, slowly.
+# Two rectangles that follow the real body (0.30 m long x 0.34 m wide, centred on
+# base_footprint, x forward, y left):
+#   ApproachZone (the body outline): looks 0.4 s ahead (including turning) and only limits
+#                 the speed if the body would hit something within that time. Driving
+#                 along a wall, or turning with room to spare, is NOT slowed down.
+#   StopZone (body + 1 cm): last resort, stops if something is within 1 cm of the outline.
+# CHANGED: there used to be a SlowZone that scaled the speed, linear AND angular, whenever
+# any wall (or part of the robot itself seen by the lidar) was within 12 cm of the body,
+# which made goal turns very slow while teleop (which bypasses this node) was fine.
+# The first version used "approach" with time_before_collision 1.2 s, which allows only
+# gap / 1.2 s near a wall; 0.4 s allows about three times that speed.
 collision_monitor:
   ros__parameters:
     base_frame_id: base_footprint
@@ -312,19 +318,20 @@ collision_monitor:
     source_timeout: 1.0
     base_shift_correction: true
     stop_pub_timeout: 2.0
-    polygons: [StopZone, SlowZone]
-    StopZone:
+    polygons: [ApproachZone, StopZone]
+    ApproachZone:
       type: polygon
-      points: "[[0.17, 0.19], [0.17, -0.19], [-0.17, -0.19], [-0.17, 0.19]]"
-      action_type: stop
+      points: "[[0.15, 0.17], [0.15, -0.17], [-0.15, -0.17], [-0.15, 0.17]]"
+      action_type: approach
+      time_before_collision: 0.4
+      simulation_time_step: 0.1
       min_points: 6
       visualize: false
       enabled: true
-    SlowZone:
+    StopZone:
       type: polygon
-      points: "[[0.27, 0.29], [0.27, -0.29], [-0.27, -0.29], [-0.27, 0.29]]"
-      action_type: slowdown
-      slowdown_ratio: 0.4
+      points: "[[0.16, 0.18], [0.16, -0.18], [-0.16, -0.18], [-0.16, 0.18]]"
+      action_type: stop
       min_points: 6
       visualize: false
       enabled: true
