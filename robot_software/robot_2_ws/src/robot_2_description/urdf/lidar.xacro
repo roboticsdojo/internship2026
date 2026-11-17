@@ -33,13 +33,13 @@
       <lidar>
         <scan>
           <horizontal>
-            <samples>180</samples>
+            <samples>360</samples>
             <min_angle>-3.14</min_angle>
             <max_angle>3.14</max_angle>
           </horizontal>
         </scan>
         <range>
-          <min>0.3</min>
+          <min>0.15</min>
           <max>12.0</max>
         </range>
       </lidar>
