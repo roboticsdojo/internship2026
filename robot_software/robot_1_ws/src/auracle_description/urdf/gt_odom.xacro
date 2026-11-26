@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- SLAM-tuning ground truth source.
+         This publishes the robot's TRUE pose from the physics engine, with
+         no sensor noise, on a Gazebo Transport topic (NOT a ROS tf2 topic).
+         It never touches /tf and cannot fight the EKF's odom->base_footprint
+         broadcast - it is purely a side-channel for offline scoring
+         (evo APE/RPE, map alignment) during Optuna trials.
+
+         Only include this in sim. It has no effect on the real robot and
+         no effect on autonomy - nothing downstream (nav2, slam_toolbox)
+         subscribes to it.
+
+         NOTE: the exact Gazebo Transport topic this ends up on
+         (/model/<name>/<odom_topic> vs something else) varies a bit by
+         gz-sim version (Fortress/Harmonic/Jetty). After first launch, run:
+             gz topic -l | grep odom
+         and fix the bridge line in launch_sim.launch.py to match if needed.
+    -->
+    <xacro:if value="$(arg sim_mode)">
+        <gazebo>
+            <plugin filename="gz-sim-odometry-publisher-system"
+                    name="gz::sim::systems::OdometryPublisher">
+                <odom_frame>ground_truth_odom</odom_frame>
+                <robot_base_frame>base_footprint</robot_base_frame>
+                <dimensions>2</dimensions>
+                <odom_publish_frequency>30</odom_publish_frequency>
+                <odom_topic>odometry_gt</odom_topic>
+            </plugin>
+        </gazebo>
+    </xacro:if>
+
+</robot>

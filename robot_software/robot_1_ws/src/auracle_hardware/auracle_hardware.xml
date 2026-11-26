@@ -1,0 +1,12 @@
+<library path="auracle_hardware">
+  <class name="auracle_hardware/AuracleHardwareInterface"
+         type="auracle_hardware::AuracleHardwareInterface"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Hardware interface for a 6-wheel, 4-motor, 2-encoder rover: front
+      and rear motors on each side share one L298N output (2 control
+      channels), and only the rear motors have encoders. Includes MPU6050
+      IMU state.
+    </description>
+  </class>
+</library>

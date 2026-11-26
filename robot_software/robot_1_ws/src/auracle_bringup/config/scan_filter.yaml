@@ -1,0 +1,19 @@
+# scan -> scan_filtered: drop lidar returns from the robot itself (wheels, rockers, frame).
+# The 75 mm spiked wheels reach far enough out that the lidar sees them, and SLAM drew a closed
+# box around the start point of trial_2 (2026-10-26). A plain minimum range cannot fix this: the
+# lidar sits at the front, and corridor walls are only ~0.2 m away at the sides.
+# Box = robot outline (footprint 0.32 x 0.26) + a few cm; corridor walls at +-0.215 m stay visible.
+/**/scan_to_scan_filter_chain:
+  ros__parameters:
+    filter1:
+      name: robot_box
+      type: laser_filters/LaserScanBoxFilter
+      params:
+        box_frame: base_footprint
+        min_x: -0.22
+        max_x: 0.22
+        min_y: -0.18
+        max_y: 0.18
+        min_z: -1.0
+        max_z: 1.0
+        invert: false

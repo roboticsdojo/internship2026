@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:unless value="$(arg sim_mode)">
+        <ros2_control name="RealRobot" type="system">
+            <hardware>
+                <plugin>auracle_hardware/AuracleHardwareInterface</plugin>
+                <!-- LF/RF = wheel_one (no encoder, open-loop follower),
+                     LB/RB = wheel_three (encoder, PID on the Nano). -->
+                <param name="front_left_wheel_name">left_wheel_one_joint</param>
+                <param name="front_right_wheel_name">right_wheel_one_joint</param>
+                <param name="rear_left_wheel_name">left_wheel_three_joint</param>
+                <param name="rear_right_wheel_name">right_wheel_three_joint</param>
+                <param name="device">$(arg arduino_port)</param>
+                <!-- 1x decoding (RISING on one channel). Measure by hand: see README
+                     "Calibrate ticks per rev". -->
+                <param name="left_enc_counts_per_rev">985.0</param>  <!-- hand-counted 2026-10-23: 10 turns = 9847 -->
+                <param name="right_enc_counts_per_rev">990.0</param>  <!-- re-counted 2026-10-25 (A+B): 9880 / 10 turns -->
+                <!-- Flip to -1.0 if a side's odom runs backwards when driving forward. -->
+                <param name="left_direction_sign">1.0</param>
+                <param name="right_direction_sign">1.0</param>
+                <param name="imu_sensor_name">imu_sensor</param>
+            </hardware>
+            <joint name="left_wheel_one_joint">
+                <command_interface name="velocity"/>
+                <state_interface name="velocity"/><state_interface name="position"/>
+            </joint>
+            <joint name="right_wheel_one_joint">
+                <command_interface name="velocity"/>
+                <state_interface name="velocity"/><state_interface name="position"/>
+            </joint>
+            <joint name="left_wheel_three_joint">
+                <command_interface name="velocity"/>
+                <state_interface name="velocity"/><state_interface name="position"/>
+            </joint>
+            <joint name="right_wheel_three_joint">
+                <command_interface name="velocity"/>
+                <state_interface name="velocity"/><state_interface name="position"/>
+            </joint>
+            <sensor name="imu_sensor">
+                <state_interface name="orientation.x"/><state_interface name="orientation.y"/>
+                <state_interface name="orientation.z"/><state_interface name="orientation.w"/>
+                <state_interface name="angular_velocity.x"/><state_interface name="angular_velocity.y"/>
+                <state_interface name="angular_velocity.z"/><state_interface name="linear_acceleration.x"/>
+                <state_interface name="linear_acceleration.y"/><state_interface name="linear_acceleration.z"/>
+            </sensor>
+        </ros2_control>
+    </xacro:unless>
+
+    <xacro:if value="$(arg sim_mode)">
+        <ros2_control name="GazeboSystem" type="system">
+            <hardware>
+                <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+            </hardware>
+            <!-- Sim has no ambiguity: gz_ros2_control can command and read
+                 every joint perfectly regardless of what's instrumented on
+                 the real robot, so both actually-motorized wheels per side
+                 are driven here directly - no mimic/coupling trick needed. -->
+            <joint name="left_wheel_one_joint">
+                <command_interface name="velocity"/>
+                <state_interface name="velocity"/><state_interface name="position"/>
+            </joint>
+            <joint name="left_wheel_three_joint">
+                <command_interface name="velocity"/>
+                <state_interface name="velocity"/><state_interface name="position"/>
+            </joint>
+            <joint name="right_wheel_one_joint">
+                <command_interface name="velocity"/>
+                <state_interface name="velocity"/><state_interface name="position"/>
+            </joint>
+            <joint name="right_wheel_three_joint">
+                <command_interface name="velocity"/>
+                <state_interface name="velocity"/><state_interface name="position"/>
+            </joint>
+            <sensor name="imu_sensor">
+                <state_interface name="orientation.x"/><state_interface name="orientation.y"/>
+                <state_interface name="orientation.z"/><state_interface name="orientation.w"/>
+                <state_interface name="angular_velocity.x"/><state_interface name="angular_velocity.y"/>
+                <state_interface name="angular_velocity.z"/><state_interface name="linear_acceleration.x"/>
+                <state_interface name="linear_acceleration.y"/><state_interface name="linear_acceleration.z"/>
+            </sensor>
+        </ros2_control>
+    </xacro:if>
+
+    <gazebo>
+        <plugin name="gz_ros2_control::GazeboSimROS2ControlPlugin" filename="libgz_ros2_control-system.so">
+            <parameters>$(find auracle_bringup)/config/my_controllers.yaml</parameters>
+        </plugin>
+    </gazebo>
+</robot>

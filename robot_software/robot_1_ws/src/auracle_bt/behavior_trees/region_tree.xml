@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4" main_tree_to_execute="RegionTree">
+  <!-- Launch -> wait for Nav2 -> set the start pose from `start` in regions.yaml (robot parked where mapping began, no click).
+       Then forever: wait for a region number N -> LOAD N -> pause -> OFFLOAD N, and STOP there
+       (no return home) -> wait for the next N, which then starts from the offload spot.
+       Regions come from config/regions.yaml (fill it once with mark:=true). -->
+  <BehaviorTree ID="RegionTree">
+    <Sequence name="Mission">
+      <WaitForNav2 need_amcl="false"/>
+      <SetInitialPose file="{route_file}"/>
+      <Repeat num_cycles="-1">
+        <Sequence name="OneRegion">
+          <WaitForRegion load_key="{load_key}" offload_key="{offload_key}"/>
+          <ForceSuccess>
+            <Sequence name="Trip">
+              <LoadWaypoints file="{route_file}" path_name="{load_key}" goals="{goals}"/>
+              <FollowWaypoints goals="{goals}"/>
+              <FaceHeading file="{route_file}" path_name="{load_key}"/>   <!-- turn to the recorded load yaw -->
+              <Sleep msec="3000"/>   <!-- stands in for loading -->
+              <LoadWaypoints file="{route_file}" path_name="{offload_key}" goals="{goals}"/>
+              <FollowWaypoints goals="{goals}"/>
+              <FaceHeading file="{route_file}" path_name="{offload_key}"/>   <!-- turn to the recorded offload yaw -->
+            </Sequence>
+          </ForceSuccess>
+        </Sequence>
+      </Repeat>
+    </Sequence>
+  </BehaviorTree>
+</root>

@@ -1,0 +1,17 @@
+[Unit]
+Description=Zenoh Router Service (rmw_zenoh)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=auracle
+Environment="RMW_IMPLEMENTATION=rmw_zenoh_cpp" "ROS_DOMAIN_ID=89"
+ExecStart=/bin/bash -c "source /opt/ros/jazzy/setup.bash && exec ros2 run rmw_zenoh_cpp rmw_zenohd"
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

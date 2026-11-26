@@ -1,0 +1,14 @@
+# Regions on the map you navigate on (map frame, metres). Filled by mark mode, not by hand:
+#   ros2 launch auracle_bt mission.launch.py map:=<map.yaml> mark:=true
+# then click the centre of LOAD 1,2,3 and OFFLOAD 1,2,3 with RViz "Publish Point".
+# A run goes: load_N -> pause -> offload_N -> home -> turn to home's heading -> wait for the next region.
+# Empty on purpose: a run refuses to start until the regions are marked.
+start: {x: 0.0, y: 0.0, yaw: 0.0}   # where the robot is parked at launch = where mapping began
+home:
+  - {x: 0.0, y: 0.0, yaw: 0.0}      # where it returns to, and the heading it ends with
+load_1: []
+load_2: []
+load_3: []
+offload_1: []
+offload_2: []
+offload_3: []

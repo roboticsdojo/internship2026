@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4" main_tree_to_execute="RegionClickTree">
+  <!-- auto_pose:=false. Launch -> wait for Nav2 -> wait for a 2D Pose Estimate click in RViz.
+       Then forever: wait for a region number N -> LOAD N -> pause -> OFFLOAD N, and STOP there
+       (no return home) -> wait for the next N, which then starts from the offload spot.
+       Regions come from config/regions.yaml (fill it once with mark:=true). -->
+  <BehaviorTree ID="RegionClickTree">
+    <Sequence name="Mission">
+      <WaitForNav2 need_amcl="false"/>
+      <WaitForInitialPose/>
+      <Repeat num_cycles="-1">
+        <Sequence name="OneRegion">
+          <WaitForRegion load_key="{load_key}" offload_key="{offload_key}"/>
+          <ForceSuccess>
+            <Sequence name="Trip">
+              <LoadWaypoints file="{route_file}" path_name="{load_key}" goals="{goals}"/>
+              <FollowWaypoints goals="{goals}"/>
+              <Sleep msec="3000"/>   <!-- stands in for loading -->
+              <LoadWaypoints file="{route_file}" path_name="{offload_key}" goals="{goals}"/>
+              <FollowWaypoints goals="{goals}"/>
+            </Sequence>
+          </ForceSuccess>
+        </Sequence>
+      </Repeat>
+    </Sequence>
+  </BehaviorTree>
+</root>
