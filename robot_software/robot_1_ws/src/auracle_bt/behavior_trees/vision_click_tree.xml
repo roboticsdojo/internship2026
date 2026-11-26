@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4" main_tree_to_execute="VisionClickTree">
+  <!-- vision:=true auto_pose:=false. Launch -> wait for Nav2 -> wait for a 2D Pose Estimate click in RViz.
+       Then forever: look at the screen -> waste class -> region N -> LOAD N -> pause -> OFFLOAD N.
+       WaitForDetection: the class -> region map is the three numbers below. Change them here, no rebuild.
+       A number on the `region` topic still overrides the camera at any time.
+       No answer in timeout_s -> falls back to waiting for a region number by hand. -->
+  <BehaviorTree ID="VisionClickTree">
+    <Sequence name="Mission">
+      <WaitForNav2 need_amcl="false"/>
+      <WaitForInitialPose/>
+      <Repeat num_cycles="-1">
+        <Sequence name="OneRegion">
+          <Fallback name="WhichRegion">
+            <WaitForDetection metal="1" organic="2" plastic="3" timeout_s="30"
+                              detected_class="{detected_class}"
+                              load_key="{load_key}" offload_key="{offload_key}"/>
+            <WaitForRegion load_key="{load_key}" offload_key="{offload_key}"/>
+          </Fallback>
+          <ForceSuccess>
+            <Sequence name="Trip">
+              <LoadWaypoints file="{route_file}" path_name="{load_key}" goals="{goals}"/>
+              <FollowWaypoints goals="{goals}"/>
+              <Sleep msec="3000"/>   <!-- stands in for loading -->
+              <LoadWaypoints file="{route_file}" path_name="{offload_key}" goals="{goals}"/>
+              <FollowWaypoints goals="{goals}"/>
+              <!-- If the screen is only visible from home, add the return leg so the next look sees it:
+              <LoadWaypoints file="{route_file}" path_name="home" goals="{goals}"/>
+              <FollowWaypoints goals="{goals}"/>
+              <FaceHeading file="{route_file}" path_name="home"/>
+              -->
+            </Sequence>
+          </ForceSuccess>
+        </Sequence>
+      </Repeat>
+    </Sequence>
+  </BehaviorTree>
+</root>

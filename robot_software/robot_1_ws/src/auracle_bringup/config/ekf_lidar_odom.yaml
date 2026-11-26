@@ -1,0 +1,27 @@
+# Overlay on ekf.yaml, loaded AFTER it when use_lidar_odom:=true (launch_robot.launch.py).
+# Later file wins, so only the differences are listed.
+#
+# Fusion: forward speed from the lidar scan matcher (rf2o, variance 0.01) AND the wheels
+# (variance 0.3, set in my_controllers_real.yaml, so they count for ~3 %), yaw rate from the
+# IMU gyro. On grass the wheels over-report distance by 50-85 % (slip_grass_1105_1245.json),
+# so they are kept as a weak fallback for when rf2o loses its fix on a long plain wall.
+# The wheels' own yaw rate is NOT fused (skid-steer scrub), same as ekf.yaml.
+/**/ekf_filter_node:
+    ros__parameters:
+        # wheels: forward speed only, with the large variance from my_controllers_real.yaml
+        odom0_config: [false, false, false,
+                       false, false, false,
+                       true,  false, false,
+                       false, false, false,
+                       false, false, false]
+
+        # lidar odometry (rf2o via odom_cov_relay.py): forward speed only.
+        odom1: odom_rf2o
+        odom1_config: [false, false, false,
+                       false, false, false,
+                       true,  false, false,
+                       false, false, false,
+                       false, false, false]
+        odom1_differential: false
+        odom1_relative: false
+        odom1_queue_size: 10

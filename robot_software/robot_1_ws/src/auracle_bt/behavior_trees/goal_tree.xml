@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4" main_tree_to_execute="GoalTree">
+  <!-- Launch -> wait for Nav2 -> ask for the 2D Pose Estimate in RViz -> then forever:
+       wait for a 2D Goal Pose click, drive there. A failed or blocked goal just goes back to
+       waiting for the next click. Nothing to collect or fill in. Stop with Ctrl+C. -->
+  <BehaviorTree ID="GoalTree">
+    <Sequence name="Mission">
+      <WaitForNav2 need_amcl="false"/>
+      <WaitForInitialPose/>
+      <Repeat num_cycles="-1">
+        <ForceSuccess>
+          <Sequence name="OneGoal">
+            <WaitForGoal goal="{goal}"/>
+            <NavigateToGoal goal="{goal}"/>
+          </Sequence>
+        </ForceSuccess>
+      </Repeat>
+    </Sequence>
+  </BehaviorTree>
+</root>

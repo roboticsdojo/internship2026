@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>auracle_hardware</name>
+  <version>0.1.0</version>
+  <description>
+    ros2_control SystemInterface plugin bridging the diff-drive controller
+    to the Arduino Nano over serial. Drives 4 wheel joints (front/rear,
+    left/right) over a 2-channel link, since front and rear motors on
+    each side share one motor driver output and only the rear motors
+    have encoders. Includes MPU6050 IMU state.
+  </description>
+  <maintainer email="amy.kibara@gmail.com">AmyKibara</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>rclcpp_lifecycle</depend>
+  <depend>hardware_interface</depend>
+  <depend>pluginlib</depend>
+  <!-- rosdep key is libserial-dev (there is no "libserial" key) -->
+  <depend>libserial-dev</depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+    <hardware_interface plugin="${prefix}/auracle_hardware.xml"/>
+  </export>
+</package>

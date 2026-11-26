@@ -1,0 +1,435 @@
+amcl:
+  ros__parameters:
+    # Tuned 2026-10-23: trust the lidar much more than wheel odometry (no IMU). Old: ~/auracle_tools/runs/nav2_params_before_tuning.yaml
+    set_initial_pose: true      # start at map_1 start chamber (initial_pose below) so Nav2 always comes up; fix with 2D Pose Estimate
+    # Sim only (set_initial_pose is forced true by localization.launch.py when use_sim_time:=true).
+    # Spawn pose (-1.18, 2.20, yaw 1.57 in Gazebo) expressed in map_1.yaml's frame = start chamber, upper right.
+    initial_pose:
+      x: 0.40
+      y: 0.08
+      z: 0.0
+      yaw: 0.0
+    alpha1: 0.25  # rotation noise from rotation. Was 0.6 with no IMU; EKF yaw is gyro-based now
+    alpha2: 0.25  # rotation noise from translation (LF drags/pushes going straight)
+    alpha3: 0.4   # translation noise: wheels slip on uneven ground
+    alpha4: 0.4   # translation noise from rotation
+    alpha5: 0.2
+    base_frame_id: "base_footprint"
+    beam_skip_distance: 0.5
+    beam_skip_error_threshold: 0.9
+    beam_skip_threshold: 0.3
+    do_beamskip: false
+    global_frame_id: "map"
+    lambda_short: 0.1
+    laser_likelihood_max_dist: 1.0
+    laser_max_range: 6.0   # arena returns are all < 3.4 m
+    laser_min_range: 0.2   # nearest walls are >= 0.32 m; no self-hits
+    laser_model_type: "likelihood_field"
+    max_beams: 180   # was 60: use most of the ~183 valid beams per scan
+    max_particles: 2000   # more spread from high alphas needs more particles
+    min_particles: 500
+    odom_frame_id: "odom"
+    pf_err: 0.05
+    pf_z: 0.99
+    recovery_alpha_fast: 0.1   # inject random particles if the fit gets bad (lost robot)
+    recovery_alpha_slow: 0.001
+    resample_interval: 1
+    robot_model_type: "nav2_amcl::DifferentialMotionModel"
+    save_pose_rate: 0.5
+    sigma_hit: 0.15   # uneven ground tilts the lidar; was 0.1
+    tf_broadcast: true
+    transform_tolerance: 1.0
+    update_min_a: 0.05   # update every ~3 deg / 5 cm: laser corrects bad wheel odometry early
+    update_min_d: 0.05
+    z_hit: 0.7
+    z_max: 0.05
+    z_rand: 0.3   # more tolerance for returns off ramps / the floor
+    z_short: 0.05
+    scan_topic: scan_filtered   # robot's own outline removed (scan_filter.yaml)
+
+
+bt_navigator:
+  ros__parameters:
+    global_frame: map
+    robot_base_frame: base_footprint
+    odom_topic: diff_cont/odom  # relative: must resolve under the node's own namespace
+    bt_loop_duration: 10
+    default_server_timeout: 20
+    wait_for_service_timeout: 1000
+    action_server_result_timeout: 900.0
+    navigators: ["navigate_to_pose", "navigate_through_poses"]
+    navigate_to_pose:
+      plugin: "nav2_bt_navigator::NavigateToPoseNavigator"
+    navigate_through_poses:
+      plugin: "nav2_bt_navigator::NavigateThroughPosesNavigator"
+    error_code_names:
+      - compute_path_error_code
+      - follow_path_error_code
+
+controller_server:
+  ros__parameters:
+    odom_topic: diff_cont/odom
+    controller_frequency: 20.0
+    costmap_update_timeout: 0.30
+    min_x_velocity_threshold: 0.001
+    min_y_velocity_threshold: 0.5
+    min_theta_velocity_threshold: 0.001
+    failure_tolerance: 0.3
+    progress_checker_plugins: ["progress_checker"]
+    goal_checker_plugins: ["general_goal_checker"] 
+    controller_plugins: ["FollowPath"]
+    use_realtime_priority: false
+
+    # Progress checker parameters
+    progress_checker:
+      plugin: "nav2_controller::SimpleProgressChecker"
+      required_movement_radius: 0.1
+      movement_time_allowance: 25.0
+    general_goal_checker:
+      stateful: True
+      plugin: "nav2_controller::SimpleGoalChecker"
+      xy_goal_tolerance: 0.12   # 0.20 reported success up to ~27 cm short of the goal
+      yaw_goal_tolerance: 3.14   # ignore final heading: in 0.43 m corridors there is no room for a final spin
+    FollowPath:
+      # ---- Regulated Pure Pursuit: far cheaper than MPPI, and it can be given a MINIMUM speed.
+      # Firmware reality (config.h): a wheel target below MIN_TARGET_TICKS_S=600 is a STOP.
+      #   600 ticks/s = 0.123 m/s (left, 730 cpr) / 0.138 m/s (right, 655 cpr)
+      # So the robot cannot creep: min linear ~0.14 m/s, min in-place turn ~1.0 rad/s.
+      # Max is diff_cont's clamp in my_controllers_real.yaml (0.25 m/s, 1.5 rad/s).
+      plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
+      desired_linear_vel: 0.20   # was 0.15; 3 minute navigation target. Slows near walls and in curves
+      lookahead_dist: 0.30   # was 0.45: a long lookahead cuts corners and clips walls in 0.43 m corridors
+      min_lookahead_dist: 0.2
+      max_lookahead_dist: 0.4
+      lookahead_time: 1.5
+      use_velocity_scaled_lookahead_dist: false
+      transform_tolerance: 0.5
+      use_regulated_linear_velocity_scaling: true
+      regulated_linear_scaling_min_radius: 0.25   # was 0.4: slowed on almost every gentle curve
+      regulated_linear_scaling_min_speed: 0.14     # was 0.10; slowest speed on a tight curve (Nano minimum is 450 ticks/s = ~0.10 m/s)
+      use_cost_regulated_linear_velocity_scaling: false   # was true: once the local costmap really saw the walls (4.28) it held the robot at the 0.10 m/s floor in every 0.43 m corridor
+      min_approach_linear_velocity: 0.10
+      approach_velocity_scaling_dist: 0.5
+      use_collision_detection: false   # was true: in 0.43 m corridors it said "collision ahead" every cycle, hit failure_tolerance ("Controller patience exceeded") and aborted. Costmap/planner still keep the path off walls
+      max_allowed_time_to_collision_up_to_carrot: 0.4   # was 1.0: RPP stopped when the local costmap showed a wall near the path ahead
+      use_rotate_to_heading: true    # turn on the spot ONCE when heading error > rotate_to_heading_min_angle, then drive. RPP needs allow_reversing false for this
+      rotate_to_heading_angular_vel: 0.8            # diff_cont track 0.47 -> ~0.19 m/s per wheel
+      rotate_to_heading_min_angle: 0.3   # ~17 deg. Spin sooner: the Nano lifts slow wheels in arcs, so arcs run faster and wider than asked
+      max_angular_accel: 8.0   # was 3.0: at 20 Hz the controller's first turn step was 0.15 rad/s, below the Nano's deadband, so the robot never started turning (2026-11-04)
+      allow_reversing: false   # must be false with use_rotate_to_heading
+      #
+      # ---- To go back to MPPI, use lighter settings than before (still heavy on a Pi):
+      # plugin: "nav2_mppi_controller::MPPIController"
+      # time_steps: 25      # was 40
+      # model_dt: 0.1       # was 0.05  (2.5 s horizon, and the loop can run at 10 Hz)
+      # batch_size: 300     # was 1000
+      # vx_max: 0.25        # was 0.5  - the robot clamps at 0.25 anyway
+      # vx_min: -0.2
+      # wz_max: 1.5         # was 1.9
+      # vx_std: 0.1   wz_std: 0.3   ax_max / -ax_min: 0.6   az_max: 3.0
+      # (also set controller_frequency: 10.0 above and keep the critics list)
+
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      update_frequency: 5.0
+      publish_frequency: 2.0
+      global_frame: odom
+      robot_base_frame: base_footprint
+      rolling_window: true
+      width: 3
+      height: 3
+      resolution: 0.05
+      footprint: "[[0.17, 0.155], [0.17, -0.155], [-0.17, -0.155], [-0.17, 0.155]]"   # measured 2026-11-05: 34 x 31 cm outer to outer, with the 75 mm wheels
+      footprint_padding: 0.0
+      plugins: ["obstacle_layer", "inflation_layer"]
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        cost_scaling_factor: 4.0     # gentle fall-off keeps paths near the corridor centre
+        inflation_radius: 0.22   # LOCAL only (global stays 0.40 for path centring). Was 0.40: in 0.43 m corridors every cell was inflated cost, which made the controller hesitate
+      obstacle_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
+        enabled: True
+        observation_sources: scan
+        scan:
+          topic: scan_filtered
+          max_obstacle_height: 2.0
+          clearing: True
+          marking: True
+          data_type: "LaserScan"
+          raytrace_max_range: 3.0
+          raytrace_min_range: 0.0
+          obstacle_max_range: 2.5
+          obstacle_min_range: 0.0
+      static_layer:
+        plugin: "nav2_costmap_2d::StaticLayer"
+        map_subscribe_transient_local: True
+      always_send_full_costmap: True
+
+global_costmap:
+  global_costmap:
+    ros__parameters:
+      update_frequency: 1.0
+      publish_frequency: 1.0
+      global_frame: map
+      robot_base_frame: base_footprint
+      footprint: "[[0.17, 0.155], [0.17, -0.155], [-0.17, -0.155], [-0.17, 0.155]]"   # measured 2026-11-05: 34 x 31 cm outer to outer, with the 75 mm wheels
+      footprint_padding: 0.0
+      resolution: 0.05
+      track_unknown_space: true
+      plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
+      obstacle_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
+        enabled: True
+        observation_sources: scan
+        scan:
+          topic: scan_filtered  # relative: must resolve under the costmap node's namespace
+          max_obstacle_height: 2.0
+          clearing: True
+          marking: True
+          data_type: "LaserScan"
+          raytrace_max_range: 3.0
+          raytrace_min_range: 0.0
+          obstacle_max_range: 2.5
+          obstacle_min_range: 0.0
+      static_layer:
+        plugin: "nav2_costmap_2d::StaticLayer"
+        map_subscribe_transient_local: True
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        cost_scaling_factor: 4.0     # gentle fall-off keeps paths near the corridor centre
+        inflation_radius: 0.40   # was 0.25; robot hit walls on trial_3b
+      always_send_full_costmap: True
+
+# The yaml_filename does not need to be specified since it going to be set by defaults in launch.
+# If you'd rather set it in the yaml, remove the default "map" value in the tb3_simulation_launch.py
+# file & provide full path to map below. If CLI map configuration or launch default is provided, that will be used.
+# map_server:
+#   ros__parameters:
+#     yaml_filename: ""
+
+map_saver:
+  ros__parameters:
+    save_map_timeout: 5.0
+    free_thresh_default: 0.25
+    occupied_thresh_default: 0.65
+    map_subscribe_transient_local: True
+
+planner_server:
+  ros__parameters:
+    expected_planner_frequency: 1.0   # BT replans at ~1 Hz; 20 just spams "planning rate lower than expected"
+    planner_plugins: ["GridBased"]
+    costmap_update_timeout: 1.0
+    GridBased:
+      plugin: "nav2_navfn_planner::NavfnPlanner"
+      tolerance: 0.5
+      use_astar: true
+      allow_unknown: true
+
+smoother_server:
+  ros__parameters:
+    smoother_plugins: ["simple_smoother"]
+    simple_smoother:
+      plugin: "nav2_smoother::SimpleSmoother"
+      tolerance: 1.0e-10
+      max_its: 1000
+      do_refinement: True
+
+behavior_server:
+  ros__parameters:
+    local_costmap_topic: local_costmap/costmap_raw
+    global_costmap_topic: global_costmap/costmap_raw
+    local_footprint_topic: local_costmap/published_footprint
+    global_footprint_topic: global_costmap/published_footprint
+    cycle_frequency: 10.0
+    behavior_plugins: ["spin", "backup", "drive_on_heading", "assisted_teleop", "wait"]
+    spin:
+      plugin: "nav2_behaviors::Spin"
+    backup:
+      plugin: "nav2_behaviors::BackUp"
+    drive_on_heading:
+      plugin: "nav2_behaviors::DriveOnHeading"
+    wait:
+      plugin: "nav2_behaviors::Wait"
+    assisted_teleop:
+      plugin: "nav2_behaviors::AssistedTeleop"
+    local_frame: odom
+    global_frame: map
+    robot_base_frame: base_footprint
+    transform_tolerance: 0.3
+    simulate_ahead_time: 0.4   # was 2.0: Spin/BackUp abort when the footprint is predicted to hit a wall within this time; 2 s looked far past the corridor
+    max_rotational_vel: 1.0
+    min_rotational_vel: 0.5   # track 0.47 m: ~0.12 m/s per wheel, above the Nano's 450 ticks/s minimum
+    rotational_acc_lim: 3.0
+
+waypoint_follower:
+  ros__parameters:
+    loop_rate: 10
+    stop_on_failure: false
+    action_server_result_timeout: 900.0
+    waypoint_task_executor_plugin: "wait_at_waypoint"
+    wait_at_waypoint:
+      plugin: "nav2_waypoint_follower::WaitAtWaypoint"
+      enabled: True
+      waypoint_pause_duration: 200
+
+route_server:
+  ros__parameters:
+    # The graph_filepath does not need to be specified since it going to be set by defaults in launch.
+    # If you'd rather set it in the yaml, remove the default "graph" value in the launch file(s).
+    # file & provide full path to map below. If graph config or launch default is provided, it is used
+    # graph_filepath: $(find-pkg-share nav2_route)/graphs/aws_graph.geojson
+    boundary_radius_to_achieve_node: 1.0
+    radius_to_achieve_node: 2.0
+    smooth_corners: true
+    operations: ["AdjustSpeedLimit", "ReroutingService", "CollisionMonitor"]
+    ReroutingService:
+      plugin: "nav2_route::ReroutingService"
+    AdjustSpeedLimit:
+      plugin: "nav2_route::AdjustSpeedLimit"
+    CollisionMonitor:
+      plugin: "nav2_route::CollisionMonitor"
+      max_collision_dist: 3.0
+    edge_cost_functions: ["DistanceScorer", "CostmapScorer"]
+    DistanceScorer:
+      plugin: "nav2_route::DistanceScorer"
+    CostmapScorer:
+      plugin: "nav2_route::CostmapScorer"
+
+velocity_smoother:
+  ros__parameters:
+    smoothing_frequency: 20.0
+    stamp_smoothed_velocity_with_smoothing_time: False
+    scale_velocities: False
+    feedback: "OPEN_LOOP"
+    max_velocity: [0.18, 0.0, 1.0]
+    min_velocity: [-0.18, 0.0, -1.0]
+    max_accel: [0.5, 0.0, 1.5]    # was 2.5 / 3.2: steps that big made the drive jerk
+    max_decel: [-0.5, 0.0, -1.5]
+    odom_topic: "diff_cont/odom"
+    odom_duration: 0.1
+    deadband_velocity: [0.0, 0.0, 0.0]
+    velocity_timeout: 1.0
+
+collision_monitor:
+  ros__parameters:
+    # Hard stop on the live filtered scan, between Nav2 and twist_mux (navigation_launch.py,
+    # use_collision_monitor). Nav2 -> cmd_vel_nav_raw -> here -> cmd_vel_nav -> twist_mux.
+    # Teleop (cmd_vel_joy) does not pass through it, so you can always drive out.
+    base_frame_id: "base_footprint"
+    odom_frame_id: "odom"
+    cmd_vel_in_topic: "cmd_vel_nav_raw"
+    cmd_vel_out_topic: "cmd_vel_nav"
+    state_topic: "collision_monitor_state"   # which zone is active: ros2 topic echo /auracle/collision_monitor_state
+    transform_tolerance: 0.5
+    source_timeout: 1.0
+    base_shift_correction: True
+    stop_pub_timeout: 2.0
+    polygons: ["VelocityStop"]
+    # One zone, chosen by the commanded velocity: ahead when driving forward, behind when reversing,
+    # nothing when turning on the spot. Spins are NOT guarded on purpose: in the 0.43 m corridors the
+    # corners (radius 0.23 m) sweep within a few cm of the walls, so any turn guard would freeze
+    # rotate-to-heading. The scan filter removes everything inside +-0.22 / +-0.18 m of the robot,
+    # so the zones start at the footprint edge (+-0.17 m) and see only what lies beyond it.
+    VelocityStop:
+      type: "velocity_polygon"
+      action_type: "stop"
+      min_points: 5          # needs 5 beams inside the zone. Raise if single bad returns stop it
+      holonomic: False
+      visualize: True        # the active zone is published on /auracle/VelocityStop: add it in RViz
+      enabled: True
+      velocity_polygons: ["forward", "backward", "rotate_or_stopped"]
+      forward:
+        points: "[[0.27, 0.10], [0.27, -0.10], [0.22, -0.10], [0.22, 0.10]]"   # 5 cm deep, 20 cm wide: just past the scan-filter box. Minimum guard: side walls can never trip it
+        linear_min: 0.02
+        linear_max: 1.0
+        theta_min: -3.0
+        theta_max: 3.0
+      backward:
+        points: "[[-0.22, 0.10], [-0.22, -0.10], [-0.27, -0.10], [-0.27, 0.10]]"
+        linear_min: -1.0
+        linear_max: -0.02
+        theta_min: -3.0
+        theta_max: 3.0
+      rotate_or_stopped:     # last entry = fallback for the whole velocity range; a tiny 4-point zone = no guard (3 points made the monitor fail to configure: 'Polygon must have at least three points')
+        points: "[[0.01, 0.01], [0.01, -0.01], [-0.01, -0.01], [-0.01, 0.01]]"
+        linear_min: -1.0
+        linear_max: 1.0
+        theta_min: -3.0
+        theta_max: 3.0
+    observation_sources: ["scan"]
+    scan:
+      type: "scan"
+      topic: "scan_filtered"   # the raw scan includes the robot's own wheels and frame
+      enabled: True
+
+docking_server:
+  ros__parameters:
+    controller_frequency: 50.0
+    initial_perception_timeout: 5.0
+    wait_charge_timeout: 5.0
+    dock_approach_timeout: 30.0
+    undock_linear_tolerance: 0.05
+    undock_angular_tolerance: 0.1
+    max_retries: 3
+    base_frame: "base_footprint"
+    fixed_frame: "odom"
+    dock_backwards: false
+    dock_prestaging_tolerance: 0.5
+
+    # Types of docks
+    dock_plugins: ['simple_charging_dock']
+    simple_charging_dock:
+      plugin: 'opennav_docking::SimpleChargingDock'
+      docking_threshold: 0.05
+      staging_x_offset: -0.7
+      use_external_detection_pose: true
+      use_battery_status: false # true
+      use_stall_detection: false # true
+
+      external_detection_timeout: 1.0
+      external_detection_translation_x: -0.18
+      external_detection_translation_y: 0.0
+      external_detection_rotation_roll: -1.57
+      external_detection_rotation_pitch: -1.57
+      external_detection_rotation_yaw: 0.0
+      filter_coef: 0.1
+
+    # Dock instances
+    # The following example illustrates configuring dock instances.
+    # docks: ['home_dock']  # Input your docks here
+    # home_dock:
+    #   type: 'simple_charging_dock'
+    #   frame: map
+    #   pose: [0.0, 0.0, 0.0]
+
+    controller:
+      k_phi: 3.0
+      k_delta: 2.0
+      v_linear_min: 0.15
+      v_linear_max: 0.15
+      use_collision_detection: true
+      costmap_topic: "local_costmap/costmap_raw"
+      footprint_topic: "local_costmap/published_footprint"
+      transform_tolerance: 0.1
+      projection_time: 5.0
+      simulation_step: 0.1
+      dock_collision_threshold: 0.3
+
+loopback_simulator:
+  ros__parameters:
+    base_frame_id: "base_footprint"
+    odom_frame_id: "odom"
+    map_frame_id: "map"
+    scan_frame_id: "base_scan"  # tb4_loopback_simulator.launch.py remaps to 'rplidar_link'
+    update_duration: 0.02
+    scan_range_min: 0.05
+    scan_range_max: 30.0
+    scan_angle_min: -3.1415
+    scan_angle_max: 3.1415
+    scan_angle_increment: 0.02617
+    scan_use_inf: true
+
+map_server:
+  ros__parameters:
+    yaml_filename: ""

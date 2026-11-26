@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="robot">
+    <xacro:arg name="sim_mode" default="true"/>
+    <!-- Real robot only (ignored in sim) -->
+    <xacro:arg name="arduino_port" default="/dev/arduino"/>
+
+    <xacro:include filename="robot_core.xacro" />
+    <xacro:include filename="ros2_control.xacro" />
+    <xacro:include filename="lidar.xacro" />
+    <xacro:include filename="camera.xacro" />
+    <xacro:include filename="face.xacro" />
+    <xacro:include filename="imu.xacro" />
+    <xacro:include filename="gt_odom.xacro" />
+    
+</robot>

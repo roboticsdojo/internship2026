@@ -1,0 +1,83 @@
+slam_toolbox:
+  ros__parameters:
+    # Tuned 2026-10-23 for the real robot WITHOUT an IMU (wheel odometry only, skid-steer).
+    # Previous values: ~/auracle_tools/runs/mapper_params_before_tuning.yaml
+
+    # Plugin params
+    solver_plugin: solver_plugins::CeresSolver
+    ceres_linear_solver: SPARSE_NORMAL_CHOLESKY
+    ceres_preconditioner: SCHUR_JACOBI
+    ceres_trust_strategy: LEVENBERG_MARQUARDT
+    ceres_dogleg_type: TRADITIONAL_DOGLEG
+    ceres_loss_function: HuberLoss   # was None: one bad link (maze corridors look alike) can't drag the whole map
+
+    # ROS Parameters
+    odom_frame: odom
+    map_frame: map
+    base_frame: base_footprint
+    scan_topic: scan_filtered   # robot's own outline removed (scan_filter.yaml)
+    use_map_saver: true
+    mode: mapping #localization
+
+    # if you'd like to immediately start continuing a map at a given pose
+    # or at the dock, but they are mutually exclusive, if pose is given
+    # will use pose
+    #map_file_name: test_steve
+    # map_start_pose: [0.0, 0.0, 0.0]
+    #map_start_at_dock: true
+
+    debug_logging: false
+    throttle_scans: 1
+    transform_publish_period: 0.05 #if 0 never publishes odometry. 20 Hz is plenty; 50 Hz just burns Pi CPU
+    map_update_interval: 2.0 # SLAM runs on the laptop, so faster map refresh is affordable
+    resolution: 0.03   # was 0.05: narrow maze corridors; lidar noise is ~1-2 cm
+    restamp_tf: false
+    min_laser_range: 0.2   # was 0.4, which dropped 6.7% of returns (the nearest walls). No self-hits seen
+    max_laser_range: 6.0   # arena returns are all < 3.4 m; far points are the noisiest
+    minimum_time_interval: 0.2   # back to the trial_3b value (2026-11-05): 0.13 did not help, see CHANGES 4.20
+    transform_timeout: 0.5   # TF crosses Pi -> laptop over Zenoh
+    tf_buffer_duration: 30.0
+    stack_size_to_use: 40000000 #// program needs a larger stack size to serialize large maps
+    enable_interactive_mode: false # only needed for the RViz SlamToolbox panel / manual node editing
+
+    # General Parameters
+    use_scan_matching: true
+    use_scan_barycenter: true
+    minimum_travel_distance: 0.1   # back to the trial_3b value (0.05 tried 2026-11-05, trial_5b map was worse)
+    minimum_travel_heading: 0.05    # was 0.10 (2026-11-18): during pivots scans are 3-10 deg apart; process more of them so each match step is small. Revert to 0.10 if CPU lags
+    check_min_dist_and_heading_precisely: false
+    scan_buffer_size: 20
+    scan_buffer_maximum_scan_distance: 4.0
+    link_match_minimum_response_fine: 0.2
+    link_scan_maximum_distance: 1.0
+
+    #loop closure parameters
+    loop_search_maximum_distance: 2.0
+    do_loop_closing: true 
+    loop_match_minimum_chain_size: 10
+    loop_match_maximum_variance_coarse: 2.0   # stricter: maze corridors repeat, false loops wreck maps
+    loop_match_minimum_response_coarse: 0.60
+    loop_match_minimum_response_fine: 0.70
+
+    # Correlation Parameters - Correlation Parameters
+    correlation_search_space_dimension: 0.8   # wider: lets scan matching fix bigger odometry errors
+    correlation_search_space_resolution: 0.01
+    correlation_search_space_smear_deviation: 0.05
+
+    # Correlation Parameters - Loop Closure Parameters
+    loop_search_space_dimension: 3.0   # arena is ~6 x 3 m
+    loop_search_space_resolution: 0.05
+    loop_search_space_smear_deviation: 0.03
+
+    # Scan Matcher Parameters
+    distance_variance_penalty: 0.15   # back to the trial_3b value. 0.05 let the matcher slide along plain walls (bowed wall, doubled walls in trial_5b). The slip itself is now removed upstream by lidar odometry
+    angle_variance_penalty: 0.3
+
+    fine_search_angle_offset: 0.00349     
+    coarse_search_angle_offset: 0.349   
+    coarse_angle_resolution: 0.035
+    minimum_angle_penalty: 0.9
+    minimum_distance_penalty: 0.5   # back to the trial_3b value, same reason
+    use_response_expansion: true
+    min_pass_through: 2
+    occupancy_threshold: 0.1

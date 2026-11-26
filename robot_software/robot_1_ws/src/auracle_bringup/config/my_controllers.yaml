@@ -1,0 +1,32 @@
+/**/controller_manager:
+  ros__parameters:
+    update_rate: 20 
+
+    diff_cont:
+      type: diff_drive_controller/DiffDriveController
+    joint_broad:
+      type: joint_state_broadcaster/JointStateBroadcaster
+    imu_broadcaster:
+      type: imu_sensor_broadcaster/IMUSensorBroadcaster
+
+/**/diff_cont:
+  ros__parameters:
+    tf_frame_prefix_enable: false
+    publish_rate: 20.0
+    base_frame_id: base_footprint
+    odom_frame_id: odom
+
+    left_wheel_names: ['left_wheel_one_joint', 'left_wheel_three_joint']
+    right_wheel_names: ['right_wheel_one_joint', 'right_wheel_three_joint']
+
+    wheel_separation: 0.2755
+    wheel_radius: 0.0375   # sim: matches the URDF wheel (75 mm wheels)
+    enable_odom_tf: false
+
+/**/imu_broadcaster:
+  ros__parameters:
+    sensor_name: imu_sensor
+    frame_id: imu_link
+    static_covariance_orientation: [-1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    static_covariance_angular_velocity: [0.0004, 0.0, 0.0, 0.0, 0.0004, 0.0, 0.0, 0.0, 0.0004]   # sd ~1.1 deg/s with motors running (2026-10-25)
+    static_covariance_linear_acceleration: [0.04, 0.0, 0.0, 0.0, 0.04, 0.0, 0.0, 0.0, 0.04]

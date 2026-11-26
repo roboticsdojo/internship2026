@@ -1,0 +1,70 @@
+/**/joy_node:
+  ros__parameters:
+    device_id: 0
+    deadzone: 0.05
+    autorepeat_rate: 20.0
+
+# Game-style driving node (scripts/joy_drive.py). Replaces teleop_twist_joy.
+# NOTE: yaml types must match: whole numbers for indices, decimals (1.0) for floats.
+# This one file is used by BOTH the sim and the real robot, so every value here
+# has to be right for both. The drive node itself always runs on the wall clock
+# (joystick.launch.py forces use_sim_time:=False for it), so none of the timing
+# below stretches when Gazebo runs slower than real time.
+/**/joy_drive_node:
+  ros__parameters:
+    # Which control schemes are live. Remove one to disable it.
+    #   stick    = LB (held) + left stick
+    #   triggers = LT/RT as left/right tracks (Back = reverse)
+    #   buttons  = Y fwd, A back, X left, B right
+    enabled_modes: ['stick', 'triggers', 'buttons']
+
+    # --- Speed at 100 % speed level. D-pad up/down moves the level in 10 % steps. ---
+    max_linear: 0.16          # m/s forward. my_controllers_real.yaml clamps to 0.16 (weak right rear).
+    max_linear_reverse: 0.25  # m/s backward (right rear healthy backward).
+    max_angular: 1.3          # rad/s
+    wheel_separation: 0.47   # m. Used for trigger banking; keep equal to diff_cont's value (real robot).
+    initial_speed: 0.5        # start at 50 %
+    speed_min: 0.1
+    speed_max: 1.0
+    speed_step: 0.1
+    speed_repeat_delay: 0.4   # s of holding the d-pad before it auto-repeats
+    speed_repeat_rate: 6.0    # steps/s while held
+
+    # --- Smoothness ---
+    # Matches the real robot's controller_manager update_rate (20 Hz, set in
+    # my_controllers_real.yaml). The sim's base update_rate is 30 Hz, so it sees a
+    # 20 Hz stream; that is harmless because the commands are already smooth ramps.
+    # If you ever change update_rate on the robot, change this to match.
+    publish_rate: 40.0
+    # Time constant of EACH of two cascaded filters. ~4x this to reach 90 % speed
+    # (about 200 ms at 20 Hz). Was 0.12 / 0.15, which took ~400 ms and felt laggy.
+    # Bigger = smoother but lazier.
+    smoothing_linear: 0.07    # s
+    smoothing_angular: 0.09   # s
+    decel_ratio: 0.7          # braking is a bit quicker than accelerating (1.0 = same)
+    max_accel_linear: 0.55    # keep BELOW diff_cont's 0.6 so it never clamps (steppy)
+    max_accel_angular: 2.8    # keep BELOW diff_cont's 3.0
+    stale_timeout: 0.3        # s without /joy -> ramp to a stop
+
+    # --- Feel ---
+    stick_deadzone: 0.08
+    stick_expo: 1.5           # >1 = gentler near centre, full speed still reachable
+    trigger_deadzone: 0.03
+    trigger_expo: 1.5
+    button_turn_scale: 0.7    # X/B turn rate relative to full
+
+    # --- Mapping: Linux xpad layout (what joy_bridge_win.py sends). ---
+    # Verify with `ros2 topic echo /joy` on a native Linux pad and edit if needed.
+    axis_stick_x: 0
+    axis_stick_y: 1
+    axis_lt: 2
+    axis_rt: 5
+    axis_dpad_y: 7
+    trigger_rest: 1.0         # raw trigger value when released
+    trigger_pressed: -1.0     # raw trigger value when fully pressed
+    button_enable: 4          # LB
+    button_reverse: 6         # Back
+    button_forward: 3         # Y
+    button_back: 0            # A
+    button_left: 2            # X
+    button_right: 1           # B

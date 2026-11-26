@@ -1,0 +1,15 @@
+# Stable device names so the Arduino and the RPLidar can't swap
+# /dev/ttyUSB0 <-> /dev/ttyUSB1 between boots (both are USB-serial).
+#
+# Install on the Pi:
+#   sudo cp 99-auracle.rules /etc/udev/rules.d/
+#   sudo udevadm control --reload-rules && sudo udevadm trigger
+#   ls -l /dev/arduino /dev/rplidar
+#
+# Check IDs with `lsusb` if a symlink doesn't appear.
+
+# Arduino Nano - FTDI FT232R (0403:6001)
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", SYMLINK+="arduino", MODE="0666"
+
+# RPLidar A1/A2 - Silicon Labs CP210x (10c4:ea60)
+SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", SYMLINK+="rplidar", MODE="0666"
